@@ -1,0 +1,8 @@
+/usr/include/bullet
+/usr/local/include/
+/usr/local/include/bullet
+~/.linuxbrew/include/bullet
+/usr/include/x86_64-linux-gnu/qt5
+/usr/include/x86_64-linux-gnu/qt5/QtWidgets
+/usr/include/x86_64-linux-gnu/qt5/QtOpenGL
+/usr/include/x86_64-linux-gnu/qt5/QtGui

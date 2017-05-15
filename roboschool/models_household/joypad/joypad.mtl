@@ -1,0 +1,16 @@
+# Wavefront MTL file
+# Creator: Ultimate Unwrap3D Pro v3.47
+# URL: http://www.unwrap3d.com
+# Time: Mon Jan 13 10:41:58 2014
+# num_materials: 1
+
+newmtl joypad_mat
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.600000 0.600000 0.600000
+d 1.000000
+illum 2
+Ns 0.000000
+map_Kd joypad_tex.jpg
+
+# num_materials: 1

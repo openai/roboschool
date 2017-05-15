@@ -1,0 +1,16 @@
+# Wavefront MTL file
+# Creator: Ultimate Unwrap3D Pro v3.47
+# URL: http://www.unwrap3d.com
+# Time: Tue Jan 14 13:52:18 2014
+# num_materials: 1
+
+newmtl keyboard_mat
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.200000 0.200000 0.200000
+d 1.000000
+illum 2
+Ns 0.000000
+map_Kd keyboard_tex.jpg
+
+# num_materials: 1

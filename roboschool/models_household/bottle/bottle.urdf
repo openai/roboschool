@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot name="bottle">
+
+  <link name="body">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.75 0.00"/>
+      <geometry>
+        <mesh filename="potionbottlesolid.obj"/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.75 0.00"/>
+      <geometry>
+        <mesh filename="potionbottleglass.obj"/>
+      </geometry>
+    </visual>
+
+    <collision>  <!-- floor -->
+      <geometry>
+        <box size="2.42 3.10 1.77"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.00"/>
+    </collision>
+    <collision>
+      <geometry>
+        <box size="1.42 0.54 1.42"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 1.8 0.00"/>
+    </collision>
+    <collision>
+      <geometry>
+        <cylinder radius="0.40" length="1.0"/>
+      </geometry>
+      <origin rpy="1.57 0 0" xyz="0 2.55 0.00"/>
+    </collision>
+    <collision>
+      <geometry>
+        <cylinder radius="0.60" length="0.3"/>
+      </geometry>
+      <origin rpy="1.57 0 0" xyz="0 2.8 0.00"/>
+    </collision>
+
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+    </inertial>
+  </link>
+
+</robot>
+
