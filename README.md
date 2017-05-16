@@ -1,6 +1,11 @@
 Roboschool
 ==========
 
+Release blog post is here:
+
+https://blog.openai.com/roboschool/
+
+
 Roboschool is a long-term project to create simulations useful for research. The roadmap is as follows:
 
 1. Replicate Gym MuJoCo environments.
@@ -10,8 +15,9 @@ Roboschool is a long-term project to create simulations useful for research. The
 5. Teach robots to follow commands, including verbal commands.
 
 
-Gym MuJoCo envs replacement
-===========================
+
+Environments List
+=================
 
 The list of Roboschool environments is as follows:
 
