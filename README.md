@@ -46,6 +46,8 @@ First, define a `ROBOSCHOOL_PATH` variable in the current shell. It will be used
 ROBOSCHOOL_PATH=/path/to/roboschool
 ```
 
+If you have both Python2 and Python3 on your system, use `python3` and `pip3` commands.
+
 The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For the non-bullet deps, there are several options, depending on what platform and package manager you are using.
 
 - Ubuntu:

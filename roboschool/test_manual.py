@@ -34,7 +34,6 @@ class TestKeyboardControl:
 usage = """
 This is manual test. Usage:
 %s <env_id>
-(you can find env names in this source file)
 
 Keyboard shortcuts:
  * F1 toggle slow motion

@@ -673,9 +673,17 @@ void opengl_init(const boost::shared_ptr<Household::World>& wref)
 		QOpenGLContext* glcx = QOpenGLContext::globalShareContext();
 		QSurfaceFormat fmt1 = wref->cx->fmt;
 		QSurfaceFormat fmt2 = glcx->format();
-		assert( fmt1.majorVersion() == fmt2.majorVersion() );
-		assert( fmt1.minorVersion() == fmt2.minorVersion() );
-		assert( fmt1.profile() == fmt2.profile() );
+		if (
+			fmt1.majorVersion() != fmt2.majorVersion() ||
+			fmt1.minorVersion() != fmt2.minorVersion() ||
+			fmt1.profile() != fmt2.profile()
+		) {
+			fprintf(stderr, "\n\nCannot initialize OpenGL context.\n");
+			fprintf(stderr, "Requested version: %i.%i\n", fmt1.majorVersion(), fmt1.minorVersion());
+			fprintf(stderr, "Actual version: %i.%i\n", fmt2.majorVersion(), fmt2.minorVersion());
+			fprintf(stderr, "For possible fixes, see:\n\nhttps://github.com/openai/roboschool/issues/2\n\n");
+			assert(0);
+		}
 		wref->cx->glcx = glcx;
 	} else {
 		wref->cx->dummy_openglwidget = new QOpenGLWidget();

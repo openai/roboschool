@@ -83,10 +83,10 @@ SIM = \
 ifneq ("$(wildcard /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0)", "")
 $(info Hardware render (turn on shadows))
 SIM     += render-ssao.cpp
-CFLAGS  += -DUSE_SSAO -Wno-unknown-pragmas
-CFLAGSD += -DUSE_SSAO -Wno-unknown-pragmas
+CFLAGS  += -DUSE_SSAO
+CFLAGSD += -DUSE_SSAO
 else
-$(info Software render)
+$(info Slow hardware or software render (no shadows))
 endif
 
 TWND = \
