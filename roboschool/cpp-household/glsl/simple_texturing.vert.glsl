@@ -1,4 +1,5 @@
-//#line 2 "simple_texturing.vert.glsl"
+#version 330
+//#line 3 "simple_texturing.vert.glsl"
 
 uniform highp mat4 input_matrix_modelview;
 uniform highp mat4 input_matrix_modelview_inverse_transpose;

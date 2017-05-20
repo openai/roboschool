@@ -87,16 +87,22 @@ struct UsefulStuff {
 	vec4f hbaoRandom[HBAO_RANDOM_ELEMENTS * MAX_SAMPLES];
 };
 
-void Context::_hbao_init()
+bool Context::_hbao_init()
 {
-	program_depth_linearize = load_program("fullscreen_triangle.vert.glsl", "", "ssao_depthlinearize.frag.glsl");
-	bool r2 = program_depth_linearize->link();
-	assert(r2);
+	program_depth_linearize = load_program("fullscreen_triangle.vert.glsl", "", "ssao_depthlinearize.frag.glsl", 0, 0, "#version 410\n");
+	if (!program_depth_linearize->log().isEmpty()) {
+		fprintf(stderr, "Roboschool built-in render compiled with shadows, but SSAO shaders didn't load (1)\n");
+		return false;
+	}
+	program_depth_linearize->link(); // always returns true :(
 	location_clipInfo = program_depth_linearize->uniformLocation("clipInfo");
 
-	program_hbao_calc = load_program("fullscreen_triangle.vert.glsl", "", "ssao_hbao.frag.glsl", "#define AO_DEINTERLEAVED 0\n#define AO_BLUR 0\n#define AO_LAYERED 0\n");
-	bool r3 = program_hbao_calc->link();
-	assert(r3);
+	program_hbao_calc = load_program("fullscreen_triangle.vert.glsl", "", "ssao_hbao.frag.glsl", 0, 0, "#version 410\n#define AO_DEINTERLEAVED 0\n#define AO_BLUR 0\n#define AO_LAYERED 0\n");
+	if (!program_hbao_calc->log().isEmpty()) {
+		fprintf(stderr, "Roboschool built-in render compiled with shadows, but SSAO shaders didn't load (2)\n");
+		return false;
+	}
+	program_hbao_calc->link();
 	location_RadiusToScreen = program_hbao_calc->uniformLocation("RadiusToScreen");
 	location_R2 = program_hbao_calc->uniformLocation("R2");
 	location_NegInvR2 = program_hbao_calc->uniformLocation("NegInvR2");
@@ -151,6 +157,8 @@ void Context::_hbao_init()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
+	return true;
 }
 
 void ContextViewport::_hbao_prepare(const float* proj_matrix)

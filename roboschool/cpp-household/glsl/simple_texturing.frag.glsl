@@ -1,4 +1,5 @@
-//#line 2 "simple_texturing.frag.glsl"
+#version 330
+//#line 3 "simple_texturing.frag.glsl"
 
 
 

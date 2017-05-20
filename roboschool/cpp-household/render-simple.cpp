@@ -3,10 +3,6 @@
 #include <QtOpenGL/QtOpenGL>
 #include <QtOpenGL/QGLFramebufferObject>
 
-#include "glsl/nv_math.h"
-#include "glsl/nv_math_types.h"
-#include "glsl/nv_math_glsltypes.h"
-#include "glsl/common.h"
 #ifdef __APPLE__
 #include <gl3.h>
 #include <gl3ext.h>
@@ -25,7 +21,6 @@ std::string glsl_path = "roboschool/cpp-household/glsl"; // outside namespace
 namespace SimpleRender {
 
 using namespace Household;
-using namespace nv_math;
 
 static float line_vertex[] = {
 +1,+1,0, -1,+1,0,
@@ -82,28 +77,35 @@ std::string read_file(const std::string& fn)
 	return str;
 }
 
-shared_ptr<QGLShaderProgram> load_program(const std::string& vert_fn, const std::string& geom_fn, const std::string& frag_fn, const char* defines)
+shared_ptr<QGLShaderProgram> load_program(
+	const std::string& vert_fn, const std::string& geom_fn, const std::string& frag_fn,
+	const char* vert_defines, const char* geom_defines, const char* frag_defines)
 {
 	shared_ptr<QGLShaderProgram> prog(new QGLShaderProgram);
-	//std::string common_header = read_file(glsl_path + "/common.h");
-	std::string common_header =
-	"#define UBO_SCENE     0\n"
-	"#define AO_RANDOMTEX_SIZE 4\n";
+	std::string common_header;
 
-	common_header = "#version 410\n" + common_header;
-	if (defines) common_header += defines;
 	if (!vert_fn.empty()) {
 		std::string vert_prog_text = read_file(glsl_path + "/" + vert_fn);
+		common_header = "";
+		if (vert_defines) common_header += vert_defines;
 		prog->addShaderFromSourceCode(QGLShader::Vertex, (common_header + vert_prog_text).c_str());
+		if (!prog->log().isEmpty())
+			fprintf(stderr, "%s LOG: '%s'\n", vert_fn.c_str(), prog->log().toUtf8().data());
 	}
 
 	if (!geom_fn.empty()) {
 		std::string geom_prog_text = read_file(glsl_path + "/" + geom_fn);
+		common_header = "";
+		if (geom_defines) common_header += geom_defines;
 		prog->addShaderFromSourceCode(QGLShader::Geometry, (common_header + geom_prog_text).c_str());
+		if (!prog->log().isEmpty())
+			fprintf(stderr, "%s LOG: '%s'\n", geom_fn.c_str(), prog->log().toUtf8().data());
 	}
 
 	if (!frag_fn.empty()) {
 		std::string frag_prog_text = read_file(glsl_path + "/" + frag_fn);
+		common_header = "";
+		if (frag_defines) common_header += frag_defines;
 		prog->addShaderFromSourceCode(QGLShader::Fragment, (common_header + frag_prog_text).c_str());
 		if (!prog->log().isEmpty())
 			fprintf(stderr, "%s LOG: '%s'\n", frag_fn.c_str(), prog->log().toUtf8().data());
@@ -259,7 +261,8 @@ void Context::initGL()
 	location_zpos = program_hud->uniformLocation("zpos");
 
 #ifdef USE_SSAO
-	_hbao_init();
+	if (ssao_enable)
+		ssao_enable = _hbao_init();
 #endif
 	assert(glGetError() == GL_NO_ERROR);
 }
@@ -490,7 +493,7 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 
 	double xmin, xmax;
-	xmax = near * tanf(hfov * nv_to_rad * 0.5);
+	xmax = near * tanf(hfov * M_PI / 180 * 0.5);
 	xmin = -xmax;
 	QMatrix4x4 projection;
 	projection.frustum(xmin, xmax, xmin*H/W, xmax*H/W, near, far);
@@ -535,7 +538,7 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 	cx->program_tex->release();
 
 #ifdef USE_SSAO
-	if (ssao_enable) {
+	if (cx->ssao_enable) {
 		_hbao_prepare(projection.data());
 		_depthlinear_paint(0);
 		_ssao_run(0);
@@ -671,20 +674,21 @@ void opengl_init(const boost::shared_ptr<Household::World>& wref)
 	// QOpenGLContext::areSharing() is reporting true, put you can't reference framebuffers or VAOs.
 	if (1) {
 		QOpenGLContext* glcx = QOpenGLContext::globalShareContext();
-		QSurfaceFormat fmt1 = wref->cx->fmt;
-		QSurfaceFormat fmt2 = glcx->format();
-		if (
-			fmt1.majorVersion() != fmt2.majorVersion() ||
-			fmt1.minorVersion() != fmt2.minorVersion() ||
-			fmt1.profile() != fmt2.profile()
-		) {
+		QSurfaceFormat fmt_req = wref->cx->fmt;
+		QSurfaceFormat fmt_got = glcx->format();
+		int got_version = fmt_got.majorVersion()*1000 + fmt_got.majorVersion();
+		bool ok_without_shadows = got_version >= 3003;
+		bool ok_all_features    = got_version >= 4001;
+		if (!ok_without_shadows) {
 			fprintf(stderr, "\n\nCannot initialize OpenGL context.\n");
-			fprintf(stderr, "Requested version: %i.%i\n", fmt1.majorVersion(), fmt1.minorVersion());
-			fprintf(stderr, "Actual version: %i.%i\n", fmt2.majorVersion(), fmt2.minorVersion());
+			fprintf(stderr, "Requested version: %i.%i\n", fmt_req.majorVersion(), fmt_req.minorVersion());
+			fprintf(stderr, "Actual version: %i.%i\n", fmt_got.majorVersion(), fmt_got.minorVersion());
+			fprintf(stderr, "(it must be at least 3.3 to work)\n");
 			fprintf(stderr, "For possible fixes, see:\n\nhttps://github.com/openai/roboschool/issues/2\n\n");
 			assert(0);
 		}
 		wref->cx->glcx = glcx;
+		wref->cx->ssao_enable = ok_all_features;
 	} else {
 		wref->cx->dummy_openglwidget = new QOpenGLWidget();
 		wref->cx->dummy_openglwidget->setFormat(wref->cx->fmt);

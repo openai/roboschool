@@ -386,11 +386,11 @@ void Viz::keyPressEvent(QKeyEvent* kev)
 	else if (kev->key()==Qt::Key_F1) cx->slowmo ^= true;
 	else if (kev->key()==Qt::Key_F2) view_options ^= VIEW_NO_CAPTIONS;
 	else if (kev->key()==Qt::Key_F3) view_options ^= VIEW_NO_HUD;
-	else if (kev->key()==0x21) render_viewport->ssao_debug = 0; // Shift + number
-	else if (kev->key()==0x22 || kev->key()==0x40) render_viewport->ssao_debug = 1;
-	else if (kev->key()==0x23) render_viewport->ssao_debug = 2;
-	else if (kev->key()==0x24) render_viewport->ssao_debug = 3;
-	else if (kev->key()==0x29) render_viewport->ssao_enable ^= true;
+	//else if (kev->key()==0x21) render_viewport->ssao_debug = 0;
+	//else if (kev->key()==0x22 || kev->key()==0x40) render_viewport->ssao_debug = 1;
+	//else if (kev->key()==0x23) render_viewport->ssao_debug = 2;
+	//else if (kev->key()==0x24) render_viewport->ssao_debug = 3;
+	//else if (kev->key()==0x29) render_viewport->ssao_enable ^= true;
 	else kev->ignore();
 }
 

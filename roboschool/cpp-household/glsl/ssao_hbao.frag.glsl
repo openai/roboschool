@@ -1,10 +1,13 @@
 //#line 2 "ssao_hbao.frag.glsl"
+// no #version here, to insert #define's in C++ code
 
 // The pragma below is critical for optimal performance
 // in this fragment shader to let the shader compiler
 // fully optimize the maths and batch the texture fetches
 // optimally
 #pragma optionNV(unroll all)
+
+#define AO_RANDOMTEX_SIZE 4
 
 uniform float   RadiusToScreen; // radius
 uniform float   R2;             // 1/radius

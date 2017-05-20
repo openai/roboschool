@@ -1,4 +1,5 @@
-//#line 2 "displaytex.frag.glsl"
+#version 330
+//#line 3 "displaytex.frag.glsl"    // mac doesn't like #line instruction
 
 uniform sampler2D inputTexture;
 

@@ -1,6 +1,5 @@
 //#line 2 "glsl/common.h"
 
-#define UBO_SCENE     0
 #define AO_RANDOMTEX_SIZE 4
 
 #ifdef __cplusplus

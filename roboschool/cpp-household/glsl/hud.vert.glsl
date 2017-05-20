@@ -1,4 +1,5 @@
-//#line 2 "hud.vert.glsl"
+#version 330
+//#line 3 "hud.vert.glsl"
 
 uniform vec4 xywh;
 uniform float zpos;

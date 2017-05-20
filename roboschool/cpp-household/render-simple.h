@@ -26,7 +26,7 @@ using boost::shared_ptr;
 using boost::weak_ptr;
 
 extern void primitives_to_mesh(const shared_ptr<Household::ShapeDetailLevels>& m, int want_detail, int shape_n);
-extern shared_ptr<QGLShaderProgram> load_program(const std::string& vert_fn, const std::string& geom_fn, const std::string& frag_fn, const char* defines=0);
+extern shared_ptr<QGLShaderProgram> load_program(const std::string& vert_fn, const std::string& geom_fn, const std::string& frag_fn, const char* vert_defines=0, const char* geom_defines=0, const char* frag_defines=0);
 
 enum {
 	VIEW_CAMERA_BIT      = 0x0001,
@@ -117,6 +117,7 @@ struct Context {
 	int location_texLinearDepth;
 	int location_texRandom;
 
+	bool ssao_enable = true;
 	shared_ptr<QGLShaderProgram> program_hbao_calc;
 	shared_ptr<QGLShaderProgram> program_calc_blur;
 
@@ -142,7 +143,7 @@ struct Context {
 	shared_ptr<struct UsefulStuff> useful = 0;
 	void initGL();
 
-	void _hbao_init();
+	bool _hbao_init();
 	shared_ptr<Texture> hbao_random;
 	shared_ptr<Texture> hbao_randomview[MAX_SAMPLES];
 
@@ -163,7 +164,6 @@ public:
 	QMatrix4x4 modelview;
 	QMatrix4x4 modelview_inverse_transpose;
 
-	bool ssao_enable = true;
 	int  ssao_debug = 0;
 	bool ortho = false;
 	bool blur = false;

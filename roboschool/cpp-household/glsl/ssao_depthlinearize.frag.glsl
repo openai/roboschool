@@ -1,4 +1,5 @@
 //#line 2 "ssao_depthlinearize.frag.glsl"
+// no #version here, to insert #define's in C++ code
 
 #ifndef DEPTHLINEARIZE_MSAA
 #define DEPTHLINEARIZE_MSAA 0
