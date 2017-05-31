@@ -1,8 +1,6 @@
 import gym, roboschool
 import numpy as np
-from platform import system
-if system() == "Linux":
-    from OpenGL import GL
+from OpenGL import GL
 
 def relu(x):
     return np.maximum(x, 0)
