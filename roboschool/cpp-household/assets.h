@@ -13,6 +13,8 @@ struct Context;
 class ContextViewport;
 }
 
+struct App;
+
 namespace Household {
 
 using boost::shared_ptr;

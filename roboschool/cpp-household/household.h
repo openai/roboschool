@@ -130,6 +130,7 @@ struct Robot {
 
 struct World: boost::enable_shared_from_this<World> {
 	b3PhysicsClientHandle client;
+	boost::shared_ptr<App> app_ref; // Keep application alive, while some worlds exist. If no worlds exist then new world gets created, probably will crash :(
 	~World();
 
 	float settings_gravity          = 0;

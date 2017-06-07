@@ -148,13 +148,18 @@ struct App {
 
 static boost::weak_ptr<App> the_app;
 
-shared_ptr<App> app_create(const shared_ptr<Household::World>& wref)
+shared_ptr<App> app_create_as_needed(const shared_ptr<Household::World>& wref)
 {
-	shared_ptr<App> app;
+	shared_ptr<App> app = the_app.lock();
+	if (app) {
+		wref->app_ref = app;
+		return app;
+	}
 	opengl_init_before_app(wref);
 	app.reset(new App);
 	the_app = app;
 	opengl_init(wref);
+	wref->app_ref = app;
 	return app;
 }
 
@@ -185,8 +190,7 @@ struct Camera {
 			window->update();
 			return true;
 		}
-		app = the_app.lock();
-		if (!app) app = app_create(wref);
+		if (!app) app = app_create_as_needed(wref);
 		window = new VizCamera(cref);
 		window->show();
 		window->key_callback = cb;
@@ -219,8 +223,7 @@ struct Camera {
 
 	boost::python::object render(bool render_depth, bool render_labeling, bool print_timing)
 	{
-		app = the_app.lock();
-		if (!app) app = app_create(wref);
+		if (!app) app = app_create_as_needed(wref);
 		cref->camera_render(wref->cx, render_depth, render_labeling, print_timing);
 		return make_tuple(
 				object(handle<>(PyBytes_FromStringAndSize(cref->camera_rgb.c_str(), cref->camera_rgb.size()))),
@@ -402,8 +405,7 @@ struct World {
 
 	bool test_window()
 	{
-		app = the_app.lock();
-		if (!app) app = app_create(wref);
+		if (!app) app = app_create_as_needed(wref);
 		if (window) {
 			app->process_events();
 			if (window->isVisible()) {
