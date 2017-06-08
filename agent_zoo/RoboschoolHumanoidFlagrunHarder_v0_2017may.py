@@ -1,5 +1,6 @@
 import gym, roboschool, sys
 import numpy as np
+from OpenGL import GL
 
 def relu(x):
     return np.maximum(x, 0)
