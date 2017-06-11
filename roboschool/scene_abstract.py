@@ -1,11 +1,16 @@
 # This is the only place cpp_household really imported. From other places, it is referenced as scene_abstract.cpp_household
-# If this doesn't work, please see instructions in README on how to build Bullet physics library.
-
+# If this doesn't work, the checklist is:
+# 1) Build local Bullet physics library (instructions in README)
+# 2) ldd cpp_household.so
+# 3) In case of python 2.7 when using pip2 install without -e, the C++ module gets built in python2.7/site-packages,
+# but when you have roboschool directory in cwd, will use that and fail to reach site-packages. No such behavior
+# in Python3.
+import sys, os
+sys.path.append(os.path.dirname(__file__))
 #from roboschool import cpp_household_d as cpp_household    # you can debug C++ code
 from roboschool  import cpp_household   as cpp_household
 
 import gym
-import os
 
 class Scene:
     "A base class for single- and multiplayer scenes"
