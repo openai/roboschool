@@ -58,7 +58,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
                     self.cpp_robot = r
                     self.robot_body = part
             for j in r.joints:
-                if dump: print("\tALL JOINTS '%s' limits = %+0.2f..%+0.2f effort=%0.3f speed=%0.3f" % (j.name, *j.limits()))
+                if dump: print("\tALL JOINTS '%s' limits = %+0.2f..%+0.2f effort=%0.3f speed=%0.3f" % ((j.name,) + j.limits()) )
                 if j.name[:6]=="ignore":
                     j.set_motor_torque(0)
                     continue

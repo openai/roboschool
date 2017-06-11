@@ -8,7 +8,9 @@ ifeq ($(UNAME),Linux)
   LIBS =-L/usr/lib64 -lm -lGL -lGLU
   INC  =-I/usr/include
   BOOST_MT=
-  HAVE_PYTHON3 = $(shell which python3)
+  ifneq ($(USE_PYTHON3),0)
+    HAVE_PYTHON3=$(shell which python3)
+  endif
   ifneq ($(HAVE_PYTHON3),)
     PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
     ifneq (,$(findstring linuxbrew,$(HAVE_PYTHON3)))

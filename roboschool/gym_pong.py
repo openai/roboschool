@@ -31,7 +31,6 @@ class PongScene(Scene):
                 if dump: print("\tPART '%s'" % part.name)
                 #if part.name==self.robot_name:
             for j in r.joints:
-                if dump: print("\tALL JOINTS '%s' limits = %+0.2f..%+0.2f effort=%0.3f speed=%0.3f" % (j.name, *j.limits()))
                 if j.name=="p0x": self.p0x = j
                 if j.name=="p0y": self.p0y = j
                 if j.name=="p1x": self.p1x = j
