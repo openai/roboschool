@@ -15,6 +15,12 @@ Roboschool is a long-term project to create simulations useful for research. The
 5. Teach robots to follow commands, including verbal commands.
 
 
+Some wiki pages:
+
+[Contributing New Environments](https://github.com/openai/roboschool/wiki/Contributing-New-Environments)
+
+[Help Wanted](https://github.com/openai/roboschool/wiki/Help-Wanted)
+
 
 Environments List
 =================
@@ -37,6 +43,7 @@ The list of Roboschool environments is as follows:
 To obtain this list: `import roboschool, gym; print("\n".join(['- ' + spec.id for spec in gym.envs.registry.all() if spec.id.startswith('Roboschool')]))`.
 
 
+
 Installation
 ============
 
@@ -53,7 +60,7 @@ The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For 
 - Ubuntu:
 
     ```bash
-    apt install cmake ffmpeg pkg-config qtbase5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
+    apt install cmake ffmpeg pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
     ```
 
 - Linuxbrew
