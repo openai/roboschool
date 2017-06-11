@@ -3,8 +3,9 @@
 # 1) Build local Bullet physics library (instructions in README)
 # 2) ldd cpp_household.so
 # 3) In case of python 2.7 when using pip2 install without -e, the C++ module gets built in python2.7/site-packages,
-# but when you have roboschool directory in cwd, will use that and fail to reach site-packages. No such behavior
-# in Python3.
+# but when you have roboschool directory in cwd or in parent(s) of cwd, python2 will use that and fail to reach site-packages.
+# No such behavior in Python3. For example, no zoo scripts will work if you install without -e and run them from
+# source tree. If you copy zoo script elsewhere, it will work. (upgrade to Python3 if you can.)
 import sys, os
 sys.path.append(os.path.dirname(__file__))
 #from roboschool import cpp_household_d as cpp_household    # you can debug C++ code
