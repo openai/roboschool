@@ -34,12 +34,13 @@ class RoboschoolPegInsertion(RoboschoolMujocoXmlEnv):
         self.scene.global_step()
 
         state = self.calc_state()
-        done = False
+
         self.rewards = []
         ball = self.parts['ball'].pose().xyz()
         final_pose = np.array([0, 0.3, -0.47])
 
         self.rewards.append(-np.linalg.norm(ball-final_pose))
+        done = False if self.rewards[0] > 0.05 else True
         self.HUD(state, action, done)
         return state, sum(self.rewards), done, {}
 
