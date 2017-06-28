@@ -76,6 +76,11 @@ register(
     entry_point='roboschool:RoboschoolPong',
     max_episode_steps=1000
     )
+register(
+    id='RoboschoolPegInsertion-v0',
+    entry_point='roboschool:RoboschoolPegInsertion',
+    max_episode_steps=1000
+)
 
 from roboschool.gym_pendulums import RoboschoolInvertedPendulum
 from roboschool.gym_pendulums import RoboschoolInvertedPendulumSwingup
@@ -89,3 +94,4 @@ from roboschool.gym_forward_walkers import RoboschoolHumanoid
 from roboschool.gym_humanoid_flagrun import RoboschoolHumanoidFlagrun
 from roboschool.gym_humanoid_flagrun import RoboschoolHumanoidFlagrunHarder
 from roboschool.gym_pong import RoboschoolPong
+from roboschool.gym_peg_insertion import RoboschoolPegInsertion
