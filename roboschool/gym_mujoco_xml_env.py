@@ -78,6 +78,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
         if close:
             return
         if mode=="human":
+            self.scene.human_render_detected = True
             return self.scene.cpp_world.test_window()
         elif mode=="rgb_array":
             self.camera_adjust()

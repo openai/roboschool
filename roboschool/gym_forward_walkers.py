@@ -54,18 +54,18 @@ class RoboschoolForwardWalkersBase(RoboschoolMujocoXmlEnv, SharedMemoryClientEnv
             self.initial_z = z
         self.walk_target_theta = np.arctan2( self.walk_target_y - self.body_xyz[1], self.walk_target_x - self.body_xyz[0] )
         self.walk_target_dist  = np.linalg.norm( [self.walk_target_y - self.body_xyz[1], self.walk_target_x - self.body_xyz[0]] )
-        angle_to_target = self.walk_target_theta - yaw
+        self.angle_to_target = self.walk_target_theta - yaw
 
-        rot_speed = np.array(
+        self.rot_minus_yaw = np.array(
             [[np.cos(-yaw), -np.sin(-yaw), 0],
              [np.sin(-yaw),  np.cos(-yaw), 0],
              [           0,             0, 1]]
             )
-        vx, vy, vz = np.dot(rot_speed, self.robot_body.speed())  # rotate speed back to body point of view
+        vx, vy, vz = np.dot(self.rot_minus_yaw, self.robot_body.speed())  # rotate speed back to body point of view
 
         more = np.array([
             z-self.initial_z,
-            np.sin(angle_to_target), np.cos(angle_to_target),
+            np.sin(self.angle_to_target), np.cos(self.angle_to_target),
             0.3*vx, 0.3*vy, 0.3*vz,    # 0.3 is just scaling typical speed into -1..+1, no physical sense here
             r, p], dtype=np.float32)
         return np.clip( np.concatenate([more] + [j] + [self.feet_contact]), -5, +5)
@@ -79,7 +79,7 @@ class RoboschoolForwardWalkersBase(RoboschoolMujocoXmlEnv, SharedMemoryClientEnv
     stall_torque_cost    = -0.1    # cost for running electric current through a motor even at zero rotational speed, small
     foot_collision_cost  = -1.0    # touches another leg, or other objects, that cost makes robot avoid smashing feet into itself
     foot_ground_object_names = set(["floor"])  # to distinguish ground and other objects
-    joints_at_limit_cost = -0.1    # discourage stuck joints
+    joints_at_limit_cost = -0.2    # discourage stuck joints
 
     def _step(self, a):
         if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
@@ -174,8 +174,8 @@ class RoboschoolAnt(RoboschoolForwardWalkersBase):
 class RoboschoolHumanoid(RoboschoolForwardWalkersBase):
     foot_list = ["right_foot", "left_foot"]  # "left_hand", "right_hand"
 
-    def __init__(self):
-        RoboschoolForwardWalkersBase.__init__(self, 'humanoid_symmetric.xml', 'torso', action_dim=17, obs_dim=44, power=0.41)
+    def __init__(self, model_xml='humanoid_symmetric.xml'):
+        RoboschoolForwardWalkersBase.__init__(self, model_xml, 'torso', action_dim=17, obs_dim=44, power=0.41)
         # 17 joints, 4 of them important for walking (hip, knee), others may as well be turned off, 17/4 = 4.25
         self.electricity_cost  = 4.25*RoboschoolForwardWalkersBase.electricity_cost
         self.stall_torque_cost = 4.25*RoboschoolForwardWalkersBase.stall_torque_cost
@@ -196,31 +196,37 @@ class RoboschoolHumanoid(RoboschoolForwardWalkersBase):
         self.motor_names += ["left_shoulder1", "left_shoulder2", "left_elbow"]
         self.motor_power += [75, 75, 75]
         self.motors = [self.jdict[n] for n in self.motor_names]
-        if self.random_yaw:
-            cpose = cpp_household.Pose()
-            yaw = self.np_random.uniform(low=-3.14, high=3.14)
-            if self.random_lean and self.np_random.randint(2)==0:
-                cpose.set_xyz(0, 0, 1.4)
-                if self.np_random.randint(2)==0:
-                    pitch = np.pi/2
-                    cpose.set_xyz(0, 0, 0.45)
-                else:
-                    pitch = np.pi*3/2
-                    cpose.set_xyz(0, 0, 0.25)
-                roll = 0
-                cpose.set_rpy(roll, pitch, yaw)
-            else:
-                cpose.set_xyz(0, 0, 1.4)
-                cpose.set_rpy(0, 0, yaw)  # just face random direction, but stay straight otherwise
-            self.cpp_robot.set_pose_and_speed(cpose, 0,0,0)
-        self.initial_z = 0.8
+        self.set_initial_orientation(yaw_center=0, yaw_random_spread=np.pi)
 
     random_yaw = False
     random_lean = False
 
+    def set_initial_orientation(self, yaw_center, yaw_random_spread):
+        cpose = cpp_household.Pose()
+        if not self.random_yaw:
+            yaw = yaw_center
+        else:
+            yaw = yaw_center + self.np_random.uniform(low=-yaw_random_spread, high=yaw_random_spread)
+
+        if self.random_lean and self.np_random.randint(2)==0:
+            cpose.set_xyz(0, 0, 1.4)
+            if self.np_random.randint(2)==0:
+                pitch = np.pi/2
+                cpose.set_xyz(0, 0, 0.45)
+            else:
+                pitch = np.pi*3/2
+                cpose.set_xyz(0, 0, 0.25)
+            roll = 0
+            cpose.set_rpy(roll, pitch, yaw)
+        else:
+            cpose.set_xyz(0, 0, 1.4)
+            cpose.set_rpy(0, 0, yaw)  # just face random direction, but stay straight otherwise
+        self.cpp_robot.set_pose_and_speed(cpose, 0,0,0)
+        self.initial_z = 0.8
+
     def apply_action(self, a):
         assert( np.isfinite(a).all() )
-        for i, m, power in zip(range(17), self.motors, self.motor_power):
+        for i, m, power in zip(range(len(self.motors)), self.motors, self.motor_power):
             m.set_motor_torque( float(power*self.power*np.clip(a[i], -1, +1)) )
 
     def alive_bonus(self, z, pitch):

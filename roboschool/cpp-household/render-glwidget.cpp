@@ -261,7 +261,8 @@ void Camera::camera_render(const shared_ptr<SimpleRender::Context>& cx, bool ren
 
 void Viz::resizeGL(int w, int h)
 {
-	qreal rat = windowHandle()->devicePixelRatio();
+	QDesktopWidget* desk = QApplication::desktop();
+	qreal rat = desk->windowHandle()->devicePixelRatio();
 	win_w  = int(w*rat+0.5);
 	win_w +=  0xF;
 	win_w &= ~0xF;

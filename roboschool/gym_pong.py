@@ -68,8 +68,8 @@ class PongScene(Scene):
 
         if not self.multiplayer:
             # Trainer
-            self.p1x.set_servo_target( self.trainer_x, 1.0, 0.02, 0.02, 4 )
-            self.p1y.set_servo_target( self.trainer_y, 1.0, 0.02, 0.02, 4 )
+            self.p1x.set_servo_target( self.trainer_x, 0.02, 0.02, 4 )
+            self.p1y.set_servo_target( self.trainer_y, 0.02, 0.02, 4 )
 
         Scene.global_step(self)
 
