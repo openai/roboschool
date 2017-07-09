@@ -311,9 +311,9 @@ struct World {
 		return Thingy(wref->load_thingy(mesh_or_urdf_filename, pose.convert_to_bt_transform(), scale*SCALE, mass, color, decoration_only), wref);
 	}
 
-	Robot load_urdf(const std::string& fn, const Pose& pose, bool fixed_base)
+	Robot load_urdf(const std::string& fn, const Pose& pose, bool fixed_base, bool self_collision)
 	{
-		Robot r(wref->load_urdf(fn, pose.convert_to_bt_transform(), fixed_base), wref);
+		Robot r(wref->load_urdf(fn, pose.convert_to_bt_transform(), fixed_base, self_collision), wref);
 		return r;
 	}
 

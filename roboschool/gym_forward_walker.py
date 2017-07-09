@@ -6,9 +6,8 @@ import gym, gym.spaces, gym.utils, gym.utils.seeding
 import numpy as np
 import os, sys
 
-class RoboschoolForwardWalkersBase(RoboschoolMujocoXmlEnv, SharedMemoryClientEnv):
-    def __init__(self, fn, robot_name, action_dim, obs_dim, power):
-        RoboschoolMujocoXmlEnv.__init__(self, fn, robot_name, action_dim, obs_dim)
+class RoboschoolForwardWalker(SharedMemoryClientEnv):
+    def __init__(self, power):
         self.power = power
         self.camera_x = 0
         self.walk_target_x = 1e3  # kilometer away
@@ -128,109 +127,4 @@ class RoboschoolForwardWalkersBase(RoboschoolMujocoXmlEnv, SharedMemoryClientEnv
         x, y, z = self.body_xyz
         self.camera_x = 0.98*self.camera_x + (1-0.98)*x
         self.camera.move_and_look_at(self.camera_x, y-2.0, 1.4, x, y, 1.0)
-
-class RoboschoolHopper(RoboschoolForwardWalkersBase):
-    foot_list = ["foot"]
-    def __init__(self):
-        RoboschoolForwardWalkersBase.__init__(self, "hopper.xml", "torso", action_dim=3, obs_dim=15, power=0.75)
-    def alive_bonus(self, z, pitch):
-        return +1 if z > 0.8 and abs(pitch) < 1.0 else -1
-
-class RoboschoolWalker2d(RoboschoolForwardWalkersBase):
-    foot_list = ["foot", "foot_left"]
-    def __init__(self):
-        RoboschoolForwardWalkersBase.__init__(self, "walker2d.xml", "torso", action_dim=6, obs_dim=22, power=0.40)
-    def alive_bonus(self, z, pitch):
-        return +1 if z > 0.8 and abs(pitch) < 1.0 else -1
-    def robot_specific_reset(self):
-        RoboschoolForwardWalkersBase.robot_specific_reset(self)
-        for n in ["foot_joint", "foot_left_joint"]:
-            self.jdict[n].power_coef = 30.0
-
-class RoboschoolHalfCheetah(RoboschoolForwardWalkersBase):
-    foot_list = ["ffoot", "fshin", "fthigh",  "bfoot", "bshin", "bthigh"]  # track these contacts with ground
-    def __init__(self):
-        RoboschoolForwardWalkersBase.__init__(self, "half_cheetah.xml", "torso", action_dim=6, obs_dim=26, power=0.90)
-    def alive_bonus(self, z, pitch):
-        # Use contact other than feet to terminate episode: due to a lot of strange walks using knees
-        return +1 if np.abs(pitch) < 1.0 and not self.feet_contact[1] and not self.feet_contact[2] and not self.feet_contact[4] and not self.feet_contact[5] else -1
-    def robot_specific_reset(self):
-        RoboschoolForwardWalkersBase.robot_specific_reset(self)
-        self.jdict["bthigh"].power_coef = 120.0
-        self.jdict["bshin"].power_coef  = 90.0
-        self.jdict["bfoot"].power_coef  = 60.0
-        self.jdict["fthigh"].power_coef = 140.0
-        self.jdict["fshin"].power_coef  = 60.0
-        self.jdict["ffoot"].power_coef  = 30.0
-
-class RoboschoolAnt(RoboschoolForwardWalkersBase):
-    foot_list = ['front_left_foot', 'front_right_foot', 'left_back_foot', 'right_back_foot']
-    def __init__(self):
-        RoboschoolForwardWalkersBase.__init__(self, "ant.xml", "torso", action_dim=8, obs_dim=28, power=2.5)
-    def alive_bonus(self, z, pitch):
-        return +1 if z > 0.26 else -1  # 0.25 is central sphere rad, die if it scrapes the ground
-
-
-## 3d Humanoid ##
-
-class RoboschoolHumanoid(RoboschoolForwardWalkersBase):
-    foot_list = ["right_foot", "left_foot"]  # "left_hand", "right_hand"
-
-    def __init__(self, model_xml='humanoid_symmetric.xml'):
-        RoboschoolForwardWalkersBase.__init__(self, model_xml, 'torso', action_dim=17, obs_dim=44, power=0.41)
-        # 17 joints, 4 of them important for walking (hip, knee), others may as well be turned off, 17/4 = 4.25
-        self.electricity_cost  = 4.25*RoboschoolForwardWalkersBase.electricity_cost
-        self.stall_torque_cost = 4.25*RoboschoolForwardWalkersBase.stall_torque_cost
-
-    def create_single_player_scene(self):
-        return SinglePlayerStadiumScene(gravity=9.8, timestep=0.0165/4, frame_skip=4)
-
-    def robot_specific_reset(self):
-        RoboschoolForwardWalkersBase.robot_specific_reset(self)
-        self.motor_names  = ["abdomen_z", "abdomen_y", "abdomen_x"]
-        self.motor_power  = [100, 100, 100]
-        self.motor_names += ["right_hip_x", "right_hip_z", "right_hip_y", "right_knee"]
-        self.motor_power += [100, 100, 300, 200]
-        self.motor_names += ["left_hip_x", "left_hip_z", "left_hip_y", "left_knee"]
-        self.motor_power += [100, 100, 300, 200]
-        self.motor_names += ["right_shoulder1", "right_shoulder2", "right_elbow"]
-        self.motor_power += [75, 75, 75]
-        self.motor_names += ["left_shoulder1", "left_shoulder2", "left_elbow"]
-        self.motor_power += [75, 75, 75]
-        self.motors = [self.jdict[n] for n in self.motor_names]
-        self.set_initial_orientation(yaw_center=0, yaw_random_spread=np.pi)
-
-    random_yaw = False
-    random_lean = False
-
-    def set_initial_orientation(self, yaw_center, yaw_random_spread):
-        cpose = cpp_household.Pose()
-        if not self.random_yaw:
-            yaw = yaw_center
-        else:
-            yaw = yaw_center + self.np_random.uniform(low=-yaw_random_spread, high=yaw_random_spread)
-
-        if self.random_lean and self.np_random.randint(2)==0:
-            cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 1.4)
-            if self.np_random.randint(2)==0:
-                pitch = np.pi/2
-                cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 0.45)
-            else:
-                pitch = np.pi*3/2
-                cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 0.25)
-            roll = 0
-            cpose.set_rpy(roll, pitch, yaw)
-        else:
-            cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 1.4)
-            cpose.set_rpy(0, 0, yaw)  # just face random direction, but stay straight otherwise
-        self.cpp_robot.set_pose_and_speed(cpose, 0,0,0)
-        self.initial_z = 0.8
-
-    def apply_action(self, a):
-        assert( np.isfinite(a).all() )
-        for i, m, power in zip(range(len(self.motors)), self.motors, self.motor_power):
-            m.set_motor_torque( float(power*self.power*np.clip(a[i], -1, +1)) )
-
-    def alive_bonus(self, z, pitch):
-        return +2 if z > 0.78 else -1   # 2 here because 17 joints produce a lot of electricity cost just from policy noise, living must be better than dying
 

@@ -8,6 +8,7 @@
 #include <QtWidgets/QToolButton>
 #include <QtCore/QDir>
 #include <QtCore/QDateTime>
+#include <QtCore/QElapsedTimer>
 
 #include <bullet/PhysicsClientC_API.h>
 
@@ -54,7 +55,11 @@ void load_model_or_robot()
 
 		QString test = QString::fromLocal8Bit(the_filename.c_str());
 		if (test.endsWith(".urdf")) {
-			the_robot = world->load_urdf(the_filename, btTransform(quat, btVector3(0,0,0)), false);
+			QElapsedTimer timer;
+			timer.start();
+			the_robot = world->load_urdf(the_filename, btTransform(quat, btVector3(0,0,0)), false, false);
+			double load_ms = timer.nsecsElapsed()/1000000.0;
+			fprintf(stderr, "%s loaded in %0.2lfms\n", the_filename.c_str(), load_ms);
 
 		} else if (test.endsWith(".xml") || test.endsWith(".sdl")) {
 			the_robot.reset();
@@ -147,9 +152,9 @@ public:
 			if (!j) continue;
 			QDoubleSpinBox* spin = new QDoubleSpinBox();
 			spin->setPrefix(QString("Joint %1 = ") . arg(c));
-			spin->setRange(-10, 10);
+			spin->setRange(-1, 1);
 			spin->setValue(j->joint_current_position);
-			spin->setSingleStep(0.02);
+			spin->setSingleStep(0.1);
 			joint_spins[c] = spin;
 			sidegrid->addWidget(spin, y, 0);
 			QToolButton* butt_sv = 0;
@@ -164,7 +169,7 @@ public:
 			} else {
 				joint_control_mode[c] = 1;
 			}
-			joint_control_mode[c] = 2;
+			//joint_control_mode[c] = 2;
 			QToolButton* butt_ve = new QToolButton();
 			QToolButton* butt_tq = new QToolButton();
 			butt_ve->setObjectName(QString("%1") . arg(c));
@@ -349,7 +354,7 @@ int main(int argc, char *argv[])
 
 	QEventLoop loop;
 	while (1) {
-		world->bullet_step(4);
+		world->bullet_step(1); // Slowmo, 4 for normal.
 		window.timeout();
 		loop.processEvents(QEventLoop::AllEvents);
 		if (!window.isVisible()) break;

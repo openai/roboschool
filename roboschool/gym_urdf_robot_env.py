@@ -1,12 +1,11 @@
 import gym, gym.spaces, gym.utils, gym.utils.seeding
+from roboschool.scene_abstract import cpp_household
 import numpy as np
 import os
 
-class RoboschoolMujocoXmlEnv(gym.Env):
+class RoboschoolUrdfEnv(gym.Env):
     """
-    Base class for MuJoCo .xml actors in a Scene.
-    These environments create single-player scenes and behave like normal Gym environments, if
-    you don't use multiplayer.
+    Base class for URDF robot actor in a Scene.
     """
 
     metadata = {
@@ -17,7 +16,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
     VIDEO_W = 600  # for video showing the robot, not for camera ON the robot
     VIDEO_H = 400
 
-    def __init__(self, model_xml, robot_name, action_dim, obs_dim):
+    def __init__(self, model_urdf, robot_name, action_dim, obs_dim, fixed_base, self_collision):
         self.scene = None
 
         high = np.ones([action_dim])
@@ -26,8 +25,12 @@ class RoboschoolMujocoXmlEnv(gym.Env):
         self.observation_space = gym.spaces.Box(-high, high)
         self._seed()
 
-        self.model_xml = model_xml
+        self.model_urdf = model_urdf
+        self.fixed_base = fixed_base
+        self.self_collision = self_collision
         self.robot_name = robot_name
+
+        self.foot_list = []
 
     def _seed(self, seed=None):
         self.np_random, seed = gym.utils.seeding.np_random(seed)
@@ -38,7 +41,18 @@ class RoboschoolMujocoXmlEnv(gym.Env):
             self.scene = self.create_single_player_scene()
         if not self.scene.multiplayer:
             self.scene.episode_restart()
-        self.mjcf = self.scene.cpp_world.load_mjcf(os.path.join(os.path.dirname(__file__), "mujoco_assets", self.model_xml))
+
+        pose = cpp_household.Pose()
+        #import time
+        #t1 = time.time()
+        self.urdf = self.scene.cpp_world.load_urdf(
+            os.path.join(os.path.dirname(__file__), "models_robot", self.model_urdf),
+            pose,
+            self.fixed_base,
+            self.self_collision)
+        #t2 = time.time()
+        #print("URDF load %0.2fms" % ((t2-t1)*1000))
+
         self.ordered_joints = []
         self.jdict = {}
         self.parts = {}
@@ -46,29 +60,27 @@ class RoboschoolMujocoXmlEnv(gym.Env):
         self.done = 0
         self.reward = 0
         dump = 0
-        for r in self.mjcf:
-            if dump: print("ROBOT '%s'" % r.root_part.name)
-            if r.root_part.name==self.robot_name:
-                self.cpp_robot = r
-                self.robot_body = r.root_part
-            for part in r.parts:
-                if dump: print("\tPART '%s'" % part.name)
-                self.parts[part.name] = part
-                if part.name==self.robot_name:
-                    self.cpp_robot = r
-                    self.robot_body = part
-            for j in r.joints:
-                if dump: print("\tALL JOINTS '%s' limits = %+0.2f..%+0.2f effort=%0.3f speed=%0.3f" % ((j.name,) + j.limits()) )
-                if j.name[:6]=="ignore":
-                    j.set_motor_torque(0)
-                    continue
-                j.power_coef = 100.0
-                self.ordered_joints.append(j)
-                self.jdict[j.name] = j
-        assert(self.cpp_robot)
+        r = self.urdf
+        self.cpp_robot = r
+        if dump: print("ROBOT '%s'" % r.root_part.name)
+        if r.root_part.name==self.robot_name:
+            self.robot_body = r.root_part
+        for part in r.parts:
+            if dump: print("\tPART '%s'" % part.name)
+            self.parts[part.name] = part
+            if part.name==self.robot_name:
+                self.robot_body = part
+        for j in r.joints:
+            if dump: print("\tALL JOINTS '%s' limits = %+0.2f..%+0.2f effort=%0.3f speed=%0.3f" % ((j.name,) + j.limits()) )
+            if j.name[:6]=="ignore":
+                j.set_motor_torque(0)
+                continue
+            j.power_coef, j.max_velocity = j.limits()[2:4]
+            self.ordered_joints.append(j)
+            self.jdict[j.name] = j
+        #print("ordered_joints", len(self.ordered_joints))
         self.robot_specific_reset()
-        for r in self.mjcf:
-            r.query_position()
+        self.cpp_robot.query_position()
         s = self.calc_state()    # optimization: calc_state() can calculate something in self.* for calc_potential() to use
         self.potential = self.calc_potential()
         self.camera = self.scene.cpp_world.new_camera_free_float(self.VIDEO_W, self.VIDEO_H, "video_camera")

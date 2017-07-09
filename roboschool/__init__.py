@@ -71,6 +71,18 @@ register(
     max_episode_steps=1000
     )
 
+
+# Atlas
+
+register(
+    id='RoboschoolAtlasForwardWalk-v0',
+    entry_point='roboschool:RoboschoolAtlasForwardWalk',
+    max_episode_steps=1000
+    )
+
+
+# Multiplayer
+
 register(
     id='RoboschoolPong-v0',
     entry_point='roboschool:RoboschoolPong',
@@ -81,11 +93,12 @@ from roboschool.gym_pendulums import RoboschoolInvertedPendulum
 from roboschool.gym_pendulums import RoboschoolInvertedPendulumSwingup
 from roboschool.gym_pendulums import RoboschoolInvertedDoublePendulum
 from roboschool.gym_reacher import RoboschoolReacher
-from roboschool.gym_forward_walkers import RoboschoolHopper
-from roboschool.gym_forward_walkers import RoboschoolWalker2d
-from roboschool.gym_forward_walkers import RoboschoolHalfCheetah
-from roboschool.gym_forward_walkers import RoboschoolAnt
-from roboschool.gym_forward_walkers import RoboschoolHumanoid
+from roboschool.gym_mujoco_walkers import RoboschoolHopper
+from roboschool.gym_mujoco_walkers import RoboschoolWalker2d
+from roboschool.gym_mujoco_walkers import RoboschoolHalfCheetah
+from roboschool.gym_mujoco_walkers import RoboschoolAnt
+from roboschool.gym_mujoco_walkers import RoboschoolHumanoid
 from roboschool.gym_humanoid_flagrun import RoboschoolHumanoidFlagrun
 from roboschool.gym_humanoid_flagrun import RoboschoolHumanoidFlagrunHarder
+from roboschool.gym_atlas import RoboschoolAtlasForwardWalk
 from roboschool.gym_pong import RoboschoolPong

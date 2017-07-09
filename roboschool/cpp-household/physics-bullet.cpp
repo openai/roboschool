@@ -67,7 +67,7 @@ void World::clean_everything()
 	// klass_cache -- leave it alone, it contains visual shapes useful for quick restart, klass_cache_clear() if you need reload
 }
 
-shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base)
+shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base, bool self_collision)
 {
 	shared_ptr<Robot> robot(new Robot);
 	robot->original_urdf_name = fn;
@@ -76,7 +76,8 @@ shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr,
 	b3LoadUrdfCommandSetStartPosition(command, tr.getOrigin()[0], tr.getOrigin()[1], tr.getOrigin()[2]);
 	b3LoadUrdfCommandSetStartOrientation(command, tr.getRotation()[0], tr.getRotation()[1], tr.getRotation()[2], tr.getRotation()[3]);
 	b3LoadUrdfCommandSetUseFixedBase(command, fixed_base);
-	b3LoadUrdfCommandSetFlags(command, URDF_USE_SELF_COLLISION|URDF_USE_SELF_COLLISION_EXCLUDE_ALL_PARENTS);
+	if (self_collision)
+		b3LoadUrdfCommandSetFlags(command, URDF_USE_SELF_COLLISION|URDF_USE_SELF_COLLISION_EXCLUDE_ALL_PARENTS);
 	b3SharedMemoryStatusHandle statusHandle = b3SubmitClientCommandAndWaitStatus(client, command);
 	statusType = b3GetStatusType(statusHandle);
 	if (statusType != CMD_URDF_LOADING_COMPLETED) {
@@ -152,7 +153,9 @@ void load_shape_into_class(
 
 	shared_ptr<Shape> primitive(new Shape);
 	if (geom==5) { // URDF_GEOM_MESH
-		load_model(save_here, fn, 1, viz_frame);
+		save_here->load_later_on = true;
+		save_here->load_later_fn = fn;
+		save_here->load_later_transform = viz_frame;
 		primitive.reset();
 	} else if (geom==2) { // URDF_GEOM_SPHERE
 		primitive->primitive_type = Shape::SPHERE;

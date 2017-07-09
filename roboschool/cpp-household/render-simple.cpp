@@ -166,10 +166,16 @@ void Context::load_missing_textures()
 	while (1) {
 		bool did_anything = false;
 		for (auto i=world->klass_cache.begin(); i!=world->klass_cache.end(); ++i) {
-			if (i->second.expired()) {
+			shared_ptr<ThingyClass> klass = i->second.lock();
+			if (!klass) {
 				world->klass_cache.erase(i);
 				did_anything = true;
 				break;
+			}
+			shared_ptr<ShapeDetailLevels> v = klass->shapedet_visual;
+			if (v->load_later_on) {
+				v->load_later_on = false;
+				load_model(v, v->load_later_fn, 1, v->load_later_transform);
 			}
 		}
 		if (!did_anything) break;
@@ -322,6 +328,7 @@ VAO::~VAO()  { glDeleteVertexArrays(1, &handle); }
 void ContextViewport::_render_single_object(const shared_ptr<Household::ShapeDetailLevels>& m, uint32_t options, int detail, const QMatrix4x4& at_pos)
 {
 	const std::vector<shared_ptr<Shape>>& shapes = m->detail_levels[detail];
+
 	int cnt = shapes.size();
 	for (int c=0; c<cnt; c++) {
 		shared_ptr<Shape> t = shapes[c];

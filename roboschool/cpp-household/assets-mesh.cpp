@@ -78,6 +78,7 @@ bool load_collision_shape_from_OFF_files(const shared_ptr<ShapeDetailLevels>& re
 
 void load_model(const shared_ptr<ShapeDetailLevels>& result, const std::string& fn, btScalar scale, const btTransform& transform)
 {
+	//fprintf(stderr, "Loading model '%s' (takes some time, should not happen when learning without rendering)\n", fn.c_str());
 	Assimp::Importer importer1;
 	std::string ext = fn.substr(fn.size()-3,  3);
 	aiMatrix4x4 root_trans;

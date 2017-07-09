@@ -1,4 +1,4 @@
-from roboschool.gym_forward_walkers import RoboschoolHumanoid
+from roboschool.gym_mujoco_walkers import RoboschoolHumanoid
 from roboschool.scene_abstract import cpp_household
 import numpy as np
 import os
@@ -50,7 +50,7 @@ class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
         cpose = cpp_household.Pose()
         cpose.set_rpy(0, 0, 0)
         cpose.set_xyz(-1.5, 0, 0.05)
-        self.aggressive_cube = self.scene.cpp_world.load_urdf(os.path.join(os.path.dirname(__file__), "models_household/cube.urdf"), cpose, False)
+        self.aggressive_cube = self.scene.cpp_world.load_urdf(os.path.join(os.path.dirname(__file__), "models_household/cube.urdf"), cpose, False, True)
         self.on_ground_frame_counter = 0
         self.crawl_start_potential = None
         self.crawl_ignored_potential = 0.0

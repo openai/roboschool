@@ -170,7 +170,7 @@ struct World: boost::enable_shared_from_this<World> {
 	double performance_bullet_ms;
 
 	shared_ptr<Thingy> load_thingy(const std::string& the_filename, const btTransform& tr, float scale, float mass, uint32_t color, bool decoration_only);
-	shared_ptr<Robot> load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base);
+	shared_ptr<Robot> load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base, bool self_collision);
 	std::list<shared_ptr<Robot>> load_sdf_mjcf(const std::string& fn, bool mjcf);
 	void load_robot_shapes(const shared_ptr<Robot>& robot);
 	void load_robot_joints(const shared_ptr<Robot>& robot, const std::string& origin_fn);
