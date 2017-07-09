@@ -13,6 +13,7 @@ class RoboschoolForwardWalkersBase(RoboschoolMujocoXmlEnv, SharedMemoryClientEnv
         self.camera_x = 0
         self.walk_target_x = 1e3  # kilometer away
         self.walk_target_y = 0
+        self.start_pos_x, self.start_pos_y, self.start_pos_z = 0, 0, 0
 
     def create_single_player_scene(self):
         return SinglePlayerStadiumScene(gravity=9.8, timestep=0.0165/4, frame_skip=4)
@@ -31,6 +32,7 @@ class RoboschoolForwardWalkersBase(RoboschoolMujocoXmlEnv, SharedMemoryClientEnv
         pose = self.cpp_robot.root_part.pose()
         pose.move_xyz(init_x, init_y, init_z)  # Works because robot loads around (0,0,0), and some robots have z != 0 that is left intact
         self.cpp_robot.set_pose(pose)
+        self.start_pos_x, self.start_pos_y, self.start_pos_z = init_x, init_y, init_z
 
     def apply_action(self, a):
         assert( np.isfinite(a).all() )
@@ -209,17 +211,17 @@ class RoboschoolHumanoid(RoboschoolForwardWalkersBase):
             yaw = yaw_center + self.np_random.uniform(low=-yaw_random_spread, high=yaw_random_spread)
 
         if self.random_lean and self.np_random.randint(2)==0:
-            cpose.set_xyz(0, 0, 1.4)
+            cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 1.4)
             if self.np_random.randint(2)==0:
                 pitch = np.pi/2
-                cpose.set_xyz(0, 0, 0.45)
+                cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 0.45)
             else:
                 pitch = np.pi*3/2
-                cpose.set_xyz(0, 0, 0.25)
+                cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 0.25)
             roll = 0
             cpose.set_rpy(roll, pitch, yaw)
         else:
-            cpose.set_xyz(0, 0, 1.4)
+            cpose.set_xyz(self.start_pos_x, self.start_pos_y, self.start_pos_z + 1.4)
             cpose.set_rpy(0, 0, yaw)  # just face random direction, but stay straight otherwise
         self.cpp_robot.set_pose_and_speed(cpose, 0,0,0)
         self.initial_z = 0.8
