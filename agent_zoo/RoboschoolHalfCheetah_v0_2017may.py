@@ -19,7 +19,7 @@ class SmallReactivePolicy:
         return x
 
 def demo_run():
-    env = gym.make("RoboschoolHalfCheetah-v0")
+    env = gym.make("RoboschoolHalfCheetah-v1")
     pi = SmallReactivePolicy(env.observation_space, env.action_space)
 
     while 1:

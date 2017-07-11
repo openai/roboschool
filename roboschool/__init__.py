@@ -2,71 +2,71 @@ from gym.envs.registration import register
 #from gym.scoreboard.registration import add_task, add_group
 
 register(
-    id='RoboschoolInvertedPendulum-v0',
+    id='RoboschoolInvertedPendulum-v1',
     entry_point='roboschool:RoboschoolInvertedPendulum',
     max_episode_steps=1000,
     reward_threshold=950.0,
     )
 register(
-    id='RoboschoolInvertedPendulumSwingup-v0',
+    id='RoboschoolInvertedPendulumSwingup-v1',
     entry_point='roboschool:RoboschoolInvertedPendulumSwingup',
     max_episode_steps=1000,
     reward_threshold=800.0,
     )
 register(
-    id='RoboschoolInvertedDoublePendulum-v0',
+    id='RoboschoolInvertedDoublePendulum-v1',
     entry_point='roboschool:RoboschoolInvertedDoublePendulum',
     max_episode_steps=1000,
     reward_threshold=9100.0,
     )
 
 register(
-    id='RoboschoolReacher-v0',
+    id='RoboschoolReacher-v1',
     entry_point='roboschool:RoboschoolReacher',
     max_episode_steps=150,
     reward_threshold=18.0,
     )
 
 register(
-    id='RoboschoolHopper-v0',
+    id='RoboschoolHopper-v1',
     entry_point='roboschool:RoboschoolHopper',
     max_episode_steps=1000,
     reward_threshold=2500.0
     )
 register(
-    id='RoboschoolWalker2d-v0',
+    id='RoboschoolWalker2d-v1',
     entry_point='roboschool:RoboschoolWalker2d',
     max_episode_steps=1000,
     reward_threshold=2500.0
     )
 register(
-    id='RoboschoolHalfCheetah-v0',
+    id='RoboschoolHalfCheetah-v1',
     entry_point='roboschool:RoboschoolHalfCheetah',
     max_episode_steps=1000,
     reward_threshold=3000.0
     )
 
 register(
-    id='RoboschoolAnt-v0',
+    id='RoboschoolAnt-v1',
     entry_point='roboschool:RoboschoolAnt',
     max_episode_steps=1000,
     reward_threshold=2500.0
     )
 
 register(
-    id='RoboschoolHumanoid-v0',
+    id='RoboschoolHumanoid-v1',
     entry_point='roboschool:RoboschoolHumanoid',
     max_episode_steps=1000,
     reward_threshold=3500.0
     )
 register(
-    id='RoboschoolHumanoidFlagrun-v0',
+    id='RoboschoolHumanoidFlagrun-v1',
     entry_point='roboschool:RoboschoolHumanoidFlagrun',
     max_episode_steps=1000,
     reward_threshold=2000.0
     )
 register(
-    id='RoboschoolHumanoidFlagrunHarder-v0',
+    id='RoboschoolHumanoidFlagrunHarder-v1',
     entry_point='roboschool:RoboschoolHumanoidFlagrunHarder',
     max_episode_steps=1000
     )
@@ -75,7 +75,7 @@ register(
 # Atlas
 
 register(
-    id='RoboschoolAtlasForwardWalk-v0',
+    id='RoboschoolAtlasForwardWalk-v1',
     entry_point='roboschool:RoboschoolAtlasForwardWalk',
     max_episode_steps=1000
     )
@@ -84,7 +84,7 @@ register(
 # Multiplayer
 
 register(
-    id='RoboschoolPong-v0',
+    id='RoboschoolPong-v1',
     entry_point='roboschool:RoboschoolPong',
     max_episode_steps=1000
     )
