@@ -13,8 +13,7 @@ from RoboschoolHopper_v1_2017jul          import ZooPolicyTensorflow as PolHoppe
 from RoboschoolHalfCheetah_v1_2017jul     import ZooPolicyTensorflow as PolHalfCheetah
 from RoboschoolHumanoid_v1_2017jul        import ZooPolicyTensorflow as PolHumanoid1
 from RoboschoolHumanoidFlagrun_v1_2017jul import ZooPolicyTensorflow as PolHumanoid2
-# HumanoidFlagrun is compatible with normal Humanoid in observations and actions. The walk is not as good, and
-# ability to turn is unnecessary in this race, but it can take part anyway.
+# HumanoidFlagrun is compatible with normal Humanoid in observations and actions.
 
 possible_participants = [
     ("RoboschoolHopper-v1",   PolHopper),

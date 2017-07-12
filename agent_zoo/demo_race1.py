@@ -20,6 +20,7 @@ else:
         intra_op_parallelism_threads=1,
         device_count = { "GPU": 0 } )
     sess = tf.InteractiveSession(config=config)
+    # If this gives you an error, try CUDA_VISIBLE_DEVICES=  (nothing visible)
 
     from RoboschoolWalker2d_v1_2017jul        import ZooPolicyTensorflow as PolWalker
     from RoboschoolHopper_v1_2017jul          import ZooPolicyTensorflow as PolHopper
