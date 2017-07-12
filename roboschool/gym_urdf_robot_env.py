@@ -30,8 +30,6 @@ class RoboschoolUrdfEnv(gym.Env):
         self.self_collision = self_collision
         self.robot_name = robot_name
 
-        self.foot_list = []
-
     def _seed(self, seed=None):
         self.np_random, seed = gym.utils.seeding.np_random(seed)
         return [seed]

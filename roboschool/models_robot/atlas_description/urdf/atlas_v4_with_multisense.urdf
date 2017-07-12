@@ -403,12 +403,13 @@
         <mesh filename="package://atlas_description/meshes_unplugged/ltorso.dae" scale="1 1 1"/>
       </geometry>
     </visual>
-    <collision>
+    <!-- this produces unwanted self-collision -->
+    <!--collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <sphere radius="0.11"/>
       </geometry>
-    </collision>
+    </collision-->
   </link>
   <link name="mtorso">
     <inertial>
