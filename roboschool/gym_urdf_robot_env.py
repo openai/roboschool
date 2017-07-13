@@ -102,9 +102,6 @@ class RoboschoolUrdfEnv(gym.Env):
         return 0
 
     def HUD(self, s, a, done):
-        self.frame  += 1
-        self.done   += done   # 2 == 1+True
-        self.reward += sum(self.rewards)
         active = self.scene.actor_is_active(self)
         if active and self.done<=2:
             self.scene.cpp_world.test_window_history_advance()

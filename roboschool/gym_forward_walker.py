@@ -120,8 +120,16 @@ class RoboschoolForwardWalker(SharedMemoryClientEnv):
             feet_collision_cost
             ]
 
+        self.frame  += 1
+        if (done and not self.done) or self.frame==self.spec.timestep_limit:
+            self.episode_over(self.frame)
+        self.done   += done   # 2 == 1+True
+        self.reward += sum(self.rewards)
         self.HUD(state, a, done)
         return state, sum(self.rewards), bool(done), {}
+
+    def episode_over(self, frames):
+        pass
 
     def camera_adjust(self):
         x, y, z = self.body_xyz

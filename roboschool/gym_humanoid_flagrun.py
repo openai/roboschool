@@ -4,16 +4,14 @@ import numpy as np
 import os
 
 class RoboschoolHumanoidFlagrun(RoboschoolHumanoid):
-    random_yaw = False
-
     def create_single_player_scene(self):
         s = RoboschoolHumanoid.create_single_player_scene(self)
         s.zero_at_running_strip_start_line = False
         self.electricity_cost /= 2   # For more athletic running instead of walking
         return s
 
-    def robot_specific_reset(self):
-        RoboschoolHumanoid.robot_specific_reset(self)
+    def humanoid_task(self):
+        self.set_initial_orientation(self.TASK_WALK, yaw_center=0, yaw_random_spread=np.pi/16)
         self.flag_reposition(first=True)
 
     def flag_reposition(self, first):
@@ -41,9 +39,36 @@ class RoboschoolHumanoidFlagrun(RoboschoolHumanoid):
             self.potential = self.calc_potential()       # avoid reward jump
         return state
 
+class RepeatUnderlearnedTasks:
+    "Using this class you can feed agent more with tasks it does NOT tend to survive up to timeout"
+    def __init__(self, tasks):
+        from collections import deque
+        self.tasks = [deque(maxlen=10) for i in range(tasks)]
+
+    def task_completed(self, task_n, completed_or_not):
+        self.tasks[task_n].append(completed_or_not)
+
+    def decide_best_task(self):
+        problematic = [ 1 - np.count_nonzero(deq)/(1.0+len(deq)) for deq in self.tasks ]  # failure rate
+        #print("RepeatUnderlearnedTasks: problematic = %s" % str(problematic))
+        i = np.random.choice(range(len(self.tasks)), p=np.array(problematic)/sum(problematic))
+        #print("RepeatUnderlearnedTasks: => choice = %i" % i)
+        return i
+
+if __name__=="__main__":
+    r = RepeatUnderlearnedTasks(3)
+    chosen = [0,0,0]
+    for iter in range(300):
+        print(iter)
+        i = r.decide_best_task()
+        chosen[i] += 1
+        r.task_completed(i, i==(iter//100))
+    print(chosen)
+
 class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
-    random_yaw = True
-    random_lean = True  # can fall on start
+    def __init__(self):
+        RoboschoolHumanoidFlagrun.__init__(self)
+        self.underlearned = RepeatUnderlearnedTasks(self.TASKS)
 
     def robot_specific_reset(self):
         RoboschoolHumanoidFlagrun.robot_specific_reset(self)
@@ -54,9 +79,16 @@ class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
         self.on_ground_frame_counter = 0
         self.crawl_start_potential = None
         self.crawl_ignored_potential = 0.0
-        self.initial_z = 0.8
         self.walking_normally = 0
         self.pelvis = self.parts["pelvis"]
+
+    def humanoid_task(self):
+        t = self.underlearned.decide_best_task()
+        self.set_initial_orientation(t, yaw_center=0, yaw_random_spread=np.pi/16)
+        self.flag_reposition(first=True)
+
+    def episode_over(self, frames):
+        self.underlearned.task_completed(self.task, frames==self.spec.timestep_limit)
 
     def alive_bonus(self, z, pitch):
         if self.frame%30==0 and self.frame>100 and self.on_ground_frame_counter==0:
@@ -77,6 +109,8 @@ class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
             attack_speed_vector += self.np_random.uniform(low=-1.0, high=+1.0, size=(3,))
             self.aggressive_cube.set_pose_and_speed(cpose, *attack_speed_vector)
         if z < 0.8:
+            if self.task==self.TASK_WALK:
+                self.on_ground_frame_counter = 10000  # This ends episode immediately
             self.on_ground_frame_counter += 1
             self.electricity_cost = RoboschoolHumanoid.electricity_cost / 5.0   # Don't care about electricity, just stand up!
         elif self.on_ground_frame_counter > 0:
@@ -111,14 +145,6 @@ class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
             if self.crawl_start_potential is None:
                 self.crawl_start_potential = flag_running_progress - self.crawl_ignored_potential
                 #print("CRAWL START %+0.1f %+0.1f" % (self.crawl_start_potential, flag_running_progress))
-                if False: # self.on_ground_frame_counter==1:
-                    # Idea there is to punish robot that falls on the ground to turn.
-                    # This helps a bit, but makes robot think it's better to always stay below
-                    # qualifying as walking normally (for some seeds). Try this for yourself, interesting.
-                    if self.walking_normally>150:
-                        #print("NO NO NO YOU WAS RUNNING FINE, DON'T FALL")
-                        self.crawl_start_potential -= 100.0
-                    self.walking_normally = 0
             self.crawl_ignored_potential = flag_running_progress - self.crawl_start_potential
             flag_running_progress  = self.crawl_start_potential
         else:
