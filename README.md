@@ -1,3 +1,17 @@
+
+NEWS
+====
+
+**2017 July 17, Version 1.1**
+
+* All envs version bumped to “-v1", due to stronger stuck joint punishment, that improves odds of getting a good policy.
+* Flagrun-v1 is much more likely to develop a symmetric gait,
+* FlagrunHarder-v1 has new "repeat-underlearned" learning schedule, that allows it to be trained to stand up, walk and turn without falling. 
+* Atlas robot model, modified (empty links removed, overly powerful feet weakaned).
+* All -v1 envs are shipped with better zoo policies, compared to May versions.
+* Keyboard-controlled humanoid included.
+
+
 Roboschool
 ==========
 
@@ -20,6 +34,7 @@ Some wiki pages:
 [Contributing New Environments](https://github.com/openai/roboschool/wiki/Contributing-New-Environments)
 
 [Help Wanted](https://github.com/openai/roboschool/wiki/Help-Wanted)
+
 
 
 Environments List
