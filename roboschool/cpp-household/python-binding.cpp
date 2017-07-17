@@ -423,7 +423,7 @@ struct World {
 		window->wheel /= SCALE;
 		QDesktopWidget* desk = QApplication::desktop();
 		qreal rat = desk->windowHandle()->devicePixelRatio();
-		window->resize(int(1024/rat), int(768/rat));
+		window->resize(int(1280/rat), int(1024/rat));
 		window->show();
 		window->test_window_big_caption(big_caption);
 		return true;
