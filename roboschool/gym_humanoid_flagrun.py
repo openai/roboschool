@@ -28,7 +28,7 @@ class RoboschoolHumanoidFlagrun(RoboschoolHumanoid):
 
         self.flag = None
         self.flag = self.scene.cpp_world.debug_sphere(self.walk_target_x, self.walk_target_y, 0.2, 0.2, 0xFF8080)
-        self.flag_timeout = 150
+        self.flag_timeout = 600/self.scene.frame_skip
 
     def calc_state(self):
         self.flag_timeout -= 1

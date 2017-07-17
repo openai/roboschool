@@ -13,6 +13,10 @@ class RoboschoolForwardWalker(SharedMemoryClientEnv):
         self.walk_target_x = 1e3  # kilometer away
         self.walk_target_y = 0
         self.start_pos_x, self.start_pos_y, self.start_pos_z = 0, 0, 0
+        self.camera_x = 0
+        self.camera_y = 4.3
+        self.camera_z = 45.0
+        self.camera_follow = 0
 
     def create_single_player_scene(self):
         return SinglePlayerStadiumScene(gravity=9.8, timestep=0.0165/4, frame_skip=4)
@@ -132,7 +136,47 @@ class RoboschoolForwardWalker(SharedMemoryClientEnv):
         pass
 
     def camera_adjust(self):
+        #self.camera_dramatic()
+        self.camera_simple_follow()
+
+    def camera_simple_follow(self):
         x, y, z = self.body_xyz
         self.camera_x = 0.98*self.camera_x + (1-0.98)*x
         self.camera.move_and_look_at(self.camera_x, y-2.0, 1.4, x, y, 1.0)
+
+    def camera_dramatic(self):
+        pose = self.robot_body.pose()
+        speed = self.robot_body.speed()
+        x, y, z = pose.xyz()
+        if 1:
+            camx, camy, camz = speed[0], speed[1], 2.2
+        else:
+            camx, camy, camz = self.walk_target_x - x, self.walk_target_y - y, 2.2
+
+        n = np.linalg.norm([camx, camy])
+        if n > 2.0 and self.frame > 50:
+            self.camera_follow = 1
+        if n < 0.5:
+            self.camera_follow = 0
+        if self.camera_follow:
+            camx /= 0.1 + n
+            camx *= 2.2
+            camy /= 0.1 + n
+            camy *= 2.8
+            if self.frame < 1000:
+                camx *= -1
+                camy *= -1
+            camx += x
+            camy += y
+            camz  = 1.8
+        else:
+            camx = x
+            camy = y + 4.3
+            camz = 2.2
+        #print("%05i" % self.frame, self.camera_follow, camy)
+        smoothness = 0.97
+        self.camera_x = smoothness*self.camera_x + (1-smoothness)*camx
+        self.camera_y = smoothness*self.camera_y + (1-smoothness)*camy
+        self.camera_z = smoothness*self.camera_z + (1-smoothness)*camz
+        self.camera.move_and_look_at(self.camera_x, self.camera_y, self.camera_z, x, y, 0.6)
 
