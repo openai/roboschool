@@ -36,6 +36,8 @@ python-binding.cpp
 ../../agent_zoo/demo_race1.py
 ../../agent_zoo/demo_race2.py
 ../../agent_zoo/demo_pong.py
+../../agent_zoo/demo_keyboard_humanoid1.py
+../../agent_zoo/demo_keyboard_humanoid2.py
 
 glsl/common.h
 glsl/displaytex.frag.glsl
