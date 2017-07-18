@@ -78,6 +78,11 @@ The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For 
     apt install cmake ffmpeg pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
     ```
 
+    Users report in issue #15 that `sudo pip3 install pyopengl` can make OpenGL errors go away, because it arranges OpenGL libraries in
+    an Ubuntu system in the right way.
+
+
+
 - Linuxbrew
 
     ```bash
