@@ -52,6 +52,9 @@ class RoboschoolInvertedDoublePendulum(RoboschoolMujocoXmlEnv):
         alive_bonus = 10
         done = self.pos_y + 0.3 <= 1
         self.rewards = [float(alive_bonus), float(-dist_penalty), float(-vel_penalty)]
+        self.frame  += 1
+        self.done   += done   # 2 == 1+True
+        self.reward += sum(self.rewards)
         self.HUD(state, a, done)
         return state, sum(self.rewards), done, {}
 
@@ -100,6 +103,9 @@ class RoboschoolInvertedPendulum(RoboschoolMujocoXmlEnv):
             reward = 1.0
             done = np.abs(self.theta) > .2
         self.rewards = [float(reward)]
+        self.frame  += 1
+        self.done   += done   # 2 == 1+True
+        self.reward += sum(self.rewards)
         self.HUD(state, a, done)
         return state, sum(self.rewards), done, {}
 

@@ -219,4 +219,7 @@ private:
 	void _render_single_object(const shared_ptr<Household::ShapeDetailLevels>& m, uint32_t f, int detail, const QMatrix4x4& at_pos);
 };
 
+extern void opengl_init_before_app(const boost::shared_ptr<Household::World>& wref);
+extern void opengl_init(const boost::shared_ptr<SimpleRender::Context>& cx);
+
 } // namespace

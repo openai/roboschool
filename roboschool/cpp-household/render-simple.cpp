@@ -166,10 +166,16 @@ void Context::load_missing_textures()
 	while (1) {
 		bool did_anything = false;
 		for (auto i=world->klass_cache.begin(); i!=world->klass_cache.end(); ++i) {
-			if (i->second.expired()) {
+			shared_ptr<ThingyClass> klass = i->second.lock();
+			if (!klass) {
 				world->klass_cache.erase(i);
 				did_anything = true;
 				break;
+			}
+			shared_ptr<ShapeDetailLevels> v = klass->shapedet_visual;
+			if (v->load_later_on) {
+				v->load_later_on = false;
+				load_model(v, v->load_later_fn, 1, v->load_later_transform);
 			}
 		}
 		if (!did_anything) break;
@@ -322,6 +328,7 @@ VAO::~VAO()  { glDeleteVertexArrays(1, &handle); }
 void ContextViewport::_render_single_object(const shared_ptr<Household::ShapeDetailLevels>& m, uint32_t options, int detail, const QMatrix4x4& at_pos)
 {
 	const std::vector<shared_ptr<Shape>>& shapes = m->detail_levels[detail];
+
 	int cnt = shapes.size();
 	for (int c=0; c<cnt; c++) {
 		shared_ptr<Shape> t = shapes[c];
@@ -647,8 +654,6 @@ void ContextViewport::hud_print(const QRect& r, const QString& msg_text, uint32_
 	hud_update(r);
 }
 
-} // namespace
-
 void opengl_init_before_app(const boost::shared_ptr<Household::World>& wref)
 {
 	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
@@ -664,17 +669,17 @@ void opengl_init_before_app(const boost::shared_ptr<Household::World>& wref)
 	wref->cx->fmt = fmt;
 }
 
-void opengl_init(const boost::shared_ptr<Household::World>& wref)
+void opengl_init(const boost::shared_ptr<SimpleRender::Context>& cx)
 {
-	wref->cx->surf = new QOffscreenSurface();
-	wref->cx->surf->setFormat(wref->cx->fmt);
-	wref->cx->surf->create();
+	cx->surf = new QOffscreenSurface();
+	cx->surf->setFormat(cx->fmt);
+	cx->surf->create();
 
 	// This doesn't work no matter how you put it -- widgets do not share context.
 	// QOpenGLContext::areSharing() is reporting true, put you can't reference framebuffers or VAOs.
 	if (1) {
 		QOpenGLContext* glcx = QOpenGLContext::globalShareContext();
-		QSurfaceFormat fmt_req = wref->cx->fmt;
+		QSurfaceFormat fmt_req = cx->fmt;
 		QSurfaceFormat fmt_got = glcx->format();
 		int got_version = fmt_got.majorVersion()*1000 + fmt_got.majorVersion();
 		bool ok_without_shadows = got_version >= 3003;
@@ -687,26 +692,28 @@ void opengl_init(const boost::shared_ptr<Household::World>& wref)
 			fprintf(stderr, "For possible fixes, see:\n\nhttps://github.com/openai/roboschool/issues/2\n\n");
 			assert(0);
 		}
-		wref->cx->glcx = glcx;
-		wref->cx->ssao_enable = ok_all_features;
+		cx->glcx = glcx;
+		cx->ssao_enable = ok_all_features;
+		cx->glcx->makeCurrent(cx->surf);
 	} else {
-		wref->cx->dummy_openglwidget = new QOpenGLWidget();
-		wref->cx->dummy_openglwidget->setFormat(wref->cx->fmt);
-		wref->cx->dummy_openglwidget->makeCurrent();
-		wref->cx->dummy_openglwidget->show();
-		QOpenGLContext* glcx = wref->cx->dummy_openglwidget->context();
+		cx->dummy_openglwidget = new QOpenGLWidget();
+		cx->dummy_openglwidget->setFormat(cx->fmt);
+		cx->dummy_openglwidget->makeCurrent();
+		cx->dummy_openglwidget->show();
+		QOpenGLContext* glcx = cx->dummy_openglwidget->context();
 		assert(glcx);
-		glcx->makeCurrent(wref->cx->surf);
+		glcx->makeCurrent(cx->surf);
 
 		QOpenGLWidget* test = new QOpenGLWidget();
-		test->setFormat(wref->cx->fmt);
+		test->setFormat(cx->fmt);
 		test->show();
 		test->context() ;
 		bool hurray = QOpenGLContext::areSharing(
 			glcx,
 			test->context());
-		wref->cx->glcx = glcx;
+		cx->glcx = glcx;
 		assert(hurray);
 	}
 }
 
+} // namespace

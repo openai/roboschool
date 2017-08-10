@@ -9,9 +9,6 @@
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QBuffer>
 
-extern void opengl_init_before_app(const boost::shared_ptr<Household::World>& wref);
-extern void opengl_init(const shared_ptr<Household::World>& wref);
-
 using boost::shared_ptr;
 using namespace boost::python;
 
@@ -73,6 +70,12 @@ struct Pose {
 		t2 = t2 < -1.0f ? -1.0f : t2;
 		btScalar pitch = asin(t2);
 		return make_tuple(roll, pitch, yaw);
+	}
+	Pose dot(const Pose& other)
+	{
+		Pose r;
+		r.from_bt_transform(convert_to_bt_transform() * other.convert_to_bt_transform());
+		return r;
 	}
 };
 
@@ -155,10 +158,10 @@ shared_ptr<App> app_create_as_needed(const shared_ptr<Household::World>& wref)
 		wref->app_ref = app;
 		return app;
 	}
-	opengl_init_before_app(wref);
+	SimpleRender::opengl_init_before_app(wref);
 	app.reset(new App);
 	the_app = app;
-	opengl_init(wref);
+	SimpleRender::opengl_init(wref->cx);
 	wref->app_ref = app;
 	return app;
 }
@@ -253,22 +256,10 @@ struct Joint {
 	std::string name()  { return jref->joint_name; }
 	void set_motor_torque(float q)  { jref->set_motor_torque(q); }
 	void set_target_speed(float target_speed, float kd, float maxforce)  { jref->set_target_speed(target_speed, kd, maxforce); }
-	void set_servo_target(float target_pos, float target_speed, float kp, float kd, float maxforce)  { jref->set_servo_target(target_pos, target_speed, kp, kd, maxforce); }
+	void set_servo_target(float target_pos, float kp, float kd, float maxforce)  { jref->set_servo_target(target_pos, kp, kd, maxforce); }
 	void reset_current_position(float pos, float vel)  { jref->reset_current_position(pos, vel); }
-	boost::python::tuple current_position()  { float pos, speed; jref->joint_current_position(&pos, &speed); return make_tuple(pos, speed); }
-	boost::python::tuple current_relative_position()
-	{
-		float pos, speed;
-		jref->joint_current_position(&pos, &speed);
-		if (jref->joint_has_limits) {
-			float pos_mid = 0.5 * (jref->joint_limit1 + jref->joint_limit2);
-			pos = 2 * (pos - pos_mid) / (jref->joint_limit2 - jref->joint_limit1);
-		}
-		if (jref->joint_type==Household::Joint::ROTATIONAL_MOTOR)
-			return make_tuple(pos, speed * 0.1); // normalize for 10 radian per second == 1  (6.3 radian/s is one rpm)
-		else
-			return make_tuple(pos, speed * 0.5); // typical distance 1 meter, something fast travel it in 0.5 seconds (speed is 2)
-	}
+	boost::python::tuple current_position()  { return make_tuple(jref->joint_current_position, jref->joint_current_speed); }
+	boost::python::tuple current_relative_position()  { float pos, speed; jref->joint_current_relative_position(&pos, &speed); return make_tuple(pos, speed); }
 	boost::python::tuple limits()  { return make_tuple(jref->joint_limit1, jref->joint_limit2, jref->joint_max_force, jref->joint_max_velocity); }
 
 	std::string type()
@@ -320,9 +311,9 @@ struct World {
 		return Thingy(wref->load_thingy(mesh_or_urdf_filename, pose.convert_to_bt_transform(), scale*SCALE, mass, color, decoration_only), wref);
 	}
 
-	Robot load_urdf(const std::string& fn, const Pose& pose, bool fixed_base)
+	Robot load_urdf(const std::string& fn, const Pose& pose, bool fixed_base, bool self_collision)
 	{
-		Robot r(wref->load_urdf(fn, pose.convert_to_bt_transform(), fixed_base), wref);
+		Robot r(wref->load_urdf(fn, pose.convert_to_bt_transform(), fixed_base, self_collision), wref);
 		return r;
 	}
 
@@ -432,7 +423,7 @@ struct World {
 		window->wheel /= SCALE;
 		QDesktopWidget* desk = QApplication::desktop();
 		qreal rat = desk->windowHandle()->devicePixelRatio();
-		window->resize(int(1024/rat), int(768/rat));
+		window->resize(int(1280/rat), int(1024/rat));
 		window->show();
 		window->test_window_big_caption(big_caption);
 		return true;
@@ -625,6 +616,7 @@ void cpp_household_init()
 	.def("xyz", &Pose::xyz)
 	.def("quatertion", &Pose::quatertion)
 	.def("rotate_z", &Pose::rotate_z)
+	.def("dot", &Pose::dot)
 	;
 
 	class_<Thingy>("Thingy", no_init)

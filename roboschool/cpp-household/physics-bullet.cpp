@@ -5,6 +5,10 @@
 
 namespace Household {
 
+#ifdef CHROME_TRACING
+static int chrome_trace_log = -1;
+#endif
+
 void World::bullet_init(float gravity, float timestep)
 {
 	char* fake_argv[] = { 0 };
@@ -14,10 +18,31 @@ void World::bullet_init(float gravity, float timestep)
 	settings_gravity = gravity;
 	settings_timestep = timestep;
 	settings_apply();
+
+#ifdef CHROME_TRACING
+	b3SharedMemoryCommandHandle command;
+	command = b3StateLoggingCommandInit(client);
+	b3StateLoggingStart(command, STATE_LOGGING_PROFILE_TIMINGS, "chrome_tracing.json");
+	b3SharedMemoryStatusHandle status = b3SubmitClientCommandAndWaitStatus(client, command);
+	int status_type = b3GetStatusType(status);
+	if (status_type == CMD_STATE_LOGGING_START_COMPLETED) {
+		chrome_trace_log = b3GetStatusLoggingUniqueId(status);
+		fprintf(stderr, "Start chrome trace log, handle %i\n", chrome_trace_log);
+	}
+#endif
 }
 
 World::~World()
 {
+#ifdef CHROME_TRACING
+	if (chrome_trace_log!=-1) {
+		fprintf(stderr, "Stop chrome trace log, handle %i\n", chrome_trace_log);
+		b3SharedMemoryCommandHandle command = b3StateLoggingCommandInit(client);
+		b3StateLoggingStop(command, chrome_trace_log);
+		b3SubmitClientCommandAndWaitStatus(client, command);
+		chrome_trace_log = -1;
+	}
+#endif
 	b3DisconnectSharedMemory(client);
 }
 
@@ -42,7 +67,7 @@ void World::clean_everything()
 	// klass_cache -- leave it alone, it contains visual shapes useful for quick restart, klass_cache_clear() if you need reload
 }
 
-shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base)
+shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base, bool self_collision)
 {
 	shared_ptr<Robot> robot(new Robot);
 	robot->original_urdf_name = fn;
@@ -51,7 +76,8 @@ shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr,
 	b3LoadUrdfCommandSetStartPosition(command, tr.getOrigin()[0], tr.getOrigin()[1], tr.getOrigin()[2]);
 	b3LoadUrdfCommandSetStartOrientation(command, tr.getRotation()[0], tr.getRotation()[1], tr.getRotation()[2], tr.getRotation()[3]);
 	b3LoadUrdfCommandSetUseFixedBase(command, fixed_base);
-	b3LoadUrdfCommandSetFlags(command, URDF_USE_SELF_COLLISION|URDF_USE_SELF_COLLISION_EXCLUDE_ALL_PARENTS);
+	if (self_collision)
+		b3LoadUrdfCommandSetFlags(command, URDF_USE_SELF_COLLISION|URDF_USE_SELF_COLLISION_EXCLUDE_ALL_PARENTS);
 	b3SharedMemoryStatusHandle statusHandle = b3SubmitClientCommandAndWaitStatus(client, command);
 	statusType = b3GetStatusType(statusHandle);
 	if (statusType != CMD_URDF_LOADING_COMPLETED) {
@@ -127,7 +153,9 @@ void load_shape_into_class(
 
 	shared_ptr<Shape> primitive(new Shape);
 	if (geom==5) { // URDF_GEOM_MESH
-		load_model(save_here, fn, 1, viz_frame);
+		save_here->load_later_on = true;
+		save_here->load_later_fn = fn;
+		save_here->load_later_transform = viz_frame;
 		primitive.reset();
 	} else if (geom==2) { // URDF_GEOM_SPHERE
 		primitive->primitive_type = Shape::SPHERE;
@@ -205,7 +233,7 @@ void World::load_robot_joints(const shared_ptr<Robot>& robot, const std::string&
 			j->joint_type = info.m_jointType==eRevoluteType ? Joint::ROTATIONAL_MOTOR : Joint::LINEAR_MOTOR;
 			j->bullet_qindex = info.m_qIndex;
 			j->bullet_uindex = info.m_uIndex;
-			j->bullen_joint_n = c;
+			j->bullet_joint_n = c;
 			j->joint_has_limits = info.m_jointLowerLimit < info.m_jointUpperLimit;
 			j->joint_limit1 = info.m_jointLowerLimit;
 			j->joint_limit2 = info.m_jointUpperLimit;
@@ -339,9 +367,9 @@ void World::bullet_step(int skip_frames)
 	) {
 		b3SharedMemoryCommandHandle command = b3InitPhysicsParamCommand(client);
 		b3PhysicsParamSetGravity(command, 0, 0, -settings_gravity);
-		b3PhysicsParamSetTimeStep(command, need_timestep);
 		b3PhysicsParamSetNumSolverIterations(command, 5);
 		b3PhysicsParamSetDefaultContactERP(command, 0.9);
+		b3PhysicsParamSetTimeStep(command, need_timestep);
 		settings_timestep_sent = need_timestep;
 		b3PhysicsParamSetNumSubSteps(command, skip_frames);
 		settings_skip_frames_sent = skip_frames;
@@ -458,6 +486,12 @@ void World::query_body_position(const shared_ptr<Robot>& robot)
 		part->bullet_angular_speed[2] = linkstate.m_worldAngularVelocity[2];
 		part->bullet_queried_at_least_once = true;
 	}
+
+	for (const shared_ptr<Joint>& j: robot->joints) {
+		if (!j) continue;
+		j->joint_current_position = q[j->bullet_qindex];
+		j->joint_current_speed = q_dot[j->bullet_uindex];
+	}
 }
 
 void Joint::set_motor_torque(float torque)
@@ -466,8 +500,7 @@ void Joint::set_motor_torque(float torque)
 	shared_ptr<World> w = wref.lock();
 	if (!r || !w) return;
 	if (first_torque_call) {
-		//set_target_speed(0, 1.0, 4.0);
-		set_servo_target(0, 0, 0.1, 0.1, 0);
+		set_servo_target(0, 0.1, 0.1, 0);
 		first_torque_call = false;
 	}
 	torque_need_repeat = true;
@@ -488,7 +521,7 @@ void Joint::set_target_speed(float target_speed, float kd, float maxforce)
 	torque_need_repeat = false;
 }
 
-void Joint::set_servo_target(float target_pos, float target_speed, float kp, float kd, float maxforce)
+void Joint::set_servo_target(float target_pos, float kp, float kd, float maxforce)
 {
 	shared_ptr<Robot> r = robot.lock();
 	shared_ptr<World> w = wref.lock();
@@ -496,7 +529,6 @@ void Joint::set_servo_target(float target_pos, float target_speed, float kp, flo
 	b3SharedMemoryCommandHandle cmd = b3JointControlCommandInit2(w->client, r->bullet_handle, CONTROL_MODE_POSITION_VELOCITY_PD);
 	b3JointControlSetDesiredPosition(cmd, bullet_qindex, target_pos);
 	b3JointControlSetKp(cmd,              bullet_uindex, kp);
-	b3JointControlSetDesiredVelocity(cmd, bullet_uindex, target_speed);
 	b3JointControlSetKd(cmd,              bullet_uindex, kd);
 	b3JointControlSetMaximumForce(cmd,    bullet_uindex, maxforce);
 	b3SubmitClientCommandAndWaitStatus(w->client, cmd);
@@ -504,17 +536,33 @@ void Joint::set_servo_target(float target_pos, float target_speed, float kp, flo
 	torque_need_repeat = false;
 }
 
-void Joint::joint_current_position(float* pos, float* speed)
+void Joint::set_relative_servo_target(float target_pos, float kp, float kd)
 {
-	shared_ptr<Robot> r = robot.lock();
-	shared_ptr<World> w = wref.lock();
-	if (!r || !w) return;
-	b3SharedMemoryCommandHandle cmd_handle = b3RequestActualStateCommandInit(w->client, r->bullet_handle);
-	b3SharedMemoryStatusHandle status_handle = b3SubmitClientCommandAndWaitStatus(w->client, cmd_handle);
-	b3JointSensorState state;
-	b3GetJointState(w->client, status_handle, bullen_joint_n, &state);
-	*pos = state.m_jointPosition;
-	*speed = state.m_jointVelocity;
+	float pos_mid = 0.5*(joint_limit1 + joint_limit2);
+	set_servo_target( pos_mid + 0.5*target_pos*(joint_limit2 - joint_limit1),
+		kp, kd,
+		joint_max_force ? joint_max_force : 40); // 40 is about as strong as humanoid hands
+}
+
+void Joint::joint_current_relative_position(float* pos, float* speed)
+{
+	float rpos, rspeed;
+	rpos = joint_current_position;
+	rspeed = joint_current_speed;
+	if (joint_has_limits) {
+		float pos_mid = 0.5 * (joint_limit1 + joint_limit2);
+		rpos = 2 * (rpos - pos_mid) / (joint_limit2 - joint_limit1);
+	}
+	if (joint_max_velocity > 0) {
+		rspeed /= joint_max_velocity;
+	} else {
+		if (joint_type==Household::Joint::ROTATIONAL_MOTOR)
+			rspeed *= 0.1; // normalize for 10 radian per second == 1  (6.3 radian/s is one rpm)
+		else
+			rspeed *= 0.5; // typical distance 1 meter, something fast travel it in 0.5 seconds (speed is 2)
+	}
+	*pos = rpos;
+	*speed = rspeed;
 }
 
 void Joint::reset_current_position(float pos, float vel)
@@ -523,8 +571,8 @@ void Joint::reset_current_position(float pos, float vel)
 	shared_ptr<World> w = wref.lock();
 	if (!r || !w) return;
 	b3SharedMemoryCommandHandle cmd = b3CreatePoseCommandInit(w->client, r->bullet_handle);
-	b3CreatePoseCommandSetJointPosition(w->client, cmd, bullen_joint_n, pos);
-	b3CreatePoseCommandSetJointVelocity(w->client, cmd, bullen_joint_n, vel);
+	b3CreatePoseCommandSetJointPosition(w->client, cmd, bullet_joint_n, pos);
+	b3CreatePoseCommandSetJointVelocity(w->client, cmd, bullet_joint_n, vel);
 	b3SubmitClientCommandAndWaitStatus(w->client, cmd);
 }
 

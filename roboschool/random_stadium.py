@@ -87,6 +87,7 @@ def color_change_grid_search(tr, x1, x2, y1, y2, W, H):
 
 stadium_extents = (-50,+50, -40,+40)
 pong_extents    = (-4.0,+4.0, -3,+3)
+tennis_extents  = (-20,+20, -20,+20)
 
 def test_triangulation(fn, extents):
     tr = Triangulation()
@@ -153,5 +154,7 @@ if __name__=='__main__':
 
     #color = random_stadium_kernel.stadium_color
     #test_triangulation("roboschool/models_outdoor/stadium/stadium1.obj", stadium_extents)
-    color = random_stadium_kernel.pong_color
-    test_triangulation("roboschool/models_outdoor/stadium/pong1.obj", pong_extents)
+    #color = random_stadium_kernel.pong_color
+    #test_triangulation("roboschool/models_outdoor/stadium/pong1.obj", pong_extents)
+    color = random_stadium_kernel.tennis_color
+    test_triangulation("roboschool/models_outdoor/stadium/tennis1.obj", tennis_extents)

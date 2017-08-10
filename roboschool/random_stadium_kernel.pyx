@@ -125,15 +125,50 @@ def pong_color(x, y):
     if g < 0: return 2
 
 
+# tennis
+# https://image.shutterstock.com/z/stock-vector-tennis-court-with-dimensions-grass-105644240.jpg
+
+DEF TENNIS_SCALE_DOWN = 0.5
+DEF TENNIS_WHITESTRIP = 0.02
+DEF TENNIS_HALFLEN    = 23.77/2 * TENNIS_SCALE_DOWN
+DEF TENNIS_HALFWIDTH  =  8.23/2 * TENNIS_SCALE_DOWN   # 10.97 "for doubles"
+DEF TENNIS_SERVICE_AREA = 6.4   * TENNIS_SCALE_DOWN
+
+cdef float tennis_white(x, y):
+    return min(
+        rect(x, y, TENNIS_HALFLEN, TENNIS_HALFWIDTH, TENNIS_WHITESTRIP),
+        rect(x - TENNIS_SERVICE_AREA/2, y-TENNIS_HALFWIDTH/2, TENNIS_SERVICE_AREA/2, TENNIS_HALFWIDTH/2, TENNIS_WHITESTRIP),
+        rect(x - TENNIS_SERVICE_AREA/2, y+TENNIS_HALFWIDTH/2, TENNIS_SERVICE_AREA/2, TENNIS_HALFWIDTH/2, TENNIS_WHITESTRIP),
+        rect(x + TENNIS_SERVICE_AREA/2, y-TENNIS_HALFWIDTH/2, TENNIS_SERVICE_AREA/2, TENNIS_HALFWIDTH/2, TENNIS_WHITESTRIP),
+        rect(x + TENNIS_SERVICE_AREA/2, y+TENNIS_HALFWIDTH/2, TENNIS_SERVICE_AREA/2, TENNIS_HALFWIDTH/2, TENNIS_WHITESTRIP),
+        )
+
+cdef float tennis_yellow(x, y):
+    return filled_rect(x, y, TENNIS_HALFLEN, TENNIS_HALFWIDTH)
+
+cdef float tennis_green(x, y):
+    return filled_rect(x, y, 2*TENNIS_HALFLEN, 3*TENNIS_HALFWIDTH)
+
+def tennis_color(x, y):
+    g = tennis_white(x, y)
+    if g < 0: return 0
+    r = tennis_yellow(x, y)
+    if r < 0: return 1
+    g = tennis_green(x, y)
+    if g < 0: return 2
+
 
 # -------------- test ---------------
 
 #white  = stadium_white
 #yellow = stadium_running_area
 #green  = stadium_green_field
-white  = pong_white
-yellow = pong_yellow
-green  = pong_green
+#white  = pong_white
+#yellow = pong_yellow
+#green  = pong_green
+white  = tennis_white
+yellow = tennis_yellow
+green  = tennis_green
 
 def test_raster_image(int x1, int x2, int y1, int y2, int W, int H):
     cdef int x, y

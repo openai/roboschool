@@ -51,7 +51,7 @@ public:
 	float user_y = 0;
 	float yrot = -60;
 	float zrot = 0;
-	float wheel = 6.20;
+	float wheel = 10.00;
 	float ruler_size = 1.0;
 	int floor_visible = 10;
 	void user_move(float hor, float vert);

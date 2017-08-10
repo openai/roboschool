@@ -67,7 +67,7 @@ struct Joint {
 	weak_ptr<struct World> wref;
 
 	std::string joint_name;
-	int bullen_joint_n = -1;
+	int bullet_joint_n = -1;
 	int bullet_qindex = -1;
 	int bullet_uindex = -1;
 	enum { ROTATIONAL_MOTOR, LINEAR_MOTOR };
@@ -77,17 +77,24 @@ struct Joint {
 	float joint_limit2 = -2.0;
 	float joint_max_force = 1.0;
 	float joint_max_velocity = 1.0;
+
+	float joint_current_position = 0;
+	float joint_current_speed = 0;
+
 	bool first_torque_call = true;
 	bool torque_need_repeat = false;
 	float torque_repeat_val = 0;
-	//btScalar prev_p = 1e10;
+
+	void joint_current_relative_position(float* pos, float* speed);
+	void reset_current_position(float pos, float vel);
 
 	void set_motor_torque(float torque);
-	void set_target_speed(float target_speed, float kd, float maxforce);
-	void set_servo_target(float target_pos, float target_speed, float kp, float kd, float maxforce);
 
-	void joint_current_position(float* pos, float* speed);
-	void reset_current_position(float pos, float vel);
+	void set_target_speed(float target_speed, float kd, float maxforce);
+	void set_relative_target_speed(float target_speed, float kp);
+
+	void set_servo_target(float target_pos, float kp, float kd, float maxforce);
+	void set_relative_servo_target(float target_pos, float kp, float kd);
 
 	void activate();
 };
@@ -163,7 +170,7 @@ struct World: boost::enable_shared_from_this<World> {
 	double performance_bullet_ms;
 
 	shared_ptr<Thingy> load_thingy(const std::string& the_filename, const btTransform& tr, float scale, float mass, uint32_t color, bool decoration_only);
-	shared_ptr<Robot> load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base);
+	shared_ptr<Robot> load_urdf(const std::string& fn, const btTransform& tr, bool fixed_base, bool self_collision);
 	std::list<shared_ptr<Robot>> load_sdf_mjcf(const std::string& fn, bool mjcf);
 	void load_robot_shapes(const shared_ptr<Robot>& robot);
 	void load_robot_joints(const shared_ptr<Robot>& robot, const std::string& origin_fn);

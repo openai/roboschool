@@ -28,7 +28,7 @@ if len(sys.argv)==1:
 else:
     player_n = int(sys.argv[2])
 
-    env = gym.make("RoboschoolPong-v0")
+    env = gym.make("RoboschoolPong-v1")
     env.unwrapped.multiplayer(env, game_server_guid=sys.argv[1], player_n=player_n)
 
     from RoboschoolPong_v0_2017may1 import SmallReactivePolicy as Pol1

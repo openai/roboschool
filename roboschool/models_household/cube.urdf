@@ -19,7 +19,7 @@
     </collision>
 
     <inertial>
-      <mass value="0.6"/>
+      <mass value="1.2"/>
       <inertia ixx="0.001" iyy="0.001" izz="0.001"/>  <!-- I = m * l^2 / 6 -->
     </inertial>
   </link>
