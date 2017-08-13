@@ -9,7 +9,7 @@ class RoboschoolPegInsertion(RoboschoolMujocoXmlEnv):
         RoboschoolMujocoXmlEnv.__init__(self, 'peg_insertion_arm.xml', 'arm', action_dim=7, obs_dim=110)
 
     def create_single_player_scene(self):
-        return SingleRobotEmptyScene(gravity=9.8, timestep=0.0165, frame_skip=1)
+        return SingleRobotEmptyScene(gravity=9.8, timestep=0.01, frame_skip=1)
 
     def robot_specific_reset(self):
         for name, joint in self.jdict.items():
@@ -35,14 +35,23 @@ class RoboschoolPegInsertion(RoboschoolMujocoXmlEnv):
 
         state = self.calc_state()
 
-        self.rewards = []
-        ball = self.parts['ball'].pose().xyz()
-        final_pose = np.array([0, 0.3, -0.47])
+        consts = dict(w_u=1e-6, w_p=1, alpha=0)
+        pose = self.parts['ball'].pose()
 
-        self.rewards.append(-np.linalg.norm(ball-final_pose))
-        done = False if self.rewards[0] > 0.05 else True
+        p_x_t   = pose.xyz()
+        p_star  = np.array([0, 0.3, -0.47])
+        diff = p_x_t-p_star
+
+        loss = .5 * consts['w_u'] * np.linalg.norm(action)**2
+        def l12(z):
+            return .5*np.linalg.norm(z)**2+np.sqrt(consts['alpha'] + z**2)
+
+        loss += consts['w_p']*l12(diff)
+        self.rewards = [-np.sum(loss)]
+        done = True if np.linalg.norm(diff) == 0 else False
+
         self.HUD(state, action, done)
-        return state, sum(self.rewards), done, {}
+        return state, self.rewards[0], done, {}
 
     def apply_action(self, a):
         assert(np.isfinite(a).all())

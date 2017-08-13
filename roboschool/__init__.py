@@ -89,7 +89,7 @@ register(
     max_episode_steps=1000
     )
 register(
-    id='RoboschoolPegInsertion-v0',
+    id='RoboschoolPegInsertion-v1',
     entry_point='roboschool:RoboschoolPegInsertion',
     max_episode_steps=1000
 )
