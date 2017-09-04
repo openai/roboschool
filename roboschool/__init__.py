@@ -6,18 +6,21 @@ register(
     entry_point='roboschool:RoboschoolInvertedPendulum',
     max_episode_steps=1000,
     reward_threshold=950.0,
+    tags={ "pg_complexity": 1*1000000 },
     )
 register(
     id='RoboschoolInvertedPendulumSwingup-v1',
     entry_point='roboschool:RoboschoolInvertedPendulumSwingup',
     max_episode_steps=1000,
     reward_threshold=800.0,
+    tags={ "pg_complexity": 1*1000000 },
     )
 register(
     id='RoboschoolInvertedDoublePendulum-v1',
     entry_point='roboschool:RoboschoolInvertedDoublePendulum',
     max_episode_steps=1000,
     reward_threshold=9100.0,
+    tags={ "pg_complexity": 1*1000000 },
     )
 
 register(
@@ -25,50 +28,58 @@ register(
     entry_point='roboschool:RoboschoolReacher',
     max_episode_steps=150,
     reward_threshold=18.0,
+    tags={ "pg_complexity": 1*1000000 },
     )
 
 register(
     id='RoboschoolHopper-v1',
     entry_point='roboschool:RoboschoolHopper',
     max_episode_steps=1000,
-    reward_threshold=2500.0
+    reward_threshold=2500.0,
+    tags={ "pg_complexity": 8*1000000 },
     )
 register(
     id='RoboschoolWalker2d-v1',
     entry_point='roboschool:RoboschoolWalker2d',
     max_episode_steps=1000,
-    reward_threshold=2500.0
+    reward_threshold=2500.0,
+    tags={ "pg_complexity": 8*1000000 },
     )
 register(
     id='RoboschoolHalfCheetah-v1',
     entry_point='roboschool:RoboschoolHalfCheetah',
     max_episode_steps=1000,
-    reward_threshold=3000.0
+    reward_threshold=3000.0,
+    tags={ "pg_complexity": 8*1000000 },
     )
 
 register(
     id='RoboschoolAnt-v1',
     entry_point='roboschool:RoboschoolAnt',
     max_episode_steps=1000,
-    reward_threshold=2500.0
+    reward_threshold=2500.0,
+    tags={ "pg_complexity": 8*1000000 },
     )
 
 register(
     id='RoboschoolHumanoid-v1',
     entry_point='roboschool:RoboschoolHumanoid',
     max_episode_steps=1000,
-    reward_threshold=3500.0
+    reward_threshold=3500.0,
+    tags={ "pg_complexity": 100*1000000 },
     )
 register(
     id='RoboschoolHumanoidFlagrun-v1',
     entry_point='roboschool:RoboschoolHumanoidFlagrun',
     max_episode_steps=1000,
-    reward_threshold=2000.0
+    reward_threshold=2000.0,
+    tags={ "pg_complexity": 200*1000000 },
     )
 register(
     id='RoboschoolHumanoidFlagrunHarder-v1',
     entry_point='roboschool:RoboschoolHumanoidFlagrunHarder',
-    max_episode_steps=1000
+    max_episode_steps=1000,
+    tags={ "pg_complexity": 300*1000000 },
     )
 
 
@@ -77,7 +88,8 @@ register(
 register(
     id='RoboschoolAtlasForwardWalk-v1',
     entry_point='roboschool:RoboschoolAtlasForwardWalk',
-    max_episode_steps=1000
+    max_episode_steps=1000,
+    tags={ "pg_complexity": 200*1000000 },
     )
 
 
@@ -86,7 +98,8 @@ register(
 register(
     id='RoboschoolPong-v1',
     entry_point='roboschool:RoboschoolPong',
-    max_episode_steps=1000
+    max_episode_steps=1000,
+    tags={ "pg_complexity": 20*1000000 },
     )
 
 from roboschool.gym_pendulums import RoboschoolInvertedPendulum
