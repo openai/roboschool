@@ -39,8 +39,8 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers
+  LIBS  =-L/usr/local/Cellar/boost-python/1.64.0/lib -framework OpenGL
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers -I/usr/local/include -I/usr/local/opt/qt/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
@@ -49,9 +49,9 @@ endif
 
 $(info Link against python $(PYTHON))
 INC     += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python-$(PYTHON)`
-LIBS    += -lstdc++ `$(PKG) --libs Qt5OpenGL Qt5Widgets assimp python-$(PYTHON)`
+LIBS    += -lstdc++ `$(PKG) --libs Qt5OpenGL Qt5Widgets tinyxml assimp python-$(PYTHON)`
 INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet
-LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API
+LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletRobotics
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
