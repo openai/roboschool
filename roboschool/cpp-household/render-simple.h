@@ -221,5 +221,6 @@ private:
 
 extern void opengl_init_before_app(const boost::shared_ptr<Household::World>& wref);
 extern void opengl_init(const boost::shared_ptr<SimpleRender::Context>& cx);
+extern void opengl_init_existing_app(const boost::shared_ptr<Household::World>& wref);
 
 } // namespace
