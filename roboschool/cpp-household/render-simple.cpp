@@ -716,4 +716,23 @@ void opengl_init(const boost::shared_ptr<SimpleRender::Context>& cx)
 	}
 }
 
+void opengl_init_existing_app(const boost::shared_ptr<Household::World>& wref)
+{
+	wref->cx.reset(new SimpleRender::Context(wref));
+	wref->cx->fmt = QSurfaceFormat::defaultFormat();
+	
+	wref->cx->surf = new QOffscreenSurface();
+	wref->cx->surf->setFormat(wref->cx->fmt);
+	wref->cx->surf->create();
+
+	QOpenGLContext* glcx = QOpenGLContext::globalShareContext();
+	QSurfaceFormat fmt_got = glcx->format();
+	int got_version = fmt_got.majorVersion()*1000 + fmt_got.majorVersion();
+	bool ok_all_features    = got_version >= 4001;
+
+	wref->cx->glcx = glcx;
+	wref->cx->ssao_enable = ok_all_features;
+	wref->cx->glcx->makeCurrent(wref->cx->surf);
+}
+
 } // namespace
