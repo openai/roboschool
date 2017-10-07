@@ -665,12 +665,14 @@ void opengl_init_before_app(const boost::shared_ptr<Household::World>& wref)
 	fmt.setVersion(4, 1);
 	QSurfaceFormat::setDefaultFormat(fmt);
 	QApplication::setApplicationDisplayName("Roboschool");
-	wref->cx.reset(new SimpleRender::Context(wref));
-	wref->cx->fmt = fmt;
 }
 
-void opengl_init(const boost::shared_ptr<SimpleRender::Context>& cx)
+void opengl_init(const boost::shared_ptr<Household::World>& wref)
 {
+	boost::shared_ptr<SimpleRender::Context>& cx = wref->cx;
+	cx.reset(new SimpleRender::Context(wref));
+	cx->fmt = QSurfaceFormat::defaultFormat();
+	
 	cx->surf = new QOffscreenSurface();
 	cx->surf->setFormat(cx->fmt);
 	cx->surf->create();
