@@ -336,7 +336,7 @@ int main(int argc, char *argv[])
 	world.reset(new World);
 	SimpleRender::opengl_init_before_app(world);
 	QApplication app(argc, argv);
-	SimpleRender::opengl_init(world->cx);
+	SimpleRender::opengl_init(world);
 
 	fprintf(stderr, "Press F3 to force reload (when you change dependencies of file)\n");
 
