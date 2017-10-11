@@ -729,7 +729,7 @@ void opengl_init_existing_app(const boost::shared_ptr<Household::World>& wref)
 
 	QOpenGLContext* glcx = QOpenGLContext::globalShareContext();
 	QSurfaceFormat fmt_got = glcx->format();
-	int got_version = fmt_got.majorVersion()*1000 + fmt_got.majorVersion();
+	int got_version = fmt_got.majorVersion()*1000 + fmt_got.minorVersion();
 	bool ok_all_features    = got_version >= 4001;
 
 	wref->cx->glcx = glcx;
