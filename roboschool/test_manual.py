@@ -82,5 +82,5 @@ def test(env_id):
         if not still_visible: break
 
 if __name__=="__main__":
-    env_id = "RoboschoolHumanoid-v0" if len(sys.argv) <= 1 else sys.argv[1]
+    env_id = "RoboschoolHumanoid-v1" if len(sys.argv) <= 1 else sys.argv[1]
     test(env_id)
