@@ -101,7 +101,7 @@ The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For 
     # Will not work on Mavericks: unsupported by homebrew, some libraries won't compile, upgrade first
     brew install python3
     brew install cmake tinyxml assimp ffmpeg qt
-    brew install boost-python --without-python --with-python3 --build-from-source
+    brew reinstall boost-python --without-python --with-python3 --build-from-source
     export PATH=/usr/local/bin:/usr/local/opt/qt5/bin:$PATH
     export PKG_CONFIG_PATH=/usr/local/opt/qt5/lib/pkgconfig
     ```
@@ -110,7 +110,7 @@ The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For 
 
     ```bash
     brew install cmake tinyxml assimp ffmpeg
-    brew install boost-python --without-python --with-python3 --build-from-source
+    brew reinstall boost-python --without-python --with-python3 --build-from-source
     conda install qt
     export PKG_CONFIG_PATH=$(dirname $(dirname $(which python)))/lib/pkgconfig
     ```
@@ -153,4 +153,3 @@ To see three agents in a race:
 ```bash
 python $ROBOSCHOOL_PATH/agent_zoo/demo_race2.py
 ```
-
