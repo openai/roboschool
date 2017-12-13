@@ -4,6 +4,7 @@
 uniform highp mat4 input_matrix_modelview;
 uniform highp mat4 input_matrix_modelview_inverse_transpose;
 uniform highp vec4 uni_color;
+uniform highp vec4 multiply_color;
 uniform bool enable_texture;
 
 layout(location=0) in highp   vec4 input_vertex;
@@ -26,7 +27,7 @@ void main(void)
     //OUT.pos = vec3(input_vertex);
     //vec3(input_vertex.x, input_vertex.y, input_vertex.z);
     OUT.normal = vec3(input_normal);
-    OUT.color = uni_color;
+    OUT.color = uni_color * multiply_color;
     if (enable_texture) {
         OUT.texcoord = vec2(input_texcoord);
     }
