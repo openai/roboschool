@@ -160,7 +160,12 @@ public:
 	int visible_object_count;
 
 	int W, H, W16;
-	double side, near, far, hfov;
+    #undef near
+    #undef far
+	double side;
+    double near;
+    double far;
+    double hfov;
 	QMatrix4x4 modelview;
 	QMatrix4x4 modelview_inverse_transpose;
 

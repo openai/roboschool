@@ -13,3 +13,10 @@ roboschool/robot-test-tool_d
 *.so
 *.swp
 __pycache__
+notes.txt
+*.log
+build
+bullet3
+packages
+update.sh
+pkgconfig.sh
