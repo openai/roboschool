@@ -6,7 +6,7 @@ before_install:
   - ls
   - ROBOSCHOOL_PATH=$(pwd)
   - sudo apt-get -qq update
-  - sudo apt-get install -y wine wget perl git
+  - sudo apt-get install -y wine wget perl git libcommon-sense-perl
   - git clone https://github.com/Krakonos/msysww
   - cd msysww
   - PATH=$PATH:$(pwd)
