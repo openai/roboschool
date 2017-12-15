@@ -2,12 +2,11 @@ sudo: required
 dist: trusty
 language: cpp
 
-env:
-  - WINEARCH=win64
-  - MSYSTEM=MSYS
 
 cache: apt
+
 before_install:
+  - MSYSTEM=MSYS
   - ls
   - export ROBOSCHOOL_PATH=$(pwd)
   - sudo apt-get -qq update
@@ -35,11 +34,11 @@ before_script:
 script:
   - mkdir bullet3/build
   - cd bullet3/build
-  - msys2-prepare
-  - msys2-wrapper "pacman -S python3 mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2"
-  - msys2-wrapper "cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. "
-  - msys2-wrapper "make -j4"
-  - msys2-wrapper "make install"
+  - msys2-init
+  - msys2-shell -c "pacman -S python3 mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2"
+  - msys2-shell -c "cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. "
+  - msys2-shell -c "make -j4"
+  - msys2-shell -c "make install"
   - cd ../..
   - ls
   - msys2-wrapper "python3 setup.py install"
