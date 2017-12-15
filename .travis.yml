@@ -14,7 +14,7 @@ before_install:
   - chmod +x msysww
   - msysww --init
   - cd ..
-  - it clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
+  - git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
   - ls
   - mkdir bullet3/build
   - cd bullet3/build
