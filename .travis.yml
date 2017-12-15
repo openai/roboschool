@@ -35,6 +35,7 @@ before_script:
 script:
   - mkdir bullet3/build
   - cd bullet3/build
+  - sed "s/tar zxf/tar xf/" -i /usr/bin/msys2-init
   - msys2-init --cache https://netcologne.dl.sourceforge.net/project/msys2/Base/x86_64/msys2-base-x86_64-20170918.tar.xz
   - msys2-shell -c "pacman -S cmake make python3 mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2"
   - msys2-shell -c "cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. "
