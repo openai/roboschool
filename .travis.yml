@@ -12,7 +12,7 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y wine wget perl git libcommon-sense-perl
   - sudo apt-get install xvfb
-  - xvfb :0 -screen 0 1024x768x16 &
+  - Xvfb :0 -screen 0 1024x768x16 &
   - export DISPLAY=:0.0
   #- git clone https://github.com/Krakonos/msysww
   #- cd msysww
@@ -29,6 +29,7 @@ before_install:
   #- export MSYSEXEC="wine "${MSYS}"/usr/bin/mintty.exe --exec"
   #- echo "MSYSEXEC:"$MSYSEXEC
 before_script:
+  - export WINEARCH=win64
   - wget https://github.com/fracting/msys2-scripts-deb/raw/master/msys2-scripts_20150811_all.deb
   - sudo dpkg -i msys2-scripts_20150811_all.deb
 script:
