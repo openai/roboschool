@@ -9,8 +9,8 @@ before_install:
   - sudo apt-get install -y wine wget perl git libcommon-sense-perl
   - git clone https://github.com/Krakonos/msysww
   - cd msysww
-  - PATH=$PATH:$(pwd)
-  - MSYS=$(pwd)
+  - PATH=$PATH:$(pwd):/home/travis/.msysww/drive_c/msys64
+  - MSYS=/home/travis/.msysww/drive_c/msys64
   - echo MSYS:${MSYS}
   - chmod +x msysww
   - msysww --init
