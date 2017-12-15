@@ -3,8 +3,23 @@ dist: trusty
 language: cpp
 
 before_install:
+  - ROBOSCHOOL_PATH=$(pwd)
   - sudo add-apt-repository ppa:flosoft/cross-mingw -y
   - sudo apt-get -qq update
-  - sudo apt-get install -y python3 git mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2
-  - ROBOSCHOOL_PATH=$(pwd) &&  git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision && mkdir bullet3/build && cd bullet3/build && cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. && make -j4 && make install && cd ../..
-  - sudo python3 setup.py install
+  - sudo apt-get install -y wine wget perl git
+  #python3 mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2
+  - git clone https://github.com/Krakonos/msysww
+  - cd msysww
+  - PATH=$PATH:$(pwd)/msysww
+  - chmod +x msysww
+  - msysww --init
+  - cd ..
+  - it clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
+  - mkdir bullet3/build
+  - cd bullet3/build
+  - msysww -s "cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. "
+  - msysww -s "make -j4"
+  - msysww -s "make install"
+  - cd ../..
+  #- ROBOSCHOOL_PATH=$(pwd) &&  git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision && mkdir bullet3/build && cd bullet3/build && cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. && make -j4 && make install && cd ../..
+  #- sudo python3 setup.py install
