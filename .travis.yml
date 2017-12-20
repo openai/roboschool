@@ -11,7 +11,7 @@ before_install:
   - export ROBOSCHOOL_PATH=$(pwd)
   - sudo apt-get -qq update
   - sudo apt-get install -y wine wget perl git libcommon-sense-perl
-  - sudo apt-get install xvfb
+  - sudo apt-get install -y xvfb
   - Xvfb :0 -screen 0 1024x768x16 &
   - export DISPLAY=:0.0
   #- git clone https://github.com/Krakonos/msysww
@@ -33,6 +33,7 @@ before_script:
   - wget https://github.com/fracting/msys2-scripts-deb/raw/master/msys2-scripts_20150811_all.deb
   - sudo dpkg -i msys2-scripts_20150811_all.deb
 script:
+  - export PKG_CONFIG_PATH=$PKG_CONFIG:/d/msys64/mingw64/qt5-static/lib/pkgconfig/:/d/msys64/mingw64/lib/pkgconfig/
   - mkdir bullet3/build
   - cd bullet3/build
   - sudo sed 's/https:\/\/s3.amazonaws.com\/fracting\/msys2\/Base\/..MSYS_ARCH.\/..MSYS2_INSTALLER./https:\/\/netcologne.dl.sourceforge.net\/project\/msys2\/Base\/x86_64\/msys2-base-x86_64-20170918.tar.xz/' -i /usr/bin/msys2-install
@@ -42,13 +43,13 @@ script:
   - sudo sed 's/.. return 0//' -i /usr/bin/msys2-shell
   - msys2-init
   - echo MSYS inited
-  - msys2-shell -c "pacman -S  --needed --noconfirm cmake make python3 mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2"
+  - msys2-shell -c "pacman -S  --needed --noconfirm cmake make python3 mingw-w64-x86_64-qt5 mingw-w64-x86_64-freeglut mingw-w64-x86_64-boost mingw-w64-x86_64-qt5-static mingw-w64-x86_64-bullet mingw-w64-x86_64-python3 mingw-w64-x86_64-glew mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL2"
   - echo running cmake
-  - msys2-shell -c "cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. "
-  - msys2-shell -c "make -j4"
+  - msys2-shell -c "PATH=/mingw64/bin:/usr/bin /mingw64/bin/cmake -G 'MSYS Makefiles' -DINSTALL_LIBS=ON -DCMAKE_TOOLCHAIN_FILE=../../Toolchain-mingw64.cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. "
+  - msys2-shell -c "PATH=/mingw64/bin:$PATH make -j4"
   - msys2-shell -c "make install"
   - cd ../..
   - ls
-  - msys2-shell "python3 setup.py install"
+  - msys2-shell "PATH=/mingw64/bin:$PATH /mingw64/bin/python3 setup.py install"
   #- ROBOSCHOOL_PATH=$(pwd) &&  git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision && mkdir bullet3/build && cd bullet3/build && cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. && make -j4 && make install && cd ../..
   #- sudo python3 setup.py install

@@ -1,7 +1,12 @@
 UNAME := $(shell uname -s)
 OBJDIRR=.build-release
 OBJDIRD=.build-debug
+PKG_P := $(PKG_CONFIG_PATH)
+$(info PWD $(shell /bin/bash -c 'pwd -W'))
+export PKG_CONFIG_PATH=$(shell /bin/bash -c 'pwd -W')\bullet_local_install\lib\pkgconfig\;$(PKG_P)
 
+$(info PKG_CONFIG_PATH is )
+$(info ${PKG_CONFIG_PATH})
 WIN_LIBS=
 ifeq ($(UNAME),MSYS_NT-10.0)
   PKG  =/mingw64/bin/pkg-config
@@ -78,11 +83,16 @@ ifeq ($(UNAME),Darwin)
 endif
 
 $(info Link against python $(PYTHON))
-INC     += `$(PKG) --cflags Qt5Core Qt5Widgets Qt5OpenGL assimp python-$(PYTHON) $(WIN_LIBS)`
+INC     += `$(PKG) --cflags bullet Qt5Core Qt5Widgets Qt5OpenGL assimp python-$(PYTHON) $(WIN_LIBS)`
 LIBS    += -lstdc++ `$(PKG) --libs Qt5Core Qt5OpenGL Qt5Widgets assimp python-$(PYTHON) $(WIN_LIBS)`
-INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet
-LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API
-
+#INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet
+ifeq ($(UNAME),MSYS_NT-10.0)
+    INC     += -I/mingw64/usr/local/include/bullet
+else
+    INC     += -I/usr/local/include/bullet
+endif
+#LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API
+LIBS    += $(RPATH) `$(PKG) --libs bullet`
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
 else
@@ -90,7 +100,7 @@ else
 endif
 
 CC=gcc
-LINK=gcc
+LINK=g++
 AR=ar r
 AR_OUT=
 LINK_OUT= -o
@@ -100,7 +110,7 @@ CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-depre
 
 ifeq ($(UNAME),MSYS_NT-10.0)
     CC=/mingw64/bin/gcc
-    LINK=/mingw64/bin/gcc
+    LINK=/mingw64/bin/g++
     CFLAGS  += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
     CFLAGSD += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
 endif
@@ -144,6 +154,7 @@ EVERY_OBJ_R = $(SIM_R) $(TWND_R) $(PYTH_R)
 EVERY_OBJ_D = $(SIM_D) $(TWND_D) $(PYTH_D)
 DEP = $(patsubst %.o,%.o.dep, $(EVERY_OBJ_R) $(EVERY_OBJ_D))
 
+
 all: dirs $(EVERY_BIN)
 
 $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
@@ -159,7 +170,7 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 	$(LINK) $(LINK_OUT)$@ $(LIBS) $^ 
 
 ../cpp_household.so: $(SIM_R) $(PYTH_R)
-	$(LINK) $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
+	$(LINK) -Wl,-verbose $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
 ../cpp_household_d.so: $(SIM_D) $(PYTH_D)
 	$(LINK) $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
 

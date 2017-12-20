@@ -20,3 +20,5 @@ bullet3
 packages
 update.sh
 pkgconfig.sh
+msgs.txt
+errors.txt
