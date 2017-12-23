@@ -11,9 +11,9 @@ WIN_LIBS=
 ifeq ($(UNAME),MSYS_NT-10.0)
   PKG  =/mingw64/bin/pkg-config
   MOC  =moc
-  WIN_LIBS =freeglut glew sdl
-  LIBS =-L/mingw64/lib -L/usr/lib64 -lm
+  LIBS =-L/mingw64/bin -L/mingw64/lib -lm -lopengl32 -lmsvcr100
   INC  =-I/mingw64/x86_64-w64-mingw32/include/ -I/mingw64/include/
+  
   BOOST_MT=
   ifneq ($(USE_PYTHON3),0)
     HAVE_PYTHON3=$(shell which python3)
@@ -34,7 +34,7 @@ ifeq ($(UNAME),MSYS_NT-10.0)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib'
+  RPATH=-Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib' -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/bin'
 endif
 
 ifeq ($(UNAME),Linux)
@@ -102,23 +102,26 @@ endif
 CC=gcc
 LINK=g++
 AR=ar r
+FILEEXT=so
 AR_OUT=
-LINK_OUT= -o
-MINUS_O = -o
+LINK_OUT = -o
+MINUS_O  = -o
 CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 -march=native $(INC)
 CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -DDEBUG $(INC)
-
+LINK_FLAGS_DLL =
 ifeq ($(UNAME),MSYS_NT-10.0)
+    FILEEXT=dll
     CC=/mingw64/bin/gcc
     LINK=/mingw64/bin/g++
     CFLAGS  += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
     CFLAGSD += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
+    LINK_FLAGS_DLL = -Wl,--dll
 endif
 
 SHARED  = -shared
 DEPENDS = -MMD -MF $@.dep
 
-EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
+EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.$(FILEEXT) ../cpp_household_d.$(FILEEXT)
 
 SIM = \
  physics-bullet.cpp \
@@ -169,10 +172,10 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 ../robot-test-tool_d: $(SIM_D) $(TWND_D)
 	$(LINK) $(LINK_OUT)$@ $(LIBS) $^ 
 
-../cpp_household.so: $(SIM_R) $(PYTH_R)
-	$(LINK) -Wl,-verbose $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
-../cpp_household_d.so: $(SIM_D) $(PYTH_D)
-	$(LINK) $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
+../cpp_household.$(FILEEXT): $(SIM_R) $(PYTH_R)
+	$(LINK) $(LINK_FLAGS_DLL) -Wl,-verbose $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
+../cpp_household_d.$(FILEEXT): $(SIM_D) $(PYTH_D)
+	$(LINK) $(LINK_FLAGS_DLL) $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
 
 $(OBJDIRR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $<  $(MINUS_O)$@ $(DEPENDS)

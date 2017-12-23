@@ -1,7 +1,10 @@
 #define GL_GLEXT_PROTOTYPES
-#include "render-simple.h"
+
+#include <QtGui/QtGui>
 #include <QtOpenGL/QtOpenGL>
+#include "render-simple.h"
 #include <QtOpenGL/QGLFramebufferObject>
+#include <QtGui/QOpenGLFunctions_3_3_Compatibility>
 
 #ifdef __APPLE__
 #include <gl3.h>
@@ -125,8 +128,14 @@ Context::~Context()
 	// destructors here
 }
 
-static void glMultMatrix(const float* m)  { glMultMatrixf(m); }  // this helps with btScalar
-static void glMultMatrix(const double* m) { glMultMatrixd(m); }
+static void glMultMatrix(const float* m)  {
+    QOpenGLFunctions_3_3_Compatibility *glFuncs = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Compatibility>();
+    glFuncs->glMultMatrixf(m);
+}  // this helps with btScalar
+static void glMultMatrix(const double* m) {
+    QOpenGLFunctions_3_3_Compatibility *glFuncs = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Compatibility>();
+    glFuncs->glMultMatrixd(m);
+}
 
 int Context::cached_bind_texture(const std::string& image_fn)
 {
@@ -138,17 +147,18 @@ int Context::cached_bind_texture(const std::string& image_fn)
 	if (img.isNull()) {
 		fprintf(stderr, "cannot read image '%s'\n", image_fn.c_str());
 	} else {
+	    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 		//printf("image %ix%i <- %s\n", (int)img.width(), (int)img.height(), image_fn.c_str());
-		glActiveTexture(GL_TEXTURE0);
+		glFuncs->glActiveTexture(GL_TEXTURE0);
 		shared_ptr<Texture> t(new Texture());
-		glBindTexture(GL_TEXTURE_2D, t->handle);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.scanLine(0));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, t->handle);
+		glFuncs->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.scanLine(0));
+		glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glFuncs->glGenerateMipmap(GL_TEXTURE_2D);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 		textures.push_back(t);
 		//assert(glGetError() == GL_NO_ERROR);
 		b = t->handle;
@@ -219,20 +229,21 @@ void Context::load_missing_textures()
 static
 void render_lines_overlay(const shared_ptr<Shape>& t)
 {
+    QOpenGLFunctions_3_3_Compatibility *glFuncs = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Compatibility>();
 	float r = float(1/256.0) * ((t->lines_color >> 16) & 255);
 	float g = float(1/256.0) * ((t->lines_color >>  8) & 255);
 	float b = float(1/256.0) * ((t->lines_color >>  0) & 255);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, t->lines.data());
-	glColor3f(r, g, b);
-	glDrawArrays(GL_LINES, 0, t->lines.size()/3);
+	glFuncs->glEnableClientState(GL_VERTEX_ARRAY);
+	glFuncs->glVertexPointer(3, GL_FLOAT, 0, t->lines.data());
+	glFuncs->glColor3f(r, g, b);
+	glFuncs->glDrawArrays(GL_LINES, 0, t->lines.size()/3);
 	if (!t->raw_vertexes.empty()) {
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glPointSize(3.0f);
-		glVertexPointer(3, sizeof(btScalar)==sizeof(float) ? GL_FLOAT : GL_DOUBLE, 0, t->raw_vertexes.data());
-		glDrawArrays(GL_POINTS, 0, t->raw_vertexes.size()/3);
+		glFuncs->glColor3f(1.0f, 0.0f, 0.0f);
+		glFuncs->glPointSize(3.0f);
+		glFuncs->glVertexPointer(3, sizeof(btScalar)==sizeof(float) ? GL_FLOAT : GL_DOUBLE, 0, t->raw_vertexes.data());
+		glFuncs->glDrawArrays(GL_POINTS, 0, t->raw_vertexes.size()/3);
 	}
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glFuncs->glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void Context::initGL()
@@ -241,6 +252,7 @@ void Context::initGL()
 
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	if (initialized) return;
+	QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	initialized = true;
 
 	program_tex = load_program("simple_texturing.vert.glsl", "", "simple_texturing.frag.glsl");
@@ -270,7 +282,7 @@ void Context::initGL()
 	if (ssao_enable)
 		ssao_enable = _hbao_init();
 #endif
-	assert(glGetError() == GL_NO_ERROR);
+	assert(glFuncs->glGetError() == GL_NO_ERROR);
 }
 
 ContextViewport::ContextViewport(const shared_ptr<Context>& cx, int W, int H, double near, double far, double hfov):
@@ -282,20 +294,21 @@ ContextViewport::ContextViewport(const shared_ptr<Context>& cx, int W, int H, do
 #endif
 
 	fbuf_scene.reset(new Framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle);
+	QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle);
 #ifndef USE_SSAO
 	tex_color.reset(new Texture());
-	glBindTexture(GL_TEXTURE_2D, tex_color->handle);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, W, H);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, tex_color->handle);
+	glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, W, H);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 	tex_depthstencil.reset(new Texture());
-	glBindTexture(GL_TEXTURE_2D, tex_depthstencil->handle);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, W, H);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, tex_depthstencil->handle);
+	glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, W, H);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 #endif
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,        tex_color->handle, 0);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, tex_depthstencil->handle, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,        tex_color->handle, 0);
+	glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, tex_depthstencil->handle, 0);
+	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	W16  = W;
 	W16 += 15;
@@ -303,31 +316,57 @@ ContextViewport::ContextViewport(const shared_ptr<Context>& cx, int W, int H, do
 	hud_image = QImage(W16, H, QImage::Format_ARGB32);
 	hud_image.fill(Qt::transparent);
 	hud_texture.reset(new Texture());
-	glBindTexture(GL_TEXTURE_2D, hud_texture->handle);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, W16, H);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, hud_texture->handle);
+	glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, W16, H);
 
 	hud_vao.reset(new VAO);
-	glBindVertexArray(hud_vao->handle);
+	glFuncs->glBindVertexArray(hud_vao->handle);
 	hud_vertexbuf.reset(new Buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, hud_vertexbuf->handle);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(hud_vertex), hud_vertex, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
-	glBindVertexArray(0);
+	glFuncs->glBindBuffer(GL_ARRAY_BUFFER, hud_vertexbuf->handle);
+	glFuncs->glBufferData(GL_ARRAY_BUFFER, sizeof(hud_vertex), hud_vertex, GL_STATIC_DRAW);
+	glFuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glFuncs->glEnableVertexAttribArray(0);
+	glFuncs->glBindVertexArray(0);
 }
 
-Texture::Texture()  { glGenTextures(1, &handle); }
-Texture::~Texture()  { glDeleteTextures(1, &handle); }
-Framebuffer::Framebuffer()  { glGenFramebuffers(1, &handle); }
-Framebuffer::~Framebuffer()  { glDeleteFramebuffers(1, &handle); }
-Buffer::Buffer()  { glGenBuffers(1, &handle); }
-Buffer::~Buffer()  { glDeleteBuffers(1, &handle); }
-VAO::VAO()  { glGenVertexArrays(1, &handle); }
-VAO::~VAO()  { glDeleteVertexArrays(1, &handle); }
+Texture::Texture()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glGenTextures(1, &handle);
+}
+Texture::~Texture()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glDeleteTextures(1, &handle);
+}
+Framebuffer::Framebuffer()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glGenFramebuffers(1, &handle);
+}
+Framebuffer::~Framebuffer()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glDeleteFramebuffers(1, &handle);
+}
+Buffer::Buffer()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glGenBuffers(1, &handle);
+}
+Buffer::~Buffer()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glDeleteBuffers(1, &handle);
+}
+VAO::VAO()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glGenVertexArrays(1, &handle);
+}
+VAO::~VAO()  {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+    glFuncs->glDeleteVertexArrays(1, &handle);
+}
 
 void ContextViewport::_render_single_object(const shared_ptr<Household::ShapeDetailLevels>& m, uint32_t options, int detail, const QMatrix4x4& at_pos)
 {
 	const std::vector<shared_ptr<Shape>>& shapes = m->detail_levels[detail];
+	QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+
 
 	int cnt = shapes.size();
 	for (int c=0; c<cnt; c++) {
@@ -377,17 +416,17 @@ void ContextViewport::_render_single_object(const shared_ptr<Household::ShapeDet
 			cx->program_tex->setUniformValue(cx->location_uni_color, r, g, b, cx->pure_color_opacity*a);
 		}
 
-		glBindVertexArray(t->vao->handle);
+		glFuncs->glBindVertexArray(t->vao->handle);
 		if (use_texture) {
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, t->material->texture);
+			glFuncs->glActiveTexture(GL_TEXTURE0);
+			glFuncs->glBindTexture(GL_TEXTURE_2D, t->material->texture);
 		} else {
 		}
 		cx->program_tex->setUniformValue(cx->location_enable_texture, use_texture);
 		cx->program_tex->setUniformValue(cx->location_texture, 0);
 
-		glDrawArrays(GL_TRIANGLES, 0, triangles/3);
-		glBindVertexArray(0);
+		glFuncs->glDrawArrays(GL_TRIANGLES, 0, triangles/3);
+		glFuncs->glBindVertexArray(0);
 	}
 }
 
@@ -428,48 +467,50 @@ int ContextViewport::_objects_loop(int floor_visible, uint32_t view_options)
 
 void Context::_generate_ruler_vao()
 {
+	QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	ruler_vao.reset(new VAO);
-	glBindVertexArray(ruler_vao->handle);
+	glFuncs->glBindVertexArray(ruler_vao->handle);
 	ruler_vertexes.reset(new Buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, ruler_vertexes->handle);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertex), line_vertex, GL_STATIC_DRAW);
-	glVertexAttribPointer(ATTR_N_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(ATTR_N_VERTEX);
-	glBindVertexArray(0);
+	glFuncs->glBindBuffer(GL_ARRAY_BUFFER, ruler_vertexes->handle);
+	glFuncs->glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertex), line_vertex, GL_STATIC_DRAW);
+	glFuncs->glVertexAttribPointer(ATTR_N_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glFuncs->glEnableVertexAttribArray(ATTR_N_VERTEX);
+	glFuncs->glBindVertexArray(0);
 }
 
 void Context::_shape_to_vao(const boost::shared_ptr<Household::Shape>& shape)
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	shape->vao.reset(new VAO);
 	allocated_vaos.push_back(shape->vao);
-	glBindVertexArray(shape->vao->handle);
+	glFuncs->glBindVertexArray(shape->vao->handle);
 
 	assert(shape->v.size() > 0);
 	shape->buf_v.reset(new Buffer);
 	allocated_buffers.push_back(shape->buf_v);
-	glBindBuffer(GL_ARRAY_BUFFER, shape->buf_v->handle);
-	glBufferData(GL_ARRAY_BUFFER, shape->v.size()*sizeof(shape->v[0]), shape->v.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(ATTR_N_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glFuncs->glBindBuffer(GL_ARRAY_BUFFER, shape->buf_v->handle);
+	glFuncs->glBufferData(GL_ARRAY_BUFFER, shape->v.size()*sizeof(shape->v[0]), shape->v.data(), GL_STATIC_DRAW);
+	glFuncs->glVertexAttribPointer(ATTR_N_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	assert(shape->norm.size() > 0);
 	shape->buf_n.reset(new Buffer);
 	allocated_buffers.push_back(shape->buf_n);
-	glBindBuffer(GL_ARRAY_BUFFER, shape->buf_n->handle);
-	glBufferData(GL_ARRAY_BUFFER, shape->norm.size()*sizeof(shape->norm[0]), shape->norm.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(ATTR_N_NORMAL, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glFuncs->glBindBuffer(GL_ARRAY_BUFFER, shape->buf_n->handle);
+	glFuncs->glBufferData(GL_ARRAY_BUFFER, shape->norm.size()*sizeof(shape->norm[0]), shape->norm.data(), GL_STATIC_DRAW);
+	glFuncs->glVertexAttribPointer(ATTR_N_NORMAL, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	if (shape->t.size()) {
 		shape->buf_t.reset(new Buffer);
 		allocated_buffers.push_back(shape->buf_t);
-		glBindBuffer(GL_ARRAY_BUFFER, shape->buf_t->handle);
-		glBufferData(GL_ARRAY_BUFFER, shape->t.size()*sizeof(shape->t[0]), shape->t.data(), GL_STATIC_DRAW);
-		glVertexAttribPointer(ATTR_N_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(ATTR_N_TEXCOORD);
+		glFuncs->glBindBuffer(GL_ARRAY_BUFFER, shape->buf_t->handle);
+		glFuncs->glBufferData(GL_ARRAY_BUFFER, shape->t.size()*sizeof(shape->t[0]), shape->t.data(), GL_STATIC_DRAW);
+		glFuncs->glVertexAttribPointer(ATTR_N_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+		glFuncs->glEnableVertexAttribArray(ATTR_N_TEXCOORD);
 	}
 
-	glEnableVertexAttribArray(ATTR_N_VERTEX);
-	glEnableVertexAttribArray(ATTR_N_NORMAL);
-	glBindVertexArray(0);
+	glFuncs->glEnableVertexAttribArray(ATTR_N_VERTEX);
+	glFuncs->glEnableVertexAttribArray(ATTR_N_NORMAL);
+	glFuncs->glBindVertexArray(0);
 }
 
 void ContextViewport::paint(float user_x, float user_y, float user_z, float wheel, float zrot, float xrot, Household::Camera* camera, int floor_visible, uint32_t view_options, float ruler_size)
@@ -478,7 +519,7 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 		cx->initGL();
 		cx->_generate_ruler_vao();
 	}
-
+	QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	if (camera) floor_visible = 65535; // disable visibility_123 for robot cameras
 	//fprintf(stderr, "0x%p render %ix%i\n", this, W, H);
 #ifdef USE_SSAO
@@ -486,18 +527,18 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 #else
 	// For rendering without shadows, just keep rendering on default framebuffer
 	if (camera)
-		glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle); // unless we render offscreen for camera
+		glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle); // unless we render offscreen for camera
 #endif
-	glViewport(0,0,W,H);
+	glFuncs->glViewport(0,0,W,H);
 
 	float clear_color[4] = { 0.8, 0.8, 0.9, 1.0 };
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glClearBufferfv(GL_COLOR, 0, clear_color);
-	glClearDepth(1.0);
-	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+	glFuncs->glEnable(GL_DEPTH_TEST);
+	glFuncs->glEnable(GL_CULL_FACE);
+	glFuncs->glEnable(GL_BLEND);
+	glFuncs->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glFuncs->glClearBufferfv(GL_COLOR, 0, clear_color);
+	glFuncs->glClearDepthf(1.0);
+	glFuncs->glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 
 	double xmin, xmax;
 	xmax = near * tanf(hfov * M_PI / 180 * 0.5);
@@ -529,17 +570,17 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 	}
 
 	cx->program_tex->bind();
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glFuncs->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	cx->program_tex->setUniformValue(cx->location_enable_texture, false);
 	cx->program_tex->setUniformValue(cx->location_uni_color, 0,0,0,0.8);
 	cx->program_tex->setUniformValue(cx->location_texture, 0);
 	cx->program_tex->setUniformValue(cx->location_input_matrix_modelview, modelview);
 	cx->program_tex->setUniformValue(cx->location_input_matrix_modelview_inverse_transpose, modelview_inverse_transpose);
 	if (~view_options & VIEW_CAMERA_BIT) {
-		glBindVertexArray(cx->ruler_vao->handle);
+		glFuncs->glBindVertexArray(cx->ruler_vao->handle);
 		CHECK_GL_ERROR; // error often here, when context different, also set if (1) above to always enter this code block
-		glDrawArrays(GL_LINES, 0, sizeof(line_vertex)/sizeof(float)/3);
-		glBindVertexArray(0);
+		glFuncs->glDrawArrays(GL_LINES, 0, sizeof(line_vertex)/sizeof(float)/3);
+		glFuncs->glBindVertexArray(0);
 	}
 	visible_object_count = _objects_loop(floor_visible, view_options);
 	cx->program_tex->release();
@@ -552,7 +593,7 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 	}
 
 	if (camera) {
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, fbuf_scene->handle); // buffer stays bound so camera can read pixels
+		glFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbuf_scene->handle); // buffer stays bound so camera can read pixels
 		return;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle);
@@ -573,11 +614,12 @@ void ContextViewport::paint(float user_x, float user_y, float user_z, float whee
 
 void ContextViewport::_texture_paint(GLuint h)
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	// FIXME
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glUseProgram(cx->program_displaytex->programId());
-	glBindTexture(GL_TEXTURE_2D, h);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glFuncs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glFuncs->glUseProgram(cx->program_displaytex->programId());
+	glFuncs->glBindTexture(GL_TEXTURE_2D, h);
+	glFuncs->glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int ContextViewport::hud_print_score(const std::string& score)
@@ -592,39 +634,42 @@ int ContextViewport::hud_print_score(const std::string& score)
 
 void ContextViewport::hud_update_start()
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	cx->program_hud->bind();
-	glBindVertexArray(hud_vao->handle);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, hud_texture->handle);
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glFuncs->glBindVertexArray(hud_vao->handle);
+	glFuncs->glActiveTexture(GL_TEXTURE0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, hud_texture->handle);
+	glFuncs->glDisable(GL_DEPTH_TEST);
+	glFuncs->glEnable(GL_BLEND);
+	glFuncs->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void ContextViewport::hud_update(const QRect& r_)
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	QRect all_area(QPoint(0,0), hud_image.size());
 	QRect r = all_area & r_;
 	if (r.isEmpty()) return;
 	if (1) {
 		// Optimization: works!
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, hud_image.bytesPerLine()/4);
-		glTexSubImage2D(GL_TEXTURE_2D,0,
+		glFuncs->glPixelStorei(GL_UNPACK_ROW_LENGTH, hud_image.bytesPerLine()/4);
+		glFuncs->glTexSubImage2D(GL_TEXTURE_2D,0,
 			r.left(),r.top(),r.width(),r.height(),
 			GL_BGRA, GL_UNSIGNED_BYTE, hud_image.scanLine(r.top()) + r.left()*4);
 	} else {
 		// Lines-only optimization possible
-		glTexSubImage2D(GL_TEXTURE_2D,0, 0,0,W16,H, GL_RGBA, GL_UNSIGNED_BYTE, hud_image.scanLine(0));
+		glFuncs->glTexSubImage2D(GL_TEXTURE_2D,0, 0,0,W16,H, GL_RGBA, GL_UNSIGNED_BYTE, hud_image.scanLine(0));
 	}
 	cx->program_hud->setUniformValue(cx->location_xywh, -1+2*float(r.left())/W, -1+2*float(r.top())/H, 2*float(r.width())/W, 2*float(r.height())/H);
 	cx->program_hud->setUniformValue(cx->location_zpos, GLfloat(0.9));
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glFuncs->glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void ContextViewport::hud_update_finish()
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindVertexArray(0);
+	QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
+	glFuncs->glBindVertexArray(0);
 	cx->program_hud->release();
 }
 
@@ -672,7 +717,7 @@ void opengl_init(const boost::shared_ptr<Household::World>& wref)
 	boost::shared_ptr<SimpleRender::Context>& cx = wref->cx;
 	cx.reset(new SimpleRender::Context(wref));
 	cx->fmt = QSurfaceFormat::defaultFormat();
-	
+
 	cx->surf = new QOffscreenSurface();
 	cx->surf->setFormat(cx->fmt);
 	cx->surf->create();
@@ -722,7 +767,7 @@ void opengl_init_existing_app(const boost::shared_ptr<Household::World>& wref)
 {
 	wref->cx.reset(new SimpleRender::Context(wref));
 	wref->cx->fmt = QSurfaceFormat::defaultFormat();
-	
+
 	wref->cx->surf = new QOffscreenSurface();
 	wref->cx->surf->setFormat(wref->cx->fmt);
 	wref->cx->surf->create();

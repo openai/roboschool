@@ -34,10 +34,15 @@ if platform=="darwin":
             os.system("install_name_tool -change @rpath/%s.2.87.dylib @loader_path/%s.2.87.dylib %s/%s.2.87.dylib" % (x,x,blib,y))
 
 def recompile():
+    global platform
     USE_PYTHON3 = ""
     if sys.version_info[0]==2:
         USE_PYTHON3 = "USE_PYTHON3=0"
-    cmd = "cd %s/roboschool/cpp-household && make clean && make -j4 dirs %s ../cpp_household.so" % (setup_py_dir, USE_PYTHON3)
+    if platform=="win32":
+        fileExt = "dll"
+    else:
+        fileExt = "so"
+    cmd = "cd %s/roboschool/cpp-household && make clean && make -j4 dirs %s ../cpp_household.%s" % (setup_py_dir, USE_PYTHON3,fileExt)
     print(cmd)
     res = os.system(cmd)
     if res:
@@ -54,7 +59,11 @@ class MyEgg(EggInfo):
         recompile()
         EggInfo.run(self)
 
-need_files = ['cpp_household.so']
+if platform=="win32":
+    fileExt = "dll"
+else:
+    fileExt = "so"
+need_files = ['cpp_household.%s' % fileExt]
 hh = setup_py_dir + "/roboschool"
 
 for root, dirs, files in os.walk(hh):

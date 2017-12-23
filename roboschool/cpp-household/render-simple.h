@@ -38,7 +38,7 @@ enum {
 	VIEW_NO_CAPTIONS     = 0x2000,
 };
 
-#define CHECK_GL_ERROR { int e = glGetError(); if (e!=GL_NO_ERROR) fprintf(stderr, "%s:%i ERROR: 0x%x\n", __FILE__, __LINE__, e); assert(e == GL_NO_ERROR); }
+#define CHECK_GL_ERROR { int e=QOpenGLContext::currentContext()->extraFunctions()->glGetError(); if (e!=GL_NO_ERROR) fprintf(stderr, "%s:%i ERROR: 0x%x\n", __FILE__, __LINE__, e); assert(e == GL_NO_ERROR); }
 
 struct Texture {
 	GLuint handle;

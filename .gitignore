@@ -11,6 +11,7 @@ roboschool/robot-test-tool_d
 *.pyc
 *.dylib
 *.so
+*.dll
 *.swp
 __pycache__
 notes.txt
@@ -22,3 +23,4 @@ update.sh
 pkgconfig.sh
 msgs.txt
 errors.txt
+MINGW-packages
