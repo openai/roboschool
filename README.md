@@ -1,3 +1,5 @@
+Windows build :
+[![Build Status](https://travis-ci.org/TheCrazyT/roboschool.svg?branch=v0.0.1-beta.1)](https://travis-ci.org/TheCrazyT/roboschool)
 
 NEWS
 ====
