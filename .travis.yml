@@ -24,9 +24,9 @@ before_install:
   - wget https://download.qt.io/official_releases/qt/5.10/5.10.0/single/qt-everywhere-src-5.10.0.tar.xz
 
 before_script:
-  - 7zr x precompiled_headers.7z
-  - unzip boost_1_66_0.zip
-  - tar xf qt-everywhere-src-5.10.0.tar.xz
+  - 7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
+  - unzip boost_1_66_0.zip 1>/dev/null 2>/dev/null
+  - tar xf qt-everywhere-src-5.10.0.tar.xz 1>/dev/null 2>/dev/null
   - cd qt-everywhere-src-5.10.0
   - ./configure -opensource
   - cd ..
