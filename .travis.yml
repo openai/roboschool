@@ -28,7 +28,7 @@ before_script:
   - unzip boost_1_66_0.zip 1>/dev/null 2>/dev/null
   - tar xf qt-everywhere-src-5.10.0.tar.xz 1>/dev/null 2>/dev/null
   - cd qt-everywhere-src-5.10.0
-  - ./configure -opensource
+  - ./configure -confirm-license -developer-build -opensource -nomake examples -nomake tests
   - cd ..
 script:
   - ROBOSCHOOL_PATH=$(pwd)
