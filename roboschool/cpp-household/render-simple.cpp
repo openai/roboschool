@@ -306,8 +306,11 @@ ContextViewport::ContextViewport(const shared_ptr<Context>& cx, int W, int H, do
 	glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, W, H);
 	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 #endif
+#ifndef _WIN32
+    //FIXME
 	glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,        tex_color->handle, 0);
 	glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, tex_depthstencil->handle, 0);
+#endif // _WIN32
 	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	W16  = W;

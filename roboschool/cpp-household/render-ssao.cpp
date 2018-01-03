@@ -52,7 +52,10 @@ void ContextViewport::_depthlinear_init()
 	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 	fbuf_depthlinear.reset(new Framebuffer());
 	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_depthlinear->handle);
-	glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex_depthlinear->handle, 0);
+	#ifndef _WIN32
+        //FIXME
+        glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex_depthlinear->handle, 0);
+	#endif
 	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

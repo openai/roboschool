@@ -2,11 +2,18 @@ UNAME := $(shell uname -s)
 OBJDIRR=.build-release
 OBJDIRD=.build-debug
 PKG_P := $(PKG_CONFIG_PATH)
-$(info PWD $(shell /bin/bash -c 'pwd -W'))
-export PKG_CONFIG_PATH=$(shell /bin/bash -c 'pwd -W')\bullet_local_install\lib\pkgconfig\;$(PKG_P)
+$(info PWD $(shell /bin/bash -c 'pwd'))
+ifeq ($(UNAME),MSYS_NT-10.0)
+	export PKG_CONFIG_PATH=$(shell /bin/bash -c 'pwd -W')\bullet_local_install\lib\pkgconfig\;$(PKG_P)
+else
+	export PKG_CONFIG_PATH=$(shell /bin/bash -c 'pwd')\bullet_local_install\lib\pkgconfig\;$(PKG_P)
+endif
 
 $(info PKG_CONFIG_PATH is )
 $(info ${PKG_CONFIG_PATH})
+
+
+
 WIN_LIBS=
 ifeq ($(UNAME),MSYS_NT-10.0)
   PKG  =/mingw64/bin/pkg-config
@@ -42,6 +49,14 @@ ifeq ($(UNAME),Linux)
   MOC  =moc -qt=5
   LIBS =-L/usr/lib64 -lm -lGL -lGLU
   INC  =-I/usr/include
+  ifeq ($(CROSS_MINGW),1)
+	INC=-I bullet_local_install/include
+	INC+=-I bullet_local_install/include/bullet/
+	INC+=-I ../../boost_1_66_0
+	INC+=-I ../../qt-everywhere-src-5.10.0/qtbase/include/QtCore
+	INC+=-I ../../qt-everywhere-src-5.10.0/qtbase/include/
+  endif
+
   BOOST_MT=
   ifneq ($(USE_PYTHON3),0)
     HAVE_PYTHON3=$(shell which python3)
@@ -101,6 +116,12 @@ endif
 
 CC=gcc
 LINK=g++
+
+ifeq ($(CROSS_MINGW),1)
+	CC=x86_64-w64-mingw32-gcc
+	LINK=x86_64-w64-mingw32-g++
+endif
+
 AR=ar r
 FILEEXT=so
 AR_OUT=
@@ -159,6 +180,7 @@ DEP = $(patsubst %.o,%.o.dep, $(EVERY_OBJ_R) $(EVERY_OBJ_D))
 
 
 all: dirs $(EVERY_BIN)
+
 
 $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 .generated/test-tool-qt4.moc: test-tool-qt4.cpp

@@ -1,3 +1,4 @@
+#include <cmath>
 #include <boost/python.hpp>
 #include <boost/weak_ptr.hpp>
 
