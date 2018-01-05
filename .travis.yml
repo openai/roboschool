@@ -1,42 +1,68 @@
 sudo: required
 dist: trusty
 language: cpp
-
-
 cache: apt
-
+deploy:
+  provider: bintray
+  file: $TRAVIS_BUILD_DIR/.bintray.js
+  user: thecrazyt
+  key:
+    secure: cbVJmqDLooWLr6IhAztQPGpZtG1lZTjc50japHT5hlDF7857IgI5WRX6HIQ9iBicc2BbVveKW+4deEhze0TrzrX6kRRSEZqIvSMaWvqrB0iRHqMOyMk47nty/tJ9gxObUc3ONIed4BDch69kXz6dpgNSKxczmnb/Sl976/sP+tmZthKXfco4DVxaGmsDt58EVRXmi+vXMWOnQjaGgocqGaQ87joa3nVGSFwtm35/ZiTDga0GjxM3t+IZFTTlnZENrsiOP2Lurqv3vtKvxGzGIspd8mQiEgrEBXprneIlQw0eiGqbjOPGr2WF55MOcJvDqEOSDjiPUVpFB1XyCGcMBnTIg7KxiYo2mko3Wq6lBapNEc/71MyNIr145NpKrata/RE6c4I8m2/d1x9HyP412CQ2aLqX3RbKUyFuoA7NyyRzQbHk7vS4PK3JjCx+e5M2uhmQTydsyq10OFeO8i/qkOR9m0F737MHuynRCwfMYtlVUOVBEkXfgUVacZNUdfLf/zCd/lszwfxX50jzwJKyktasMK7CWfiTL0usVMv9J0m60NaKzjiBuXRc+mr/kHiBKorEyHh4sK3SS2cWhESYITtKS//WpWn5CcK3Hb3ooLkc5PFCeXLGoRhBq+Lh0olsQLybVIDz+iaEvW+NqeQl3H4ap9kHR9zSJpKRIeAGfm0=
+  on: production
 before_install:
-  - ls
-  - sudo apt-get -qq update
-  - sudo apt-get install -y build-essential
-  - sudo apt-get install -y wget git
-  - sudo apt-get install -y p7zip
-  - sudo apt-get install -y mingw-w64
-  - sudo apt-get install -y gcc-mingw-w64-x86-64
-  - sudo apt-get install -y g++-mingw-w64-x86-64
-  - sudo apt-get install -y cmake
-  - sudo apt-get install -y make
-  - sudo apt-get install -y pkg-config
-  - sudo apt-get install -y unzip
-  - git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
-  - wget https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/precompiled_headers.7z
-  - wget https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.zip
-  - wget https://download.qt.io/official_releases/qt/5.10/5.10.0/single/qt-everywhere-src-5.10.0.tar.xz
-
+- ls
+- sudo apt-get -qq update
+- sudo apt-get install -y build-essential
+- sudo apt-get install -y wget git
+- sudo apt-get install -y p7zip
+- sudo apt-get install -y mingw-w64
+- sudo apt-get install -y gcc-mingw-w64-x86-64
+- sudo apt-get install -y g++-mingw-w64-x86-64
+- sudo apt-get install -y cmake
+- sudo apt-get install -y make
+- sudo apt-get install -y pkg-config
+- sudo apt-get install -y unzip
+- sudo apt-get install -y binutils
+- sudo apt-get install -y libiberty-dev
+- git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
+- wget https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/precompiled_headers.7z
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz
+- sudo sed 's/\(.include *.ansidecl.h.\)/\/\/\1/g' -i /usr/share/mingw-w64/include/ieeefp.h
 before_script:
-  - 7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
-  - unzip boost_1_66_0.zip 1>/dev/null 2>/dev/null
-  - tar xf qt-everywhere-src-5.10.0.tar.xz 1>/dev/null 2>/dev/null
-  - cd qt-everywhere-src-5.10.0
-  - ./configure -confirm-license -developer-build -opensource -nomake examples -nomake tests
-  - cd ..
+- 7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
+- mkdir qt
+- mkdir boost
+- mkdir python
+- mkdir assimp
+- mv mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz qt/
+- cd qt
+- tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ..
+- mv mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz python/
+- cd python
+- tar xf mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ..
+- mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
+- cd boost
+- tar xf mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ..
+- mv mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz assimp/
+- cd assimp
+- tar xf mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ..
 script:
-  - ROBOSCHOOL_PATH=$(pwd)
-  - mkdir bullet3/build
-  - cd    bullet3/build
-  - cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
-  - make -j4
-  - make install
-  - cd ../..
-  - cd roboschool/cpp-household
-  - make CROSS_MINGW=1
+- ROBOSCHOOL_PATH=$(pwd)
+- mkdir bullet3/build
+- cd    bullet3/build
+- cmake -DCMAKE_TOOLCHAIN_FILE=../../Toolchain-mingw64.cmake -DBUILD_SHARED_LIBS=ON
+  -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install
+  -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF
+  -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
+- make -j4
+- make install
+- cd ../..
+- cd roboschool/cpp-household
+- make CROSS_MINGW=1

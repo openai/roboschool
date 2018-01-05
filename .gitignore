@@ -11,6 +11,7 @@ roboschool/robot-test-tool_d
 *.pyc
 *.dylib
 *.so
+*.pyd
 *.dll
 *.swp
 __pycache__

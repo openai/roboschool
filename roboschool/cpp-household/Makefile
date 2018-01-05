@@ -47,14 +47,17 @@ endif
 ifeq ($(UNAME),Linux)
   PKG  =pkg-config
   MOC  =moc -qt=5
-  LIBS =-L/usr/lib64 -lm -lGL -lGLU
+  ifneq ($(CROSS_MINGW),1)
+	 LIBS =-L/usr/lib64 -lm -lGL -lGLU
+  endif
   INC  =-I/usr/include
   ifeq ($(CROSS_MINGW),1)
 	INC=-I bullet_local_install/include
 	INC+=-I bullet_local_install/include/bullet/
-	INC+=-I ../../boost_1_66_0
-	INC+=-I ../../qt-everywhere-src-5.10.0/qtbase/include/QtCore
-	INC+=-I ../../qt-everywhere-src-5.10.0/qtbase/include/
+	INC+=-I ../../boost/mingw64/include
+	INC+=-I ../../qt/mingw64/include
+	INC+=-I ../../assimp/mingw64/include
+	INC+=-I ../../python/mingw64/include/python3.6m
   endif
 
   BOOST_MT=
@@ -77,7 +80,9 @@ ifeq ($(UNAME),Linux)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib'
+  ifneq ($(CROSS_MINGW),1)
+	  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib'
+  endif
 endif
 
 ifeq ($(UNAME),Darwin)
@@ -99,7 +104,20 @@ endif
 
 $(info Link against python $(PYTHON))
 INC     += `$(PKG) --cflags bullet Qt5Core Qt5Widgets Qt5OpenGL assimp python-$(PYTHON) $(WIN_LIBS)`
-LIBS    += -lstdc++ `$(PKG) --libs Qt5Core Qt5OpenGL Qt5Widgets assimp python-$(PYTHON) $(WIN_LIBS)`
+ifeq ($(CROSS_MINGW),1)
+	LIBS += ../../qt/mingw64/lib/libQt5Core.dll.a ../../qt/mingw64/lib/libQt5OpenGL.dll.a ../../qt/mingw64/lib/libQt5Widgets.dll.a ../../qt/mingw64/lib/libQt5Gui.dll.a
+	LIBS += ../../python/mingw64/lib/libpython3.6m.dll.a
+	LIBS += ../../boost/mingw64/lib/libboost_python3-mt.dll.a
+	LIBS += ../../assimp/mingw64/lib/libassimp.dll.a
+	BOOST_PYTHON=
+else
+	LIBS    += -lstdc++ `$(PKG) --libs Qt5Core Qt5OpenGL Qt5Widgets assimp python-$(PYTHON) $(WIN_LIBS)`
+	ifeq ($(PYTHON),2.7)
+	    BOOST_PYTHON = -lboost_python
+	else
+	    BOOST_PYTHON = -lboost_python$(BOOST_PYTHON3_POSTFIX)
+	endif
+endif
 #INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet
 ifeq ($(UNAME),MSYS_NT-10.0)
     INC     += -I/mingw64/usr/local/include/bullet
@@ -107,12 +125,8 @@ else
     INC     += -I/usr/local/include/bullet
 endif
 #LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API
-LIBS    += $(RPATH) `$(PKG) --libs bullet`
-ifeq ($(PYTHON),2.7)
-    BOOST_PYTHON = -lboost_python
-else
-    BOOST_PYTHON = -lboost_python$(BOOST_PYTHON3_POSTFIX)
-endif
+#LIBS    += $(RPATH) `$(PKG) --libs bullet`
+LIBS +=$(shell ls bullet_local_install/lib/*.a)
 
 CC=gcc
 LINK=g++
@@ -131,18 +145,28 @@ CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-depre
 CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -DDEBUG $(INC)
 LINK_FLAGS_DLL =
 ifeq ($(UNAME),MSYS_NT-10.0)
-    FILEEXT=dll
+    FILEEXT=pyd
     CC=/mingw64/bin/gcc
     LINK=/mingw64/bin/g++
     CFLAGS  += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
     CFLAGSD += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
     LINK_FLAGS_DLL = -Wl,--dll
 endif
+ifeq ($(CROSS_MINGW),1)
+    FILEEXT=pyd
+    CFLAGS  += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
+    CFLAGSD += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
+endif
+
 
 SHARED  = -shared
 DEPENDS = -MMD -MF $@.dep
 
-EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.$(FILEEXT) ../cpp_household_d.$(FILEEXT)
+ifeq ($(CROSS_MINGW),1)
+	EVERY_BIN=../cpp_household.$(FILEEXT)
+else
+	EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.$(FILEEXT) ../cpp_household_d.$(FILEEXT)
+endif
 
 SIM = \
  physics-bullet.cpp \
@@ -189,13 +213,16 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 #../robot-test-tool: $(SIM_R) $(TWND_R)
 #../robot-test-tool_d: $(SIM_D) $(TWND_D)
 
+
 ../robot-test-tool: $(SIM_R) $(TWND_R)
 	$(LINK) $(LINK_OUT)$@ $(LIBS) $^ 
 ../robot-test-tool_d: $(SIM_D) $(TWND_D)
 	$(LINK) $(LINK_OUT)$@ $(LIBS) $^ 
 
-../cpp_household.$(FILEEXT): $(SIM_R) $(PYTH_R)
-	$(LINK) $(LINK_FLAGS_DLL) -Wl,-verbose $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
+../cpp_household.pyd: $(SIM_R) $(PYTH_R)
+	$(LINK) $(LINK_FLAGS_DLL) $(SHARED) $(BOOST_PYTHON) $^ $(LIBS) $(LINK_OUT)$@
+../cpp_household.so: $(SIM_R) $(PYTH_R)
+	$(LINK) $(LINK_FLAGS_DLL) $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
 ../cpp_household_d.$(FILEEXT): $(SIM_D) $(PYTH_D)
 	$(LINK) $(LINK_FLAGS_DLL) $(SHARED) $(LINK_OUT)$@ $(LIBS) $(BOOST_PYTHON) $^
 
