@@ -12,6 +12,7 @@ deploy:
   
 before_install:
 - ls
+- dpkg -l
 - sudo apt-get -qq update
 - sudo apt-get install -y build-essential
 - sudo apt-get install -y wget git
@@ -23,8 +24,10 @@ before_install:
 - sudo apt-get install -y make
 - sudo apt-get install -y pkg-config
 - sudo apt-get install -y unzip
+- sudo apt-get install -y zip
 - sudo apt-get install -y binutils
 - sudo apt-get install -y libiberty-dev
+- sudo apt-get install -y perl
 - git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
 - wget https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/precompiled_headers.7z
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
@@ -37,18 +40,18 @@ before_script:
 - 7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
 - mkdir qt boost python assimp
 - mv mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz qt/
+- mv mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz python/
+- mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
+- mv mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz assimp/
 - cd qt
 - tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ..
-- mv mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz python/
 - cd python
 - tar xf mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ..
-- mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
 - cd boost
 - tar xf mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ..
-- mv mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz assimp/
 - cd assimp
 - tar xf mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 
@@ -68,11 +71,10 @@ script:
 - make CROSS_MINGW=1
 - cd ../..
 
-
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-zlib-1.2.8-9-any.pkg.tar.xz
+before_deploy:
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz
@@ -85,16 +87,33 @@ script:
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
 
-- mkdir zlib bzip freetype gcc-libs glib2 graphite2 harfbuzz libiconv icu gettext jasper libjpeg pcre pcre2 libpng libwinpthread
+- mkdir zlib bzip2 freetype glib2 graphite2 harfbuzz libiconv icu gettext jasper libjpeg pcre pcre2 libpng libwinpthread gcc-libs
+
+- mv mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz zlib/
+- mv mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz bzip2/
+- mv mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz freetype/
+- mv mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz glib2/
+- mv mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz graphite2/
+- mv mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz harfbuzz/
+- mv mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz libiconv/
+- mv mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz icu/
+- mv mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz gettext/
+- mv mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz jasper/
+- mv mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz libjpeg/
+- mv mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz pcre/
+- mv mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz pcre2/
+- mv mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz libpng/
+- mv mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz libwinpthread/
+- mv mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz gcc-libs/
+
 - cd zlib 
-- tar xf mingw-w64-x86_64-zlib-1.2.8-9-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../bzip
+- tar xf mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../bzip2
 - tar xf mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ../freetype
 - tar xf mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../gcc-libs
-- tar xf mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ../glib2
 - tar xf mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ../graphite2
@@ -119,26 +138,33 @@ script:
 - tar xf mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ../libwinpthread
 - tar xf mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../gcc-libs
+- tar xf mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
 - cd ..
-
-before_deploy:
 - mkdir msysDLLs
+- mkdir additionalDLLs
 - mkdir build
+- mkdir msysDLLs/imageformats
+
+- ls roboschool/cpp-household/bullet_local_install/bin/
+- cp roboschool/cpp-household/bullet_local_install/bin/* additionalDLLs/
+- cp bullet3/build/lib/libPhysicsClientC_API.dll additionalDLLs/
+- cp /usr/lib/gcc/x86_64-w64-mingw32/4.8/libstdc++-6.dll additionalDLLs/libstdc++m6.dll
+- cp /usr/lib/gcc/x86_64-w64-mingw32/4.8/libgcc_s_sjlj-1.dll additionalDLLs/
+
 - cp assimp/mingw64/bin/libassimp.dll msysDLLs/
-- cp zlib/mingw64/bin/zlin1.dll msysDLLs/
+- cp zlib/mingw64/bin/zlib1.dll msysDLLs/
 - cp zlib/mingw64/bin/libminizip-1.dll msysDLLs/
 - cp qt/mingw64/bin/Qt5Core.dll msysDLLs/
 - cp qt/mingw64/bin/Qt5Gui.dll msysDLLs/
 - cp qt/mingw64/bin/Qt5OpenGL.dll msysDLLs/
 - cp qt/mingw64/bin/Qt5Widgets.dll msysDLLs/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qgif.dll msysDLLs/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qicns.dll msysDLLs/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qjp2.dll msysDLLs/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qjpeg.dll msysDLLs/
-- cp bzip/mingw64/bin/libbz2-1.dll msysDLLs/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qgif.dll msysDLLs/imageformats/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qicns.dll msysDLLs/imageformats/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qjp2.dll msysDLLs/imageformats/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qjpeg.dll msysDLLs/imageformats/
+- cp bzip2/mingw64/bin/libbz2-1.dll msysDLLs/
 - cp freetype/mingw64/bin/libfreetype-6.dll msysDLLs/
-- cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
-- cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
 - cp glib2/mingw64/bin/libglib-2.0-0.dll msysDLLs/
 - cp graphite2/mingw64/bin/libgraphite2.dll msysDLLs/
 - cp harfbuzz/mingw64/bin/libharfbuzz-0.dll msysDLLs/
@@ -151,8 +177,29 @@ before_deploy:
 - cp libjpeg/mingw64/bin/libjpeg-8.dll msysDLLs/
 - cp pcre/mingw64/bin/libpcre-1.dll msysDLLs/
 - cp pcre2/mingw64/bin/libpcre2-16-0.dll msysDLLs/
-- cp libpng/mingw-w64/bin/libpng16-16.dll msysDLLs/
-- cp libwinpthread/mingw-w64/bin/libwinpthread-1.dll msysDLLs/
+- cp libpng/mingw64/bin/libpng16-16.dll msysDLLs/
+- cp libwinpthread/mingw64/bin/libwinpthread-1.dll msysDLLs/
+- cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
+- cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
 
 
-- tar --exclude='./roboschool/cpp-household' -zcvf build/roboschool.tgz roboschool msysDLLs
+- perl -pi -e 's/libstdc\+\+-6\.dll/libstdc++m6.dll/g' roboschool/cpp_household.pyd
+- perl -pi -e 's/libstdc\+\+-6\.dll/libstdc++m6.dll/g' additionalDLLs/*
+- wget -O additionalDLLs/libboost_python3-mgw72-mt-x64-1_66.dll https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/libboost_python3-mgw72-mt-x64-1_66.dll
+
+- | 
+    cat > rundemo.bat <<EOL
+    @echo off
+    REM Version of Python used: Python36
+
+    echo Keep in mind that you need to modify this file(adjust paths) before running
+    set ROOT=%CD%
+    cd %ROOT%\agent_zoo
+    set PYTHONPATH=%ROOT%
+    set QT_PLUGIN_PATH=%ROOT%\msysDLLs
+    set PATH=%ROOT%\msysDLLs;%ROOT%\additionalDLLs;d:\Python36\;%PATH%
+    echo PATH: %PATH%
+    d:\Python36\python demo_race2.py
+    pause
+    EOL
+- zip -r build/roboschool.zip rundemo.bat roboschool msysDLLs additionalDLLs agent_zoo -x ./roboschool/cpp-household/**\*

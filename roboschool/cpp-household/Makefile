@@ -106,8 +106,8 @@ $(info Link against python $(PYTHON))
 INC     += `$(PKG) --cflags bullet Qt5Core Qt5Widgets Qt5OpenGL assimp python-$(PYTHON) $(WIN_LIBS)`
 ifeq ($(CROSS_MINGW),1)
 	LIBS += ../../qt/mingw64/lib/libQt5Core.dll.a ../../qt/mingw64/lib/libQt5OpenGL.dll.a ../../qt/mingw64/lib/libQt5Widgets.dll.a ../../qt/mingw64/lib/libQt5Gui.dll.a
-	LIBS += ../../python/mingw64/lib/libpython3.6m.dll.a
-	LIBS += ../../boost/mingw64/lib/libboost_python3-mt.dll.a
+	LIBS += ../../precompiled/libpython36.a
+	LIBS += ../../precompiled/libboost_python3-mgw72-mt-x64-1_66.dll.a
 	LIBS += ../../assimp/mingw64/lib/libassimp.dll.a
 	BOOST_PYTHON=
 else
