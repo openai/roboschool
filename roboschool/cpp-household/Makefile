@@ -109,6 +109,7 @@ ifeq ($(CROSS_MINGW),1)
 	LIBS += ../../precompiled/libpython36.a
 	LIBS += ../../precompiled/libboost_python3-mgw72-mt-x64-1_66.dll.a
 	LIBS += ../../assimp/mingw64/lib/libassimp.dll.a
+    LIBS += ../../gcc-libs/mingw64/bin/libstdc++-6.dll
 	BOOST_PYTHON=
 else
 	LIBS    += -lstdc++ `$(PKG) --libs Qt5Core Qt5OpenGL Qt5Widgets assimp python-$(PYTHON) $(WIN_LIBS)`
