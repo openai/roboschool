@@ -66,3 +66,6 @@ script:
 - cd ../..
 - cd roboschool/cpp-household
 - make CROSS_MINGW=1
+- cd ../..
+- mkdir build
+- tar --exclude='./roboschool/cpp-household' -zcvf build/roboschool.tgz roboschool

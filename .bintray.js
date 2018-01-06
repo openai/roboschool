@@ -2,18 +2,18 @@
     "package": {
         "name": "roboschool",
         "repo": "roboschool",
-        "subject": "openai",
+        "subject": "thecrazyt",
         "vcs_url": "https://travis-ci.org/TheCrazyT/roboschool",
-        "licenses": ["MIT"],
+        "licenses": ["MIT"]
     },
 
     "version": {
-        "name": "0.1",
+        "name": "0.1"
     },
 
     "files":
         [
-        {"includePattern": "roboschool/(.*)","excludePattern": ".*/cpp-household/.*", "uploadPattern": "$1"},
+        {"includePattern": "/home/travis/build/TheCrazyT/roboschool/build/(.*)", "uploadPattern": "$1"}
         ],
     "publish": true
 }
