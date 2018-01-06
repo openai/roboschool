@@ -9,6 +9,7 @@ deploy:
   key:
     secure: cbVJmqDLooWLr6IhAztQPGpZtG1lZTjc50japHT5hlDF7857IgI5WRX6HIQ9iBicc2BbVveKW+4deEhze0TrzrX6kRRSEZqIvSMaWvqrB0iRHqMOyMk47nty/tJ9gxObUc3ONIed4BDch69kXz6dpgNSKxczmnb/Sl976/sP+tmZthKXfco4DVxaGmsDt58EVRXmi+vXMWOnQjaGgocqGaQ87joa3nVGSFwtm35/ZiTDga0GjxM3t+IZFTTlnZENrsiOP2Lurqv3vtKvxGzGIspd8mQiEgrEBXprneIlQw0eiGqbjOPGr2WF55MOcJvDqEOSDjiPUVpFB1XyCGcMBnTIg7KxiYo2mko3Wq6lBapNEc/71MyNIr145NpKrata/RE6c4I8m2/d1x9HyP412CQ2aLqX3RbKUyFuoA7NyyRzQbHk7vS4PK3JjCx+e5M2uhmQTydsyq10OFeO8i/qkOR9m0F737MHuynRCwfMYtlVUOVBEkXfgUVacZNUdfLf/zCd/lszwfxX50jzwJKyktasMK7CWfiTL0usVMv9J0m60NaKzjiBuXRc+mr/kHiBKorEyHh4sK3SS2cWhESYITtKS//WpWn5CcK3Hb3ooLkc5PFCeXLGoRhBq+Lh0olsQLybVIDz+iaEvW+NqeQl3H4ap9kHR9zSJpKRIeAGfm0=
   on: production
+  
 before_install:
 - ls
 - sudo apt-get -qq update
@@ -31,12 +32,10 @@ before_install:
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
 - wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz
 - sudo sed 's/\(.include *.ansidecl.h.\)/\/\/\1/g' -i /usr/share/mingw-w64/include/ieeefp.h
+
 before_script:
 - 7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
-- mkdir qt
-- mkdir boost
-- mkdir python
-- mkdir assimp
+- mkdir qt boost python assimp
 - mv mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz qt/
 - cd qt
 - tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
@@ -52,6 +51,7 @@ before_script:
 - mv mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz assimp/
 - cd assimp
 - tar xf mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+
 - cd ..
 script:
 - ROBOSCHOOL_PATH=$(pwd)
@@ -67,5 +67,92 @@ script:
 - cd roboschool/cpp-household
 - make CROSS_MINGW=1
 - cd ../..
+
+
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-zlib-1.2.8-9-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz
+- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz
+
+- mkdir zlib bzip freetype gcc-libs glib2 graphite2 harfbuzz libiconv icu gettext jasper libjpeg pcre pcre2 libpng libwinpthread
+- cd zlib 
+- tar xf mingw-w64-x86_64-zlib-1.2.8-9-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../bzip
+- tar xf mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../freetype
+- tar xf mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../gcc-libs
+- tar xf mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../glib2
+- tar xf mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../graphite2
+- tar xf mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../harfbuzz
+- tar xf mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../libiconv
+- tar xf mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../icu
+- tar xf mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../gettext
+- tar xf mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../jasper
+- tar xf mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../libjpeg
+- tar xf mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../pcre
+- tar xf mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../pcre2
+- tar xf mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../libpng
+- tar xf mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ../libwinpthread
+- tar xf mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+- cd ..
+
+before_deploy:
+- mkdir msysDLLs
 - mkdir build
-- tar --exclude='./roboschool/cpp-household' -zcvf build/roboschool.tgz roboschool
+- cp assimp/mingw64/bin/libassimp.dll msysDLLs/
+- cp zlib/mingw64/bin/zlin1.dll msysDLLs/
+- cp zlib/mingw64/bin/libminizip-1.dll msysDLLs/
+- cp qt/mingw64/bin/Qt5Core.dll msysDLLs/
+- cp qt/mingw64/bin/Qt5Gui.dll msysDLLs/
+- cp qt/mingw64/bin/Qt5OpenGL.dll msysDLLs/
+- cp qt/mingw64/bin/Qt5Widgets.dll msysDLLs/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qgif.dll msysDLLs/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qicns.dll msysDLLs/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qjp2.dll msysDLLs/
+- cp qt/mingw64/share/qt5/plugins/imageformats/qjpeg.dll msysDLLs/
+- cp bzip/mingw64/bin/libbz2-1.dll msysDLLs/
+- cp freetype/mingw64/bin/libfreetype-6.dll msysDLLs/
+- cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
+- cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
+- cp glib2/mingw64/bin/libglib-2.0-0.dll msysDLLs/
+- cp graphite2/mingw64/bin/libgraphite2.dll msysDLLs/
+- cp harfbuzz/mingw64/bin/libharfbuzz-0.dll msysDLLs/
+- cp libiconv/mingw64/bin/libiconv-2.dll msysDLLs/
+- cp icu/mingw64/bin/libicudt58.dll msysDLLs/
+- cp icu/mingw64/bin/libicuin58.dll msysDLLs/
+- cp icu/mingw64/bin/libicuuc58.dll msysDLLs/
+- cp gettext/mingw64/bin/libintl-8.dll msysDLLs/
+- cp jasper/mingw64/bin/libjasper-4.dll msysDLLs/
+- cp libjpeg/mingw64/bin/libjpeg-8.dll msysDLLs/
+- cp pcre/mingw64/bin/libpcre-1.dll msysDLLs/
+- cp pcre2/mingw64/bin/libpcre2-16-0.dll msysDLLs/
+- cp libpng/mingw-w64/bin/libpng16-16.dll msysDLLs/
+- cp libwinpthread/mingw-w64/bin/libwinpthread-1.dll msysDLLs/
+
+
+- tar --exclude='./roboschool/cpp-household' -zcvf build/roboschool.tgz roboschool msysDLLs
