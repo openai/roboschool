@@ -28,6 +28,7 @@ then
 	exit 1
 fi
 mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
+mv boost_2_mvc.7z boost/
 if [ $? != 0 ]
 then
 	exit 1
@@ -72,6 +73,16 @@ if [ $? != 0 ]
 then
     ls -lah mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
     tar xf mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    7zr x boost_2_mvc.7z
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    patch -f -p3 < boost_2_mvc.patch
     if [ $? != 0 ]
     then
         exit 1

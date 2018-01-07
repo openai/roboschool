@@ -80,6 +80,14 @@ if [ $? != 0 ]
 then
 	exit 1
 fi
+sudo apt-get install -y patch
+if [ $? != 0 ]
+then
+	exit 1
+fi
+
+
+
 dpkg -l
 git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
 if [ $? != 0 ]
@@ -116,6 +124,12 @@ if [ $? != 0 ]
 then
 	exit 1
 fi
+wget -O boost_2_mvc.7z https://dl.bintray.com/thecrazyt/roboschool/boost_2_mvc.7z
+if [ $? != 0 ]
+then
+	exit 1
+fi
+
 sudo sed 's/\(.include *.ansidecl.h.\)/\/\/\1/g' -i /usr/share/mingw-w64/include/ieeefp.h
 if [ $? != 0 ]
 then
