@@ -4,196 +4,45 @@ language: cpp
 cache: apt
 deploy:
   provider: bintray
-  file: $TRAVIS_BUILD_DIR/.bintray.js
+  file: "$TRAVIS_BUILD_DIR/.bintray.js"
   user: thecrazyt
   key:
     secure: cbVJmqDLooWLr6IhAztQPGpZtG1lZTjc50japHT5hlDF7857IgI5WRX6HIQ9iBicc2BbVveKW+4deEhze0TrzrX6kRRSEZqIvSMaWvqrB0iRHqMOyMk47nty/tJ9gxObUc3ONIed4BDch69kXz6dpgNSKxczmnb/Sl976/sP+tmZthKXfco4DVxaGmsDt58EVRXmi+vXMWOnQjaGgocqGaQ87joa3nVGSFwtm35/ZiTDga0GjxM3t+IZFTTlnZENrsiOP2Lurqv3vtKvxGzGIspd8mQiEgrEBXprneIlQw0eiGqbjOPGr2WF55MOcJvDqEOSDjiPUVpFB1XyCGcMBnTIg7KxiYo2mko3Wq6lBapNEc/71MyNIr145NpKrata/RE6c4I8m2/d1x9HyP412CQ2aLqX3RbKUyFuoA7NyyRzQbHk7vS4PK3JjCx+e5M2uhmQTydsyq10OFeO8i/qkOR9m0F737MHuynRCwfMYtlVUOVBEkXfgUVacZNUdfLf/zCd/lszwfxX50jzwJKyktasMK7CWfiTL0usVMv9J0m60NaKzjiBuXRc+mr/kHiBKorEyHh4sK3SS2cWhESYITtKS//WpWn5CcK3Hb3ooLkc5PFCeXLGoRhBq+Lh0olsQLybVIDz+iaEvW+NqeQl3H4ap9kHR9zSJpKRIeAGfm0=
   on: production
-  
+services:
+- docker
 before_install:
-- ls
-- dpkg -l
-- sudo apt-get -qq update
-- sudo apt-get install -y build-essential
-- sudo apt-get install -y wget git
-- sudo apt-get install -y p7zip
-- sudo apt-get install -y mingw-w64
-- sudo apt-get install -y gcc-mingw-w64-x86-64
-- sudo apt-get install -y g++-mingw-w64-x86-64
-- sudo apt-get install -y cmake
-- sudo apt-get install -y make
-- sudo apt-get install -y pkg-config
-- sudo apt-get install -y unzip
-- sudo apt-get install -y zip
-- sudo apt-get install -y binutils
-- sudo apt-get install -y libiberty-dev
-- sudo apt-get install -y perl
-- git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
-- wget https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/precompiled_headers.7z
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
-- sudo sed 's/\(.include *.ansidecl.h.\)/\/\/\1/g' -i /usr/share/mingw-w64/include/ieeefp.h
-
+- chmod +x .travis_*
+- docker images
+- docker pull ubuntu:bionic
+- docker images
+- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
+  "cd /roboschool;./.travis_before_install"
+- docker commit roboschool ubuntu:bionic
+- docker rm roboschool
+- docker ps
 before_script:
-- 7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
-- mkdir qt boost python assimp gcc-libs
-- mv mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz qt/
-- mv mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz python/
-- mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
-- mv mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz assimp/
-- mv mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz gcc-libs/
-- cd qt
-- tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../python
-- tar xf mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../boost
-- tar xf mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../assimp
-- tar xf mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../gcc-libs
-- tar xf mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-
-- cd ..
+- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
+  "cd /roboschool;./.travis_before_script"
+- docker commit roboschool ubuntu:bionic
+- docker rm roboschool
 script:
-- ROBOSCHOOL_PATH=$(pwd)
-- mkdir bullet3/build
-- cd    bullet3/build
-- cmake -DCMAKE_TOOLCHAIN_FILE=../../Toolchain-mingw64.cmake -DBUILD_SHARED_LIBS=ON
-  -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install
-  -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF
-  -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
-- make -j4
-- make install
-- cd ../..
-- cd roboschool/cpp-household
-- make CROSS_MINGW=1
-- cd ../..
-
+- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
+  "cd /roboschool;./.travis_script"
+- docker commit roboschool ubuntu:bionic
+- docker rm roboschool
 before_deploy:
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz
-- wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz
-
-- mkdir zlib bzip2 freetype glib2 graphite2 harfbuzz libiconv icu gettext jasper libjpeg pcre pcre2 libpng libwinpthread
-
-- mv mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz zlib/
-- mv mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz bzip2/
-- mv mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz freetype/
-- mv mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz glib2/
-- mv mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz graphite2/
-- mv mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz harfbuzz/
-- mv mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz libiconv/
-- mv mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz icu/
-- mv mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz gettext/
-- mv mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz jasper/
-- mv mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz libjpeg/
-- mv mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz pcre/
-- mv mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz pcre2/
-- mv mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz libpng/
-- mv mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz libwinpthread/
-
-
-- cd zlib 
-- tar xf mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../bzip2
-- tar xf mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../freetype
-- tar xf mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../glib2
-- tar xf mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../graphite2
-- tar xf mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../harfbuzz
-- tar xf mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../libiconv
-- tar xf mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../icu
-- tar xf mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../gettext
-- tar xf mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../jasper
-- tar xf mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../libjpeg
-- tar xf mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../pcre
-- tar xf mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../pcre2
-- tar xf mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../libpng
-- tar xf mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ../libwinpthread
-- tar xf mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
-- cd ..
-- mkdir msysDLLs
-- mkdir additionalDLLs
-- mkdir build
-- mkdir msysDLLs/imageformats
-
-- ls roboschool/cpp-household/bullet_local_install/bin/
-- cp roboschool/cpp-household/bullet_local_install/bin/* additionalDLLs/
-- cp bullet3/build/lib/libPhysicsClientC_API.dll additionalDLLs/
-
-- cp assimp/mingw64/bin/libassimp.dll msysDLLs/
-- cp zlib/mingw64/bin/zlib1.dll msysDLLs/
-- cp zlib/mingw64/bin/libminizip-1.dll msysDLLs/
-- cp qt/mingw64/bin/Qt5Core.dll msysDLLs/
-- cp qt/mingw64/bin/Qt5Gui.dll msysDLLs/
-- cp qt/mingw64/bin/Qt5OpenGL.dll msysDLLs/
-- cp qt/mingw64/bin/Qt5Widgets.dll msysDLLs/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qgif.dll msysDLLs/imageformats/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qicns.dll msysDLLs/imageformats/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qjp2.dll msysDLLs/imageformats/
-- cp qt/mingw64/share/qt5/plugins/imageformats/qjpeg.dll msysDLLs/imageformats/
-- cp bzip2/mingw64/bin/libbz2-1.dll msysDLLs/
-- cp freetype/mingw64/bin/libfreetype-6.dll msysDLLs/
-- cp glib2/mingw64/bin/libglib-2.0-0.dll msysDLLs/
-- cp graphite2/mingw64/bin/libgraphite2.dll msysDLLs/
-- cp harfbuzz/mingw64/bin/libharfbuzz-0.dll msysDLLs/
-- cp libiconv/mingw64/bin/libiconv-2.dll msysDLLs/
-- cp icu/mingw64/bin/libicudt58.dll msysDLLs/
-- cp icu/mingw64/bin/libicuin58.dll msysDLLs/
-- cp icu/mingw64/bin/libicuuc58.dll msysDLLs/
-- cp gettext/mingw64/bin/libintl-8.dll msysDLLs/
-- cp jasper/mingw64/bin/libjasper-4.dll msysDLLs/
-- cp libjpeg/mingw64/bin/libjpeg-8.dll msysDLLs/
-- cp pcre/mingw64/bin/libpcre-1.dll msysDLLs/
-- cp pcre2/mingw64/bin/libpcre2-16-0.dll msysDLLs/
-- cp libpng/mingw64/bin/libpng16-16.dll msysDLLs/
-- cp libwinpthread/mingw64/bin/libwinpthread-1.dll msysDLLs/
-- cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
-- cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
-
-
-- wget -O additionalDLLs/libboost_python3-mgw72-mt-x64-1_66.dll https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/libboost_python3-mgw72-mt-x64-1_66.dll
-
-- | 
-    cat > rundemo.bat <<EOL
-    @echo off
-    REM Version of Python used: Python36
-
-    echo Keep in mind that you need to modify this file(adjust paths) before running
-    set ROOT=%CD%
-    cd %ROOT%\agent_zoo
-    set PYTHONPATH=%ROOT%
-    set QT_PLUGIN_PATH=%ROOT%\msysDLLs
-    set PATH=%ROOT%\msysDLLs;%ROOT%\additionalDLLs;d:\Python36\;%PATH%
-    echo PATH: %PATH%
-    d:\Python36\python demo_race2.py
-    pause
-    EOL
-- zip -r build/roboschool.zip rundemo.bat roboschool msysDLLs additionalDLLs agent_zoo -x ./roboschool/cpp-household/**\*
+- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
+  "cd /roboschool;./.travis_before_deploy"
+- docker commit roboschool ubuntu:bionic
+- docker rm roboschool
+- sudo chmod a+w build
+- sudo chmod a+r build
+- df -h
+- docker images
+- docker save ubuntu:bionic | gzip -c | curl -f -T - -uthecrazyt:$BINTRAY_APIKEY
+  -H "X-Bintray-Package:roboschool" -H "X-Bintray-Version:0.4"
+  https://api.bintray.com/content/thecrazyt/roboschool/roboschool_docker_image.tar.gz
+env:
+  global:
+    secure: UPyU9A4CN15qE2i73weEqJ7a2pOPOTk06ur1tz1BBDpGLXEODL4nkGbdxIVmbyHnwe3wq4/LEFchVwrMY5lzZ9dQctLI8PYrIDQSHAyWiqjugYU/MdbCvT+pdIGUfmAEj7H4CUbfL4OW8Hhp0LmWGXtZHRhf68CON8/8j/cljtjXqJl1Q9RGgAMgroVdlU3t7SZ5GYicHN1uweyYWIDZQ5KcClFLS6gmXxy+kHniEngYnEyOLrCFB2f7c01TrevTt18GQX/KQLuYq+a5DBWJ/CjIGXaNovaC6NiRX1UOwNjdeqYtyb+7E61c72nEiXTvcn1yo0RGiXxd48Zj3WrO9021gZHt1F0XeQ0P9HbTiOdqPP/OwwRaoecTMm23qQ0ypSG3AOQnhVGRS3MhHE8RF6btXDBHVxb9KSX1fjclQ5YeUyMjQFx+PhRcMnYhVBnHjbXr4WMfPpwFBSLwfeiXHiMY+jfzS1/CY315XSHU1FFnV3HJ8Rs0RmjaI17LES1gpmCKcBriQK2l9vXcqVpn+hNkd4J5DdRfneTF+vc9r4zvgi7VoreUBJotM0npbTkn6m9CMb9Y8ykyZP/Y641r7VSo3VU7nhUD2qqNhlsaSkyiEdXhqPjxYAssm3l/le4eoj5BS1tqiiImRgngLnN95W1tpXcV43WCrVKaFBJxbjY=

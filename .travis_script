@@ -1,0 +1,30 @@
+#!/bin/bash -x
+ROBOSCHOOL_PATH=$(pwd)
+mkdir bullet3/build
+cd    bullet3/build
+cmake -DCMAKE_TOOLCHAIN_FILE=../../Toolchain-mingw64.cmake -DBUILD_SHARED_LIBS=ON \
+  -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install \
+  -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF \
+  -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
+if [ $? != 0 ]
+then
+	exit 1
+fi
+make -j4
+if [ $? != 0 ]
+then
+	exit 1
+fi
+make install
+if [ $? != 0 ]
+then
+	exit 1
+fi
+cd ../..
+cd roboschool/cpp-household
+make CROSS_MINGW=1
+if [ $? != 0 ]
+then
+	exit 1
+fi
+exit 0

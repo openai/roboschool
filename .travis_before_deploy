@@ -1,0 +1,358 @@
+#!/bin/bash -x
+
+
+ls /downloads/*/mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+mkdir /downloads/zlib /downloads/bzip2 /downloads/freetype /downloads/glib2 /downloads/graphite2 /downloads/harfbuzz /downloads/libiconv /downloads/icu /downloads/gettext /downloads/jasper /downloads/libjpeg /downloads/pcre /downloads/pcre2 /downloads/libpng /downloads/libwinpthread 2>/dev/null
+
+
+
+ln -s /downloads/zlib zlib
+ln -s /downloads/bzip2 bzip2
+ln -s /downloads/freetype freetype
+ln -s /downloads/glib2 glib2
+ln -s /downloads/graphite2 graphite2
+ln -s /downloads/harfbuzz harfbuzz
+ln -s /downloads/libiconv libiconv
+ln -s /downloads/icu icu
+ln -s /downloads/gettext gettext
+ln -s /downloads/jasper jasper
+ln -s /downloads/libjpeg libjpeg
+ln -s /downloads/pcre pcre
+ln -s /downloads/pcre2 pcre2
+ln -s /downloads/libpng libpng
+ln -s /downloads/libwinpthread libwinpthread
+
+ls /downloads/*/mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+    mv mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz zlib/
+    mv mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz bzip2/
+    mv mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz freetype/
+    mv mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz glib2/
+    mv mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz graphite2/
+    mv mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz harfbuzz/
+    mv mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz libiconv/
+    mv mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz icu/
+    mv mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz gettext/
+    mv mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz jasper/
+    mv mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz libjpeg/
+    mv mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz pcre/
+    mv mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz pcre2/
+    mv mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz libpng/
+    mv mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz libwinpthread/
+fi
+
+
+cd zlib
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../bzip2
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../freetype
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+    
+cd ../glib2
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../graphite2
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../harfbuzz
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../libiconv
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../icu
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../gettext
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../jasper
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../libjpeg
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../pcre
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../pcre2
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../libpng
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ../libwinpthread
+ls mingw64
+if [ $? != 0 ]
+then
+    tar xf mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+fi
+
+cd ..
+mkdir msysDLLs
+mkdir additionalDLLs
+mkdir build
+mkdir msysDLLs/imageformats
+
+ls roboschool/cpp-household/bullet_local_install/bin/
+cp roboschool/cpp-household/bullet_local_install/bin/* additionalDLLs/
+cp bullet3/build/lib/libPhysicsClientC_API.dll additionalDLLs/
+
+cp assimp/mingw64/bin/libassimp.dll msysDLLs/
+cp zlib/mingw64/bin/zlib1.dll msysDLLs/
+cp zlib/mingw64/bin/libminizip-1.dll msysDLLs/
+cp qt/mingw64/bin/Qt5Core.dll msysDLLs/
+cp qt/mingw64/bin/Qt5Gui.dll msysDLLs/
+cp qt/mingw64/bin/Qt5OpenGL.dll msysDLLs/
+cp qt/mingw64/bin/Qt5Widgets.dll msysDLLs/
+cp qt/mingw64/share/qt5/plugins/imageformats/qgif.dll msysDLLs/imageformats/
+cp qt/mingw64/share/qt5/plugins/imageformats/qicns.dll msysDLLs/imageformats/
+cp qt/mingw64/share/qt5/plugins/imageformats/qico.dll msysDLLs/imageformats/
+cp qt/mingw64/share/qt5/plugins/imageformats/qjp2.dll msysDLLs/imageformats/
+cp qt/mingw64/share/qt5/plugins/imageformats/qjpeg.dll msysDLLs/imageformats/
+cp bzip2/mingw64/bin/libbz2-1.dll msysDLLs/
+cp freetype/mingw64/bin/libfreetype-6.dll msysDLLs/
+cp glib2/mingw64/bin/libglib-2.0-0.dll msysDLLs/
+cp graphite2/mingw64/bin/libgraphite2.dll msysDLLs/
+cp harfbuzz/mingw64/bin/libharfbuzz-0.dll msysDLLs/
+cp libiconv/mingw64/bin/libiconv-2.dll msysDLLs/
+cp icu/mingw64/bin/libicudt58.dll msysDLLs/
+cp icu/mingw64/bin/libicuin58.dll msysDLLs/
+cp icu/mingw64/bin/libicuuc58.dll msysDLLs/
+cp gettext/mingw64/bin/libintl-8.dll msysDLLs/
+cp jasper/mingw64/bin/libjasper-4.dll msysDLLs/
+cp libjpeg/mingw64/bin/libjpeg-8.dll msysDLLs/
+cp pcre/mingw64/bin/libpcre-1.dll msysDLLs/
+cp pcre2/mingw64/bin/libpcre2-16-0.dll msysDLLs/
+cp libpng/mingw64/bin/libpng16-16.dll msysDLLs/
+cp libwinpthread/mingw64/bin/libwinpthread-1.dll msysDLLs/
+cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
+cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
+
+
+wget -O additionalDLLs/libboost_python3-mgw72-mt-x64-1_66.dll https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/libboost_python3-mgw72-mt-x64-1_66.dll
+if [ $? != 0 ]
+then
+	exit 1
+fi
+
+cat > rundemo.bat <<EOL
+@echo off
+REM Version of Python used: Python36
+
+echo Keep in mind that you need to modify this file(adjust paths) before running
+set ROOT=%CD%
+cd %ROOT%\agent_zoo
+set PYTHONPATH=%ROOT%
+set QT_PLUGIN_PATH=%ROOT%\msysDLLs
+set PATH=%ROOT%\msysDLLs;%ROOT%\additionalDLLs;d:\Python36\;%PATH%
+echo PATH: %PATH%
+d:\Python36\python demo_race2.py
+pause
+EOL
+zip -r build/roboschool.zip rundemo.bat roboschool ./roboschool/cpp-household/glsl/*.glsl msysDLLs additionalDLLs agent_zoo -x ./roboschool/cpp-household/**\*
+if [ $? != 0 ]
+then
+	exit 1
+fi
+rm /downloads/*/*pkg.tar.xz
+exit 0

@@ -1,0 +1,126 @@
+#!/bin/bash -x
+ls
+apt-get -qq update
+if [ $? != 0 ]
+then
+	exit 1
+fi
+apt-get install -y sudo
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y build-essential
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y wget git
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y p7zip
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y mingw-w64
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y gcc-mingw-w64-x86-64
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y g++-mingw-w64-x86-64
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y cmake
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y make
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y pkg-config
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y unzip
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y zip
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y binutils
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y libiberty-dev
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo apt-get install -y perl
+if [ $? != 0 ]
+then
+	exit 1
+fi
+dpkg -l
+git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
+if [ $? != 0 ]
+then
+	exit 1
+fi
+wget https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/precompiled_headers.7z
+if [ $? != 0 ]
+then
+	exit 1
+fi
+wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+	exit 1
+fi
+wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+	exit 1
+fi
+wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+	exit 1
+fi
+wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+	exit 1
+fi
+wget http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
+if [ $? != 0 ]
+then
+	exit 1
+fi
+sudo sed 's/\(.include *.ansidecl.h.\)/\/\/\1/g' -i /usr/share/mingw-w64/include/ieeefp.h
+if [ $? != 0 ]
+then
+	exit 1
+fi
+
+
+exit 0
