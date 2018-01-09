@@ -16,21 +16,12 @@ before_install:
 - docker images
 - docker pull ubuntu:bionic
 - docker images
-- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
-  "cd /roboschool;./.travis_before_install"
-- docker commit roboschool ubuntu:bionic
-- docker rm roboschool
-- docker ps
 before_script:
 - docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
-  "cd /roboschool;./.travis_before_script"
+  "cd /roboschool;./.travis_before_install && ./.travis_before_script && ./.travis_script"
 - docker commit roboschool ubuntu:bionic
 - docker rm roboschool
-script:
-- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
-  "cd /roboschool;./.travis_script"
-- docker commit roboschool ubuntu:bionic
-- docker rm roboschool
+- docker images
 before_deploy:
 - docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
   "cd /roboschool;./.travis_before_deploy"

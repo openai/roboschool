@@ -131,6 +131,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-zlib-1.2.11-1-any.pkg.tar.xz
 fi
 
 cd ../bzip2
@@ -142,6 +143,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-bzip2-1.0.6-6-any.pkg.tar.xz
 fi
 
 cd ../freetype
@@ -153,6 +155,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-freetype-2.8.1-1-any.pkg.tar.xz
 fi
     
 cd ../glib2
@@ -164,6 +167,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-glib2-2.54.2-1-any.pkg.tar.xz
 fi
 
 cd ../graphite2
@@ -175,6 +179,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-graphite2-1.3.9-1-any.pkg.tar.xz
 fi
 
 cd ../harfbuzz
@@ -186,6 +191,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-harfbuzz-1.7.4-1-any.pkg.tar.xz
 fi
 
 cd ../libiconv
@@ -197,6 +203,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-libiconv-1.15-1-any.pkg.tar.xz
 fi
 
 cd ../icu
@@ -208,6 +215,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-icu-58.2-2-any.pkg.tar.xz
 fi
 
 cd ../gettext
@@ -219,6 +227,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-gettext-0.19.8.1-2-any.pkg.tar.xz
 fi
 
 cd ../jasper
@@ -230,6 +239,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-jasper-2.0.14-1-any.pkg.tar.xz
 fi
 
 cd ../libjpeg
@@ -241,6 +251,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-libjpeg-turbo-1.5.2-1-any.pkg.tar.xz
 fi
 
 cd ../pcre
@@ -252,6 +263,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-pcre-8.41-1-any.pkg.tar.xz
 fi
 
 cd ../pcre2
@@ -263,6 +275,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-pcre2-10.30-1-any.pkg.tar.xz
 fi
 
 cd ../libpng
@@ -274,6 +287,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-libpng-1.6.34-1-any.pkg.tar.xz
 fi
 
 cd ../libwinpthread
@@ -285,6 +299,7 @@ then
     then
         exit 1
     fi
+    rm mingw-w64-x86_64-libwinpthread-git-5.0.0.4850.d1662dc7-1-any.pkg.tar.xz
 fi
 
 cd ..

@@ -141,21 +141,26 @@ FILEEXT=so
 AR_OUT=
 LINK_OUT = -o
 MINUS_O  = -o
-CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 -march=native $(INC)
-CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -DDEBUG $(INC)
+ifeq ($(CROSS_MINGW),1)
+    CFLAGS   = -g -O3 $(INC)
+    CFLAGSD  = -g -O3 $(INC)
+else
+    CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 -march=native $(INC)
+    CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -DDEBUG $(INC)
+endif
 LINK_FLAGS_DLL =
 ifeq ($(UNAME),MSYS_NT-10.0)
     FILEEXT=pyd
     CC=/mingw64/bin/gcc
     LINK=/mingw64/bin/g++
-    CFLAGS  += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
-    CFLAGSD += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
+    CFLAGS  += -D_hypot=hypot -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
+    CFLAGSD += -D_hypot=hypot -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
     LINK_FLAGS_DLL = -Wl,--dll
 endif
 ifeq ($(CROSS_MINGW),1)
     FILEEXT=pyd
-    CFLAGS  += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
-    CFLAGSD += -D M_PI=3.14159265358979323846 -Dmain=SDL_main -D_GLIBCXX_USE_CXX11_ABI=0
+    CFLAGS  += -D_hypot=hypot
+    CFLAGSD += -D_hypot=hypot
 endif
 
 
