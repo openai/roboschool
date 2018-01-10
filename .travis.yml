@@ -10,27 +10,37 @@ deploy:
     secure: cbVJmqDLooWLr6IhAztQPGpZtG1lZTjc50japHT5hlDF7857IgI5WRX6HIQ9iBicc2BbVveKW+4deEhze0TrzrX6kRRSEZqIvSMaWvqrB0iRHqMOyMk47nty/tJ9gxObUc3ONIed4BDch69kXz6dpgNSKxczmnb/Sl976/sP+tmZthKXfco4DVxaGmsDt58EVRXmi+vXMWOnQjaGgocqGaQ87joa3nVGSFwtm35/ZiTDga0GjxM3t+IZFTTlnZENrsiOP2Lurqv3vtKvxGzGIspd8mQiEgrEBXprneIlQw0eiGqbjOPGr2WF55MOcJvDqEOSDjiPUVpFB1XyCGcMBnTIg7KxiYo2mko3Wq6lBapNEc/71MyNIr145NpKrata/RE6c4I8m2/d1x9HyP412CQ2aLqX3RbKUyFuoA7NyyRzQbHk7vS4PK3JjCx+e5M2uhmQTydsyq10OFeO8i/qkOR9m0F737MHuynRCwfMYtlVUOVBEkXfgUVacZNUdfLf/zCd/lszwfxX50jzwJKyktasMK7CWfiTL0usVMv9J0m60NaKzjiBuXRc+mr/kHiBKorEyHh4sK3SS2cWhESYITtKS//WpWn5CcK3Hb3ooLkc5PFCeXLGoRhBq+Lh0olsQLybVIDz+iaEvW+NqeQl3H4ap9kHR9zSJpKRIeAGfm0=
   on: production
 services:
-- docker
+ - docker
 before_install:
-- chmod +x .travis_*
-- docker images
-- docker pull ubuntu:bionic
-- docker images
-before_script:
-- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
-  "cd /roboschool;./.travis_before_install && ./.travis_before_script && ./.travis_script"
-- docker commit roboschool ubuntu:bionic
-- docker rm roboschool
-- docker images
+ - sudo apt-get install -y tree unzip
+ - pwd
+ - wget https://github.com/docker-slim/docker-slim/releases/download/1.18/dist_linux.zip
+ - unzip dist_linux.zip
+ - chmod +x dist_linux/docker-slim
+ - chmod +x .travis_*
+ - docker pull ubuntu:bionic
+ - docker images
+script:
+ - docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
+  "cd /roboschool && ./.travis_before_install && cd /roboschool  && ./.travis_before_script"
+ - docker commit roboschool ubuntu:bionic
+ - docker rm roboschool
+ #- ./dist_linux/docker-slim build --continue-after 300 --show-clogs --mount $(pwd):/roboschool --cmd "/bin/bash -c 'cd /roboschool && ./.travis_script'" ubuntu:bionic
+ - docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c 'cd /roboschool && ./.travis_script'
+ - ls ./roboschool/cpp_household.pyd
+ - docker images
+ - df -h
+ - docker rm roboschool
 before_deploy:
-- docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
+ - docker run -t --name roboschool -v $(pwd):/roboschool ubuntu:bionic /bin/bash -c
   "cd /roboschool;./.travis_before_deploy"
-- docker commit roboschool ubuntu:bionic
-- docker rm roboschool
-- sudo chmod a+w build
-- sudo chmod a+r build
-- df -h
-- docker images
+ - docker commit roboschool ubuntu:bionic
+ - docker rm roboschool
+ - sudo chmod a+w build
+ - sudo chmod a+r build
+ - df -h
+ - docker images
+#- sudo docker save -o build/build_slim.tar ubuntu.slim
 env:
   global:
     secure: UPyU9A4CN15qE2i73weEqJ7a2pOPOTk06ur1tz1BBDpGLXEODL4nkGbdxIVmbyHnwe3wq4/LEFchVwrMY5lzZ9dQctLI8PYrIDQSHAyWiqjugYU/MdbCvT+pdIGUfmAEj7H4CUbfL4OW8Hhp0LmWGXtZHRhf68CON8/8j/cljtjXqJl1Q9RGgAMgroVdlU3t7SZ5GYicHN1uweyYWIDZQ5KcClFLS6gmXxy+kHniEngYnEyOLrCFB2f7c01TrevTt18GQX/KQLuYq+a5DBWJ/CjIGXaNovaC6NiRX1UOwNjdeqYtyb+7E61c72nEiXTvcn1yo0RGiXxd48Zj3WrO9021gZHt1F0XeQ0P9HbTiOdqPP/OwwRaoecTMm23qQ0ypSG3AOQnhVGRS3MhHE8RF6btXDBHVxb9KSX1fjclQ5YeUyMjQFx+PhRcMnYhVBnHjbXr4WMfPpwFBSLwfeiXHiMY+jfzS1/CY315XSHU1FFnV3HJ8Rs0RmjaI17LES1gpmCKcBriQK2l9vXcqVpn+hNkd4J5DdRfneTF+vc9r4zvgi7VoreUBJotM0npbTkn6m9CMb9Y8ykyZP/Y641r7VSo3VU7nhUD2qqNhlsaSkyiEdXhqPjxYAssm3l/le4eoj5BS1tqiiImRgngLnN95W1tpXcV43WCrVKaFBJxbjY=
