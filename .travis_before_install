@@ -124,11 +124,11 @@ if [ $? != 0 ]
 then
 	exit 1
 fi
-wget -O boost_2_mvc.7z https://dl.bintray.com/thecrazyt/roboschool/boost_2_mvc.7z
-if [ $? != 0 ]
-then
-	exit 1
-fi
+#wget -O boost_2_mvc.7z https://dl.bintray.com/thecrazyt/roboschool/boost_2_mvc.7z
+#if [ $? != 0 ]
+#then
+#	exit 1
+#fi
 
 sudo sed 's/\(.include *.ansidecl.h.\)/\/\/\1/g' -i /usr/share/mingw-w64/include/ieeefp.h
 if [ $? != 0 ]

@@ -307,6 +307,7 @@ mkdir msysDLLs
 mkdir additionalDLLs
 mkdir build
 mkdir msysDLLs/imageformats
+mkdir msysDLLs/platforms
 
 ls roboschool/cpp-household/bullet_local_install/bin/
 cp roboschool/cpp-household/bullet_local_install/bin/* additionalDLLs/
@@ -326,6 +327,9 @@ cp qt/mingw64/share/qt5/plugins/imageformats/qicns.dll msysDLLs/imageformats/
 cp qt/mingw64/share/qt5/plugins/imageformats/qico.dll msysDLLs/imageformats/
 cp qt/mingw64/share/qt5/plugins/imageformats/qjp2.dll msysDLLs/imageformats/
 cp qt/mingw64/share/qt5/plugins/imageformats/qjpeg.dll msysDLLs/imageformats/
+
+cp qt/mingw64/share/qt5/plugins/platforms/*.dll msysDLLs/platforms/
+
 cp bzip2/mingw64/bin/libbz2-1.dll msysDLLs/
 cp freetype/mingw64/bin/libfreetype-6.dll msysDLLs/
 cp glib2/mingw64/bin/libglib-2.0-0.dll msysDLLs/

@@ -28,7 +28,7 @@ then
 	exit 1
 fi
 mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
-mv boost_2_mvc.7z boost/
+#mv boost_2_mvc.7z boost/
 if [ $? != 0 ]
 then
 	exit 1
@@ -48,7 +48,7 @@ ls mingw64
 if [ $? != 0 ]
 then
     ls -lah mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
-    tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz mingw64/include/ mingw64/bin/ mingw64/lib/ mingw64/share/qt5/plugins/imageformats 1>/dev/null 2>/dev/null
+    tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz mingw64/include/ mingw64/bin/ mingw64/lib/ mingw64/share/qt5/plugins/imageformats mingw64/share/qt5/plugins/platforms 1>/dev/null 2>/dev/null
     if [ $? != 0 ]
     then
         exit 1
@@ -68,23 +68,23 @@ then
     fi
     rm mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz
     
-    wget https://dl.bintray.com/thecrazyt/roboschool/python_include.7z
-    if [ $? != 0 ]
-    then
-        exit 1
-    fi
-    7zr x python_include.7z
-    if [ $? != 0 ]
-    then
-        exit 1
-    fi
-    rm -Rf mingw64/include/python3.6m
-    mv include mingw64/include/python3.6m
-    
-    if [ $? != 0 ]
-    then
-        exit 1
-    fi
+    #wget https://dl.bintray.com/thecrazyt/roboschool/python_include.7z
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+    #7zr x python_include.7z
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+    #rm -Rf mingw64/include/python3.6m
+    #mv include mingw64/include/python3.6m
+    #
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
 fi
 
 cd ../boost
@@ -99,16 +99,16 @@ then
     fi
     rm mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
     
-    7zr x boost_2_mvc.7z
-    if [ $? != 0 ]
-    then
-        exit 1
-    fi
-    patch -f -p3 < boost_2_mvc.patch
-    if [ $? != 0 ]
-    then
-        exit 1
-    fi
+    #7zr x boost_2_mvc.7z
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+    #patch -f -p3 < boost_2_mvc.patch
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
 fi
 
 cd ../assimp
