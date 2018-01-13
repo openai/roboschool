@@ -311,6 +311,8 @@ mkdir msysDLLs/imageformats
 ls roboschool/cpp-household/bullet_local_install/bin/
 cp roboschool/cpp-household/bullet_local_install/bin/* additionalDLLs/
 cp bullet3/build/lib/libPhysicsClientC_API.dll additionalDLLs/
+cp bullet3/build/lib/libPhysicsClientC_API_Debug.dll additionalDLLs/
+
 
 cp assimp/mingw64/bin/libassimp.dll msysDLLs/
 cp zlib/mingw64/bin/zlib1.dll msysDLLs/
@@ -342,6 +344,7 @@ cp libpng/mingw64/bin/libpng16-16.dll msysDLLs/
 cp libwinpthread/mingw64/bin/libwinpthread-1.dll msysDLLs/
 cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
 cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
+
 
 
 wget -O additionalDLLs/libboost_python3-mgw72-mt-x64-1_66.dll https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/libboost_python3-mgw72-mt-x64-1_66.dll
