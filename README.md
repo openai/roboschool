@@ -65,7 +65,12 @@ Installation
 First, define a `ROBOSCHOOL_PATH` variable in the current shell. It will be used in this README but not anywhere in the Roboschool code.
 
 ```bash
-ROBOSCHOOL_PATH=/path/to/roboschool
+ROBOSCHOOL_PATH=/roboschool
+```
+Then clone the Roboschool project:
+
+```bash
+git clone https://github.com/openai/roboschool
 ```
 
 If you have both Python2 and Python3 on your system, use `python3` and `pip3` commands.
@@ -134,8 +139,15 @@ Finally, install project itself:
 pip3 install -e $ROBOSCHOOL_PATH
 ```
 
-Now, check to see if it worked by running a pretrained agent from the agent zoo.
+Now, check to see if it worked by running a pretrained agent from the agent zoo - Gym must already be installed for the test to work. If you see module import errors such as below, verify that Gym and Roboschool all use the same Python installation (for example, Gym was installed with pip while Roboschool was installed with pip3):
 
+```bash
+root@ubuntu:/roboschool# python3 $ROBOSCHOOL_PATH/agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
+Traceback (most recent call last):
+  File "/roboschool/agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py", line 1, in <module>
+    import gym, roboschool
+ImportError: No module named 'gym'
+```
 
 Agent Zoo
 =========
@@ -145,11 +157,11 @@ We have provided a number of pre-trained agents in the `agent_zoo` directory.
 To see a humanoid run towards a random varying target:
 
 ```bash
-python $ROBOSCHOOL_PATH/agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
+python3 $ROBOSCHOOL_PATH/agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
 ```
 
 To see three agents in a race:
 
 ```bash
-python $ROBOSCHOOL_PATH/agent_zoo/demo_race2.py
+python3 $ROBOSCHOOL_PATH/agent_zoo/demo_race2.py
 ```
