@@ -52,6 +52,5 @@ The reward is a sum of 5 computed values:
 - **progress**: potential minus the old potential. The potential is defined by
     the speed multiplied by the distance to target point, to the negative.
 - **electricity_cost**: The amount of energy needed for the last action.
-- **joints_at_limit_cost**: The amount of collision between joints of body
-      during the last action.
+- **joints_at_limit_cost**: The amount of collision between joints of body during the last action.
 - **feet_colision_cost**: The amount of feet collision taken during the last action.
