@@ -14,6 +14,7 @@ class PongScene(Scene):
         Scene.__init__(self, gravity=9.8, timestep=0.0165/4, frame_skip=4)
         self.score_left = 0
         self.score_right = 0
+        self.ball_x = 0
 
     def actor_introduce(self, robot):
         i = robot.player_n - 1
