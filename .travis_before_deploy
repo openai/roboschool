@@ -350,8 +350,9 @@ cp gcc-libs/mingw64/bin/libstdc++-6.dll msysDLLs/
 cp gcc-libs/mingw64/bin/libgcc_s_seh-1.dll msysDLLs/
 
 
-
-wget -O additionalDLLs/libboost_python3-mgw72-mt-x64-1_66.dll https://github.com/TheCrazyT/roboschool/releases/download/v0.0.1-beta.1/libboost_python3-mgw72-mt-x64-1_66.dll
+#see https://github.com/TheCrazyT/boost_python_build_win
+#to see how it is build
+wget -O additionalDLLs/libboost_python3-mgw72-mt-x64-1_66.dll https://bintray.com/thecrazyt/boost_python/download_file?file_path=libboost_python3.dll
 if [ $? != 0 ]
 then
 	exit 1

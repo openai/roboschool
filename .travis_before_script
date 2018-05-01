@@ -5,6 +5,9 @@ if [ $? != 0 ]
 then
 	exit 1
 fi
+
+wget -O precompiled_headers/libboost_python3-mgw72-mt-x64-1_66.dll.a https://bintray.com/thecrazyt/boost_python/download_file?file_path=libboost_python3.dll.a
+
 mkdir /downloads/ 2>/dev/null
 mkdir /downloads/qt /downloads/boost /downloads/python /downloads/assimp /downloads/gcc-libs
 
