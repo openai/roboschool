@@ -124,6 +124,9 @@ if [ $? != 0 ]
 then
 	exit 1
 fi
+
+x86_64-w64-mingw32-g++ --version
+
 #wget -O boost_2_mvc.7z https://dl.bintray.com/thecrazyt/roboschool/boost_2_mvc.7z
 #if [ $? != 0 ]
 #then

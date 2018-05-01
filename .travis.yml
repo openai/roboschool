@@ -1,11 +1,12 @@
 sudo: required
 dist: trusty
 language: cpp
-cache: apt
+#cache: apt
 deploy:
   provider: bintray
   file: "$TRAVIS_BUILD_DIR/.bintray.js"
   user: thecrazyt
+  skip_cleanup: true
   key:
     secure: cbVJmqDLooWLr6IhAztQPGpZtG1lZTjc50japHT5hlDF7857IgI5WRX6HIQ9iBicc2BbVveKW+4deEhze0TrzrX6kRRSEZqIvSMaWvqrB0iRHqMOyMk47nty/tJ9gxObUc3ONIed4BDch69kXz6dpgNSKxczmnb/Sl976/sP+tmZthKXfco4DVxaGmsDt58EVRXmi+vXMWOnQjaGgocqGaQ87joa3nVGSFwtm35/ZiTDga0GjxM3t+IZFTTlnZENrsiOP2Lurqv3vtKvxGzGIspd8mQiEgrEBXprneIlQw0eiGqbjOPGr2WF55MOcJvDqEOSDjiPUVpFB1XyCGcMBnTIg7KxiYo2mko3Wq6lBapNEc/71MyNIr145NpKrata/RE6c4I8m2/d1x9HyP412CQ2aLqX3RbKUyFuoA7NyyRzQbHk7vS4PK3JjCx+e5M2uhmQTydsyq10OFeO8i/qkOR9m0F737MHuynRCwfMYtlVUOVBEkXfgUVacZNUdfLf/zCd/lszwfxX50jzwJKyktasMK7CWfiTL0usVMv9J0m60NaKzjiBuXRc+mr/kHiBKorEyHh4sK3SS2cWhESYITtKS//WpWn5CcK3Hb3ooLkc5PFCeXLGoRhBq+Lh0olsQLybVIDz+iaEvW+NqeQl3H4ap9kHR9zSJpKRIeAGfm0=
   on: production
