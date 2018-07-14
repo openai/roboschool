@@ -38,7 +38,7 @@ enum {
 	VIEW_NO_CAPTIONS     = 0x2000,
 };
 
-#define CHECK_GL_ERROR { int e = glGetError(); if (e!=GL_NO_ERROR) fprintf(stderr, "%s:%i ERROR: 0x%x\n", __FILE__, __LINE__, e); assert(e == GL_NO_ERROR); }
+#define CHECK_GL_ERROR { int e=QOpenGLContext::currentContext()->extraFunctions()->glGetError(); if (e!=GL_NO_ERROR) fprintf(stderr, "%s:%i ERROR: 0x%x\n", __FILE__, __LINE__, e); assert(e == GL_NO_ERROR); }
 
 struct Texture {
 	GLuint handle;
@@ -160,7 +160,12 @@ public:
 	int visible_object_count;
 
 	int W, H, W16;
-	double side, near, far, hfov;
+    #undef near
+    #undef far
+	double side;
+    double near;
+    double far;
+    double hfov;
 	QMatrix4x4 modelview;
 	QMatrix4x4 modelview_inverse_transpose;
 

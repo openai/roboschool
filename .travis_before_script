@@ -1,0 +1,142 @@
+#!/bin/bash -x
+whereis 7zr
+7zr x precompiled_headers.7z 1>/dev/null 2>/dev/null
+if [ $? != 0 ]
+then
+	exit 1
+fi
+
+wget -O precompiled_headers/libboost_python3-mgw72-mt-x64-1_66.dll.a https://bintray.com/thecrazyt/boost_python/download_file?file_path=libboost_python3.dll.a
+
+mkdir /downloads/ 2>/dev/null
+mkdir /downloads/qt /downloads/boost /downloads/python /downloads/assimp /downloads/gcc-libs
+
+ln -s /downloads/qt $(pwd)/qt
+ln -s /downloads/boost $(pwd)/boost
+ln -s /downloads/python $(pwd)/python
+ln -s /downloads/assimp $(pwd)/assimp
+ln -s /downloads/gcc-libs $(pwd)/gcc-libs
+ls -lah
+
+
+
+mv mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz qt/
+if [ $? != 0 ]
+then
+	exit 1
+fi
+mv mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz python/
+if [ $? != 0 ]
+then
+	exit 1
+fi
+mv mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz boost/
+#mv boost_2_mvc.7z boost/
+if [ $? != 0 ]
+then
+	exit 1
+fi
+mv mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz assimp/
+if [ $? != 0 ]
+then
+	exit 1
+fi
+mv mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz gcc-libs/
+
+
+
+
+cd qt
+ls mingw64
+if [ $? != 0 ]
+then
+    ls -lah mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
+    tar xf mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz mingw64/include/ mingw64/bin/ mingw64/lib/ mingw64/share/qt5/plugins/imageformats mingw64/share/qt5/plugins/platforms 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    rm mingw-w64-x86_64-qt5-5.10.0-1-any.pkg.tar.xz
+fi
+
+cd ../python
+ls mingw64
+if [ $? != 0 ]
+then
+    ls -lah mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz
+    tar xf mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    rm mingw-w64-x86_64-python3-3.6.4-1-any.pkg.tar.xz
+    
+    #wget https://dl.bintray.com/thecrazyt/roboschool/python_include.7z
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+    #7zr x python_include.7z
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+    #rm -Rf mingw64/include/python3.6m
+    #mv include mingw64/include/python3.6m
+    #
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+fi
+
+cd ../boost
+ls mingw64
+if [ $? != 0 ]
+then
+    ls -lah mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
+    tar xf mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    rm mingw-w64-x86_64-boost-1.66.0-1-any.pkg.tar.xz
+    
+    #7zr x boost_2_mvc.7z
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+    #patch -f -p3 < boost_2_mvc.patch
+    #if [ $? != 0 ]
+    #then
+    #    exit 1
+    #fi
+fi
+
+cd ../assimp
+ls mingw64
+if [ $? != 0 ]
+then
+    ls -lah mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz
+    tar xf mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    rm mingw-w64-x86_64-assimp-4.0.1-1-any.pkg.tar.xz
+fi
+
+cd ../gcc-libs
+ls mingw64
+if [ $? != 0 ]
+then
+    ls -lah mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
+    tar xf mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz 1>/dev/null 2>/dev/null
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    rm mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
+fi
+exit 0

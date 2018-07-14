@@ -21,6 +21,7 @@ using namespace nv_math;
 
 void ContextViewport::_depthlinear_init()
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	if (samples > 1) {
 //		tex_color.reset(new Texture());
 //		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex_color->handle);
@@ -32,32 +33,36 @@ void ContextViewport::_depthlinear_init()
 //		glBindTexture (GL_TEXTURE_2D_MULTISAMPLE, 0);
 	} else {
 		tex_color.reset(new Texture());
-		glBindTexture(GL_TEXTURE_2D, tex_color->handle);
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, W, H);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, tex_color->handle);
+		glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, W, H);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 		tex_depthstencil.reset(new Texture());
-		glBindTexture(GL_TEXTURE_2D, tex_depthstencil->handle);
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, W, H);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, tex_depthstencil->handle);
+		glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, W, H);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	tex_depthlinear.reset(new Texture());
-	glBindTexture(GL_TEXTURE_2D, tex_depthlinear->handle);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32F, W, H);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, tex_depthlinear->handle);
+	glFuncs->glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32F, W, H);
+	glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 	fbuf_depthlinear.reset(new Framebuffer());
-	glBindFramebuffer(GL_FRAMEBUFFER, fbuf_depthlinear->handle);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex_depthlinear->handle, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_depthlinear->handle);
+	#ifndef _WIN32
+        //FIXME
+        glFuncs->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, tex_depthlinear->handle, 0);
+	#endif
+	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ContextViewport::_depthlinear_paint(int sample_idx)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbuf_depthlinear->handle); // to framebuf
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_depthlinear->handle); // to framebuf
 	if (samples > 1) {
 //		glUseProgram(cx->program_depth_linearize_msaa->programId());
 //		glUniform4f(0, near*far, near-far, far, ortho ? 0.0f : 1.0f);
@@ -67,19 +72,25 @@ void ContextViewport::_depthlinear_paint(int sample_idx)
 //		glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D_MULTISAMPLE, 0);
 //		assert(0);
 	} else {
-		glUseProgram(cx->program_depth_linearize->programId());
-		glUniform4f(cx->location_clipInfo, near*far, near-far, far, ortho ? 0.0f : 1.0f);
+		glFuncs->glUseProgram(cx->program_depth_linearize->programId());
+		glFuncs->glUniform4f(cx->location_clipInfo, near*far, near-far, far, ortho ? 0.0f : 1.0f);
 		//location_inputTexture
 		// MAC
-		glBindVertexArray(cx->ruler_vao->handle);
-		glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, tex_depthstencil->handle); // and to depthstencil
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glFuncs->glBindVertexArray(cx->ruler_vao->handle);
+		#ifndef _WIN32
+		//FIXME
+		glFuncs->glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, tex_depthstencil->handle); // and to depthstencil
+		#endif
+		glFuncs->glDrawArrays(GL_TRIANGLES, 0, 3);
 		// MAC
-		glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, 0);
+		#ifndef _WIN32
+		//FIXME
+        glFuncs->glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, 0);
+        #endif
 	}
-	glUseProgram(0);
-	glBindVertexArray(0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glFuncs->glUseProgram(0);
+	glFuncs->glBindVertexArray(0);
+	glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 struct UsefulStuff {
@@ -89,6 +100,7 @@ struct UsefulStuff {
 
 bool Context::_hbao_init()
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	program_depth_linearize = load_program("fullscreen_triangle.vert.glsl", "", "ssao_depthlinearize.frag.glsl", 0, 0, "#version 410\n");
 	if (!program_depth_linearize->log().isEmpty()) {
 		fprintf(stderr, "Roboschool built-in render compiled with shadows, but SSAO shaders didn't load (1)\n");
@@ -142,20 +154,23 @@ bool Context::_hbao_init()
 	}
 
 	hbao_random.reset(new Texture());
-	glBindTexture(GL_TEXTURE_2D_ARRAY, hbao_random->handle);
-	glTexStorage3D (GL_TEXTURE_2D_ARRAY,1,GL_RGBA16_SNORM,HBAO_RANDOM_SIZE,HBAO_RANDOM_SIZE,MAX_SAMPLES);
-	glTexSubImage3D(GL_TEXTURE_2D_ARRAY,0,0,0,0, HBAO_RANDOM_SIZE,HBAO_RANDOM_SIZE,MAX_SAMPLES,GL_RGBA,GL_SHORT,hbaoRandomShort);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glBindTexture(GL_TEXTURE_2D_ARRAY,0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D_ARRAY, hbao_random->handle);
+	glFuncs->glTexStorage3D (GL_TEXTURE_2D_ARRAY,1,GL_RGBA16_SNORM,HBAO_RANDOM_SIZE,HBAO_RANDOM_SIZE,MAX_SAMPLES);
+	glFuncs->glTexSubImage3D(GL_TEXTURE_2D_ARRAY,0,0,0,0, HBAO_RANDOM_SIZE,HBAO_RANDOM_SIZE,MAX_SAMPLES,GL_RGBA,GL_SHORT,hbaoRandomShort);
+	glFuncs->glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glFuncs->glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glFuncs->glBindTexture(GL_TEXTURE_2D_ARRAY,0);
 
 	for (int i=0; i<MAX_SAMPLES; i++) {
 		hbao_randomview[i].reset(new Texture());
-		glTextureView(hbao_randomview[i]->handle, GL_TEXTURE_2D, hbao_random->handle, GL_RGBA16_SNORM, 0, 1, i, 1);
-		glBindTexture(GL_TEXTURE_2D, hbao_randomview[i]->handle);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		#ifndef _WIN32
+		//FIXME
+		glFuncs->glTextureView(hbao_randomview[i]->handle, GL_TEXTURE_2D, hbao_random->handle, GL_RGBA16_SNORM, 0, 1, i, 1);
+		#endif
+		glFuncs->glBindTexture(GL_TEXTURE_2D, hbao_randomview[i]->handle);
+		glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glFuncs->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	return true;
@@ -231,17 +246,21 @@ void ContextViewport::_hbao_prepare(const float* proj_matrix)
 
 void ContextViewport::_ssao_run(int sampleIdx)
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	if (blur) {
-		glBindFramebuffer(GL_FRAMEBUFFER, fbuf_hbao_calc->handle);
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_hbao_calc->handle);
+		#ifndef _WIN32
+            //FIXME
+            glFuncs->glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		#endif // _WIN32
 	} else {
-		glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle);
-		glDisable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ZERO,GL_SRC_COLOR);
+		glFuncs->glBindFramebuffer(GL_FRAMEBUFFER, fbuf_scene->handle);
+		glFuncs->glDisable(GL_DEPTH_TEST);
+		glFuncs->glEnable(GL_BLEND);
+		glFuncs->glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 		if (samples > 1){
-			glEnable(GL_SAMPLE_MASK);
-			glSampleMaski(0, 1<<sampleIdx);
+			glFuncs->glEnable(GL_SAMPLE_MASK);
+			glFuncs->glSampleMaski(0, 1<<sampleIdx);
 		}
 	}
 
@@ -266,32 +285,32 @@ void ContextViewport::_ssao_run(int sampleIdx)
 	cx->program_hbao_calc->setUniformValue(cx->location_projScale, cx->useful->hbaoUbo.projScale[0], cx->useful->hbaoUbo.projScale[1]);
 	cx->program_hbao_calc->setUniformValue(cx->location_projOrtho, cx->useful->hbaoUbo.projOrtho);
 	// layered etc
-	glUniform4fv(cx->location_float2Offsets, sizeof(cx->useful->hbaoUbo.float2Offsets)/sizeof(cx->useful->hbaoUbo.float2Offsets[0])/4, cx->useful->hbaoUbo.float2Offsets);
-	glUniform4fv(cx->location_jitters, sizeof(cx->useful->hbaoUbo.jitters)/sizeof(cx->useful->hbaoUbo.jitters[0])/4, cx->useful->hbaoUbo.jitters);
-	glUniform1i(cx->location_texLinearDepth, 1); // texture unit 0
-	glUniform1i(cx->location_texRandom, 0); // texture unit 1
+	glFuncs->glUniform4fv(cx->location_float2Offsets, sizeof(cx->useful->hbaoUbo.float2Offsets)/sizeof(cx->useful->hbaoUbo.float2Offsets[0])/4, cx->useful->hbaoUbo.float2Offsets);
+	glFuncs->glUniform4fv(cx->location_jitters, sizeof(cx->useful->hbaoUbo.jitters)/sizeof(cx->useful->hbaoUbo.jitters[0])/4, cx->useful->hbaoUbo.jitters);
+	glFuncs->glUniform1i(cx->location_texLinearDepth, 1); // texture unit 0
+	glFuncs->glUniform1i(cx->location_texRandom, 0); // texture unit 1
 
-	glBindVertexArray(cx->ruler_vao->handle);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, cx->hbao_randomview[sampleIdx]->handle);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, tex_depthlinear->handle);
+	glFuncs->glBindVertexArray(cx->ruler_vao->handle);
+	glFuncs->glActiveTexture(GL_TEXTURE0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, cx->hbao_randomview[sampleIdx]->handle);
+	glFuncs->glActiveTexture(GL_TEXTURE1);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, tex_depthlinear->handle);
 
-	glDrawArrays(GL_TRIANGLES,0,3);
+	glFuncs->glDrawArrays(GL_TRIANGLES,0,3);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glFuncs->glActiveTexture(GL_TEXTURE0);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
+	glFuncs->glActiveTexture(GL_TEXTURE1);
+	glFuncs->glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (blur) {
 		//drawHbaoBlur(projection,width,height,sampleIdx);
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
-	glDisable(GL_SAMPLE_MASK);
-	glSampleMaski(0, ~0);
+	glFuncs->glEnable(GL_DEPTH_TEST);
+	glFuncs->glDisable(GL_BLEND);
+	glFuncs->glDisable(GL_SAMPLE_MASK);
+	glFuncs->glSampleMaski(0, ~0);
 
 	cx->program_hbao_calc->release();
 }

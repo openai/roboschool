@@ -27,6 +27,7 @@ void Viz::initializeGL()
 
 void Camera::camera_render(const shared_ptr<SimpleRender::Context>& cx, bool render_depth, bool render_labeling, bool print_timing)
 {
+    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
 	const int RGB_OVERSAMPLING = 1; // change me to see the difference (good values 0 1 2)
 	const int AUX_OVERSAMPLING = 2;
 
@@ -66,7 +67,7 @@ void Camera::camera_render(const shared_ptr<SimpleRender::Context>& cx, bool ren
 	camera_rgb.resize(3*camera_res_w*camera_res_h);
 	uint8_t tmp[4*ow*oh]; // only 3*ow*oh required, but glReadPixels() somehow touches memory after this buffer, demonstrated on NVidia 375.20
 
-	glReadPixels(0, 0, ow, oh, GL_RGB, GL_UNSIGNED_BYTE, tmp);
+	glFuncs->glReadPixels(0, 0, ow, oh, GL_RGB, GL_UNSIGNED_BYTE, tmp);
 
 	if (RGB_OVERSAMPLING==0) {
 		for (int y=0; y<oh; ++y)
@@ -102,7 +103,7 @@ void Camera::camera_render(const shared_ptr<SimpleRender::Context>& cx, bool ren
 		camera_depth_mask.resize(auxw*auxh);
 		float ftmp[ow*oh];
 
-		glReadPixels(0, 0, ow, oh, GL_DEPTH_COMPONENT, GL_FLOAT, ftmp);
+		glFuncs->glReadPixels(0, 0, ow, oh, GL_DEPTH_COMPONENT, GL_FLOAT, ftmp);
 
 		if (AUX_OVERSAMPLING==0) {
 			for (int y=0; y<oh; ++y) {
@@ -159,7 +160,7 @@ void Camera::camera_render(const shared_ptr<SimpleRender::Context>& cx, bool ren
 
 		camera_labeling.resize(auxw*auxh);
 		camera_labeling_mask.resize(auxw*auxh);
-		glReadPixels(0, 0, ow, oh, GL_RGB, GL_UNSIGNED_BYTE, tmp);
+		glFuncs->glReadPixels(0, 0, ow, oh, GL_RGB, GL_UNSIGNED_BYTE, tmp);
 		metatype_render = timer.nsecsElapsed()/1000000.0;
 
 		timer.start();
