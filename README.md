@@ -1,5 +1,5 @@
 Windows build :
-[![Build Status](https://travis-ci.org/TheCrazyT/roboschool.svg)](https://travis-ci.org/TheCrazyT/roboschool) [Download](https://dl.bintray.com/thecrazyt/roboschool/)
+[![Build Status](https://travis-ci.org/TheCrazyT/roboschool.svg)](https://travis-ci.org/TheCrazyT/roboschool) [Download](https://dl.bintray.com/thecrazyt/roboschool/0.5)
 
 NEWS
 ====

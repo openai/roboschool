@@ -372,6 +372,7 @@ echo PATH: %PATH%
 d:\Python36\python demo_race2.py
 pause
 EOL
+cp roboschool/*.pyd build/
 zip -r build/roboschool.zip rundemo.bat roboschool msysDLLs additionalDLLs agent_zoo -x ./roboschool/cpp-household/**\*
 zip -ru build/roboschool.zip ./roboschool/cpp-household/glsl/*.glsl
 if [ $? != 0 ]

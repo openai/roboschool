@@ -337,32 +337,40 @@ Texture::Texture()  {
     glFuncs->glGenTextures(1, &handle);
 }
 Texture::~Texture()  {
-    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
-    glFuncs->glDeleteTextures(1, &handle);
+	if(QOpenGLContext::currentContext() != NULL){
+		QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+		glFuncs->glDeleteTextures(1, &handle);
+	}
 }
 Framebuffer::Framebuffer()  {
     QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
     glFuncs->glGenFramebuffers(1, &handle);
 }
 Framebuffer::~Framebuffer()  {
-    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
-    glFuncs->glDeleteFramebuffers(1, &handle);
+	if(QOpenGLContext::currentContext() != NULL){
+		QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+		glFuncs->glDeleteFramebuffers(1, &handle);
+	}
 }
 Buffer::Buffer()  {
     QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
     glFuncs->glGenBuffers(1, &handle);
 }
 Buffer::~Buffer()  {
-    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
-    glFuncs->glDeleteBuffers(1, &handle);
+	if(QOpenGLContext::currentContext() != NULL){
+		QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+		glFuncs->glDeleteBuffers(1, &handle);
+	}
 }
 VAO::VAO()  {
     QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
     glFuncs->glGenVertexArrays(1, &handle);
 }
 VAO::~VAO()  {
-    QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
-    glFuncs->glDeleteVertexArrays(1, &handle);
+	if(QOpenGLContext::currentContext() != NULL){
+		QOpenGLExtraFunctions *glFuncs = QOpenGLContext::currentContext()->extraFunctions();
+		glFuncs->glDeleteVertexArrays(1, &handle);
+	}
 }
 
 void ContextViewport::_render_single_object(const shared_ptr<Household::ShapeDetailLevels>& m, uint32_t options, int detail, const QMatrix4x4& at_pos)

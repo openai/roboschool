@@ -8,13 +8,13 @@
     },
 
     "version": {
-        "name": "0.4"
+        "name": "0.5"
     },
 
     "files":
         [
             {
-                "includePattern": "/home/travis/build/TheCrazyT/roboschool/build/(.*)", "uploadPattern": "$1",
+                "includePattern": "/home/travis/build/TheCrazyT/roboschool/build/(.*)", "uploadPattern": "0.5/$1",
                 "matrixParams": {
                     "override": 1 
                 }
