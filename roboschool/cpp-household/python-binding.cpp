@@ -240,7 +240,7 @@ struct Camera {
 				);
 	}
 
-  boost::python::object render_direct(uint16_t width, uint16_t height, boost::python::list const& projectionMatrixList, boost::python::list const& lightDirList, float lightDist, bool shadow)
+  boost::python::object render_direct(uint16_t width, uint16_t height, boost::python::list const& lightDirList, float lightDist, bool shadow)
   {
     auto const camera_pose = cref->camera_pose;
 
@@ -257,7 +257,9 @@ struct Camera {
       b3ComputeViewMatrixFromPositions(camera_position, target_position, camera_up, viewMatrix);
     }
 
-    float projectionMatrix[16];
+    b3Scalar projectionMatrix[16];
+    b3ComputeProjectionMatrixFOV(cref->camera_hfov, cref->camera_res_w / cref->camera_res_h, cref->camera_near, cref->camera_far, projectionMatrix);
+
     float lightDir[3];
     float lightColor[3];
     float lightAmbientCoeff = 0.6;
@@ -275,7 +277,6 @@ struct Camera {
       }
     };
 
-    extract(projectionMatrixList, projectionMatrix);
     b3RequestCameraImageSetCameraMatrices(command, viewMatrix, projectionMatrix);
     extract(lightDirList, lightDir);
     b3RequestCameraImageSetLightDirection(command, lightDir);
