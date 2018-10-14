@@ -240,7 +240,7 @@ struct Camera {
 				);
 	}
 
-  boost::python::object render_direct(uint16_t width, uint16_t height)
+  boost::python::object render_direct()
   {
     auto const camera_pose = cref->camera_pose;
 
@@ -263,7 +263,7 @@ struct Camera {
 
     b3SharedMemoryCommandHandle command;
     command = b3InitRequestCameraImage(wref->client);
-    b3RequestCameraImageSetPixelResolution(command, width, height);
+    b3RequestCameraImageSetPixelResolution(command, cref->camera_res_w, cref->camera_res_h);
 
     b3RequestCameraImageSetCameraMatrices(command, viewMatrix, projectionMatrix);
 
