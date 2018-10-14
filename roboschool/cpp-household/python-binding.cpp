@@ -240,7 +240,7 @@ struct Camera {
 				);
 	}
 
-  boost::python::object render_direct(uint16_t width, uint16_t height, boost::python::list const& lightDirList, float lightDist, bool shadow)
+  boost::python::object render_direct(uint16_t width, uint16_t height)
   {
     auto const camera_pose = cref->camera_pose;
 
@@ -260,31 +260,17 @@ struct Camera {
     b3Scalar projectionMatrix[16];
     b3ComputeProjectionMatrixFOV(cref->camera_hfov, cref->camera_res_w / cref->camera_res_h, cref->camera_near, cref->camera_far, projectionMatrix);
 
-    float lightDir[3];
-    float lightColor[3];
-    float lightAmbientCoeff = 0.6;
-    float lightDiffuseCoeff = 0.35;
-    float lightSpecularCoeff = 0.05;
-
 
     b3SharedMemoryCommandHandle command;
     command = b3InitRequestCameraImage(wref->client);
     b3RequestCameraImageSetPixelResolution(command, width, height);
 
-    auto const extract = [](boost::python::list const& l, float* out) {
-      for(size_t i = 0; i < boost::python::len(l); i++) {
-        out[i] = boost::python::extract<float>(l[i]);
-      }
-    };
-
     b3RequestCameraImageSetCameraMatrices(command, viewMatrix, projectionMatrix);
-    extract(lightDirList, lightDir);
-    b3RequestCameraImageSetLightDirection(command, lightDir);
-    b3RequestCameraImageSetLightDistance(command, lightDist);
-    b3RequestCameraImageSetShadow(command, shadow);
-    b3RequestCameraImageSetLightAmbientCoeff(command, lightAmbientCoeff);
-    b3RequestCameraImageSetLightDiffuseCoeff(command, lightDiffuseCoeff);
-    b3RequestCameraImageSetLightSpecularCoeff(command, lightSpecularCoeff);
+
+    b3RequestCameraImageSetShadow(command, false);
+    b3RequestCameraImageSetLightAmbientCoeff(command, 0.6);
+    b3RequestCameraImageSetLightDiffuseCoeff(command, 0.35);
+    b3RequestCameraImageSetLightSpecularCoeff(command, 0.05);
     b3RequestCameraImageSelectRenderer(command, 0);//renderer could be ER_BULLET_HARDWARE_OPENGL
 
     if (b3CanSubmitCommand(wref->client))
