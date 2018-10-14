@@ -238,6 +238,73 @@ struct Camera {
 				);
 	}
 
+  boost::python::object render_direct(uint16_t width, uint16_t height, boost::python::list const& viewMatrixList, boost::python::list const& projectionMatrixList, boost::python::list const& lightDirList, float lightDist, bool shadow)
+  {
+    float viewMatrix[16];
+    float projectionMatrix[16];
+    float lightDir[3];
+    float lightColor[3];
+    float lightAmbientCoeff = 0.6;
+    float lightDiffuseCoeff = 0.35;
+    float lightSpecularCoeff = 0.05;
+
+
+    b3SharedMemoryCommandHandle command;
+    command = b3InitRequestCameraImage(wref->client);
+    b3RequestCameraImageSetPixelResolution(command, width, height);
+
+    auto const extract = [](boost::python::list const& l, float* out) {
+      for(size_t i = 0; i < boost::python::len(l); i++) {
+        out[i] = boost::python::extract<float>(l[i]);
+      }
+    };
+
+    extract(viewMatrixList, viewMatrix);
+    extract(projectionMatrixList, projectionMatrix);
+    b3RequestCameraImageSetCameraMatrices(command, viewMatrix, projectionMatrix);
+    extract(lightDirList, lightDir);
+    b3RequestCameraImageSetLightDirection(command, lightDir);
+    b3RequestCameraImageSetLightDistance(command, lightDist);
+    b3RequestCameraImageSetShadow(command, shadow);
+    b3RequestCameraImageSetLightAmbientCoeff(command, lightAmbientCoeff);
+    b3RequestCameraImageSetLightDiffuseCoeff(command, lightDiffuseCoeff);
+    b3RequestCameraImageSetLightSpecularCoeff(command, lightSpecularCoeff);
+    b3RequestCameraImageSelectRenderer(command, 0);//renderer could be ER_BULLET_HARDWARE_OPENGL
+
+    if (b3CanSubmitCommand(wref->client))
+    {
+      auto const statusHandle = b3SubmitClientCommandAndWaitStatus(wref->client, command);
+      int statusType = b3GetStatusType(statusHandle);
+      if (statusType == CMD_CAMERA_IMAGE_COMPLETED)
+      {
+        b3CameraImageData imageData;
+        b3GetCameraImageData(wref->client, &imageData);
+
+        int bytesPerPixel = 4;  // Red, Green, Blue, and Alpha each 8 bit values
+        boost::python::list listDep, listSeg, listRGB;
+
+        for (int i = 0; i < imageData.m_pixelWidth; i++)
+        {
+          for (int j = 0; j < imageData.m_pixelHeight; j++)
+          {
+            int depIndex = j + i * imageData.m_pixelWidth;
+            listDep.append(imageData.m_depthValues[depIndex]);
+            listSeg.append(imageData.m_segmentationMaskValues[depIndex]);
+
+            for (int p = 0; p < bytesPerPixel; p++)
+            {
+              int pixelIndex = bytesPerPixel * depIndex + p;
+              listRGB.append(imageData.m_rgbColorData[pixelIndex]);
+            }
+          }
+        }
+
+        return boost::python::make_tuple(imageData.m_pixelWidth, imageData.m_pixelHeight, listRGB, listDep, listSeg);
+      }
+    }
+    return boost::python::object();
+  }
+
 	void move_and_look_at(float from_x, float from_y, float from_z, float obj_x, float obj_y, float obj_z)
 	{
 		Pose pose;
@@ -641,6 +708,7 @@ void cpp_household_init()
 	.add_property("name", &Camera::name)
 	.add_property("resolution", &Camera::resolution)
 	.def("render", &Camera::render)
+	.def("render_direct", &Camera::render_direct)
 	.def("test_window", &Camera::test_window)
 	.def("test_window_score", &Camera::test_window_score)
 	.def("set_key_callback", &Camera::set_key_callback)
