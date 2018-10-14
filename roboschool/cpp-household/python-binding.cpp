@@ -2,6 +2,8 @@
 #include <boost/weak_ptr.hpp>
 
 #include "render-glwidget.h"
+#include <bullet/Bullet3Common/b3Vector3.h>
+#include <bullet/Bullet3Common/b3Matrix3x3.h>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
@@ -238,9 +240,42 @@ struct Camera {
 				);
 	}
 
-  boost::python::object render_direct(uint16_t width, uint16_t height, boost::python::list const& viewMatrixList, boost::python::list const& projectionMatrixList, boost::python::list const& lightDirList, float lightDist, bool shadow)
+  boost::python::object render_direct(uint16_t width, uint16_t height, boost::python::list const& projectionMatrixList, boost::python::list const& lightDirList, float lightDist, bool shadow)
   {
-    float viewMatrix[16];
+    auto const camera_pose = cref->camera_pose;
+
+    b3Scalar viewMatrix[16];
+
+    auto const btv = camera_pose.getRotation().getAxis().normalized();
+    auto const bteye = camera_pose.getOrigin();
+    auto const eye = b3MakeVector3(bteye.x(), bteye.y(), bteye.z());
+    auto const btq = camera_pose.getRotation();
+    b3Vector3 f = b3MakeVector3(btv.x(), btv.y(), btv.z());
+    b3Vector3 u = (b3Matrix3x3(b3Quaternion(btq.x(), btq.y(), btq.z(), btq.w())) * b3MakeVector3(0, 0, 1)).normalized();
+    b3Vector3 s = (f.cross(u)).normalized();
+    u = s.cross(f);
+
+    viewMatrix[0 * 4 + 0] = s.x;
+    viewMatrix[1 * 4 + 0] = s.y;
+    viewMatrix[2 * 4 + 0] = s.z;
+
+    viewMatrix[0 * 4 + 1] = u.x;
+    viewMatrix[1 * 4 + 1] = u.y;
+    viewMatrix[2 * 4 + 1] = u.z;
+
+    viewMatrix[0 * 4 + 2] = -f.x;
+    viewMatrix[1 * 4 + 2] = -f.y;
+    viewMatrix[2 * 4 + 2] = -f.z;
+
+    viewMatrix[0 * 4 + 3] = 0.f;
+    viewMatrix[1 * 4 + 3] = 0.f;
+    viewMatrix[2 * 4 + 3] = 0.f;
+
+    viewMatrix[3 * 4 + 0] = -s.dot(eye);
+    viewMatrix[3 * 4 + 1] = -u.dot(eye);
+    viewMatrix[3 * 4 + 2] = f.dot(eye);
+    viewMatrix[3 * 4 + 3] = 1.f;
+
     float projectionMatrix[16];
     float lightDir[3];
     float lightColor[3];
