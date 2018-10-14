@@ -246,35 +246,16 @@ struct Camera {
 
     b3Scalar viewMatrix[16];
 
-    auto const btv = camera_pose.getRotation().getAxis().normalized();
-    auto const bteye = camera_pose.getOrigin();
-    auto const eye = b3MakeVector3(bteye.x(), bteye.y(), bteye.z());
-    auto const btq = camera_pose.getRotation();
-    b3Vector3 f = b3MakeVector3(btv.x(), btv.y(), btv.z());
-    b3Vector3 u = (b3Matrix3x3(b3Quaternion(btq.x(), btq.y(), btq.z(), btq.w())) * b3MakeVector3(0, 0, 1)).normalized();
-    b3Vector3 s = (f.cross(u)).normalized();
-    u = s.cross(f);
-
-    viewMatrix[0 * 4 + 0] = s.x;
-    viewMatrix[1 * 4 + 0] = s.y;
-    viewMatrix[2 * 4 + 0] = s.z;
-
-    viewMatrix[0 * 4 + 1] = u.x;
-    viewMatrix[1 * 4 + 1] = u.y;
-    viewMatrix[2 * 4 + 1] = u.z;
-
-    viewMatrix[0 * 4 + 2] = -f.x;
-    viewMatrix[1 * 4 + 2] = -f.y;
-    viewMatrix[2 * 4 + 2] = -f.z;
-
-    viewMatrix[0 * 4 + 3] = 0.f;
-    viewMatrix[1 * 4 + 3] = 0.f;
-    viewMatrix[2 * 4 + 3] = 0.f;
-
-    viewMatrix[3 * 4 + 0] = -s.dot(eye);
-    viewMatrix[3 * 4 + 1] = -u.dot(eye);
-    viewMatrix[3 * 4 + 2] = f.dot(eye);
-    viewMatrix[3 * 4 + 3] = 1.f;
+    {
+      auto const bt_rot = camera_pose.getRotation().getAxis().normalized();
+      auto const bt_eye = camera_pose.getOrigin();
+      auto const bt_pos = bt_eye + bt_rot;
+      auto const bt_cup = btMatrix3x3(camera_pose.getRotation()) * btVector3(0, 0, 1);
+      b3Scalar camera_position[3] = {bt_eye.x(), bt_eye.y(), bt_eye.z()};
+      b3Scalar target_position[3] = {bt_pos.x(), bt_pos.y(), bt_pos.z()};
+      b3Scalar camera_up[3]       = {bt_cup.x(), bt_cup.y(), bt_cup.z()};
+      b3ComputeViewMatrixFromPositions(camera_position, target_position, camera_up, viewMatrix);
+    }
 
     float projectionMatrix[16];
     float lightDir[3];
@@ -294,7 +275,6 @@ struct Camera {
       }
     };
 
-    extract(viewMatrixList, viewMatrix);
     extract(projectionMatrixList, projectionMatrix);
     b3RequestCameraImageSetCameraMatrices(command, viewMatrix, projectionMatrix);
     extract(lightDirList, lightDir);
