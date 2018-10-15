@@ -271,7 +271,7 @@ struct Camera {
     b3RequestCameraImageSetLightAmbientCoeff(command, 0.6);
     b3RequestCameraImageSetLightDiffuseCoeff(command, 0.35);
     b3RequestCameraImageSetLightSpecularCoeff(command, 0.05);
-    b3RequestCameraImageSelectRenderer(command, 0);//renderer could be ER_BULLET_HARDWARE_OPENGL
+    b3RequestCameraImageSelectRenderer(command, ER_TINY_RENDERER);
 
     if (b3CanSubmitCommand(wref->client))
     {
