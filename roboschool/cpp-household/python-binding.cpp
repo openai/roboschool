@@ -289,7 +289,7 @@ struct Camera {
         {
           for (int j = 0; j < imageData.m_pixelHeight; j++)
           {
-            int depIndex = j + i * imageData.m_pixelWidth;
+            int depIndex = j + i * imageData.m_pixelHeight;
             listDep.append(imageData.m_depthValues[depIndex]);
             listSeg.append(imageData.m_segmentationMaskValues[depIndex]);
 
