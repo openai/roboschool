@@ -247,12 +247,10 @@ struct Camera {
     b3Scalar viewMatrix[16];
 
     {
-      auto const bt_rot = camera_pose.getRotation().getAxis().normalized();
       auto const bt_eye = camera_pose.getOrigin();
-      auto const bt_pos = bt_eye + bt_rot;
       auto const bt_cup = btMatrix3x3(camera_pose.getRotation()) * btVector3(0, 0, 1);
       b3Scalar camera_position[3] = {bt_eye.x(), bt_eye.y(), bt_eye.z()};
-      b3Scalar target_position[3] = {bt_pos.x(), bt_pos.y(), bt_pos.z()};
+      b3Scalar target_position[3] = {0, 0, 0};
       b3Scalar camera_up[3]       = {bt_cup.x(), bt_cup.y(), bt_cup.z()};
       b3ComputeViewMatrixFromPositions(camera_position, target_position, camera_up, viewMatrix);
     }
