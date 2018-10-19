@@ -30,6 +30,11 @@ void World::bullet_init(float gravity, float timestep)
 		fprintf(stderr, "Start chrome trace log, handle %i\n", chrome_trace_log);
 	}
 #endif
+  {
+    b3SharedMemoryCommandHandle commandHandle = b3InitConfigureOpenGLVisualizer(client);
+    b3ConfigureOpenGLVisualizerSetVisualizationFlags(commandHandle, COV_ENABLE_TINY_RENDERER, 1);
+    b3SubmitClientCommandAndWaitStatus(client, commandHandle);
+  }
 }
 
 World::~World()
