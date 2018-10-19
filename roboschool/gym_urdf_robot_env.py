@@ -95,7 +95,7 @@ class RoboschoolUrdfEnv(gym.Env):
             _, _, rgb, _, _ = self.camera.render_direct()
 
             if len(rgb) != self.VIDEO_H:
-                rgb = np.reshape(rgb, (self.VIDEO_W, self.VIDEO_H, 4)).astype('uint8')
+                rgb = np.reshape(rgb, (self.VIDEO_H, self.VIDEO_W, 4)).astype('uint8')
             return rgb[:, :, :3]
         else:
             assert(0)
