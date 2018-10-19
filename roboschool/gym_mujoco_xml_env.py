@@ -82,7 +82,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
             return self.scene.cpp_world.test_window()
         elif mode=="rgb_array":
             self.camera_adjust()
-            rgb, _, _ = self.camera.render_direct()
+            rgb = self.camera.render_direct()
             rgb = np.fromstring(rgb, dtype=np.uint8).reshape((self.VIDEO_H, self.VIDEO_W, 4))
             return rgb
         else:

@@ -280,20 +280,7 @@ struct Camera {
         b3CameraImageData imageData;
         b3GetCameraImageData(wref->client, &imageData);
 
-        int bytesPerPixel = 4;  // Red, Green, Blue, and Alpha each 8 bit values
-        boost::python::list listDep, listSeg, listRGB;
-
-        for (int i = 0; i < imageData.m_pixelWidth; i++)
-        {
-          for (int j = 0; j < imageData.m_pixelHeight; j++)
-          {
-            int depIndex = j + i * imageData.m_pixelHeight;
-            listDep.append(imageData.m_depthValues[depIndex]);
-            listSeg.append(imageData.m_segmentationMaskValues[depIndex]);
-          }
-        }
-
-        return boost::python::make_tuple(object(handle<>(PyBytes_FromStringAndSize(reinterpret_cast<const char*>(imageData.m_rgbColorData), imageData.m_pixelWidth * imageData.m_pixelHeight * 4))), listDep, listSeg);
+        return boost::python::object(boost::python::handle<>(PyBytes_FromStringAndSize(reinterpret_cast<const char*>(imageData.m_rgbColorData), imageData.m_pixelWidth * imageData.m_pixelHeight * 4)));
       }
     }
     return boost::python::object();
