@@ -83,9 +83,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
         elif mode=="rgb_array":
             self.camera_adjust()
             _, _, rgb, _, _ = self.camera.render_direct()
-
-            if len(rgb) != self.VIDEO_H:
-                rgb = np.reshape(rgb, (self.VIDEO_H, self.VIDEO_W, 4)).astype('uint8')
+            rgb = np.reshape(rgb, (self.VIDEO_H, self.VIDEO_W, 4)).astype('uint8')
             return rgb[:, :, :3]
         else:
             assert(0)
