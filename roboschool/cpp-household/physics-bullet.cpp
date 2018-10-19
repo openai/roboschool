@@ -95,7 +95,6 @@ shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr,
 std::list<shared_ptr<Robot>> World::load_sdf_mjcf(const std::string& fn, bool mjcf)
 {
 	std::list<shared_ptr<Robot>> ret;
-	const int MAX_SDF_BODIES = 512;
 	int bodyIndicesOut[MAX_SDF_BODIES];
 	int N;
 	if (mjcf) {
