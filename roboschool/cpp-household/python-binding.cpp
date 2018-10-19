@@ -248,7 +248,7 @@ struct Camera {
 
     {
       auto const bt_eye = camera_pose.getOrigin();
-      auto const bt_cup = btMatrix3x3(camera_pose.getRotation()) * btVector3(0, 0, 1);
+      auto const bt_cup = btMatrix3x3(camera_pose.getRotation()) * btVector3(0, 1, 0);
       b3Scalar camera_position[3] = {bt_eye.x(), bt_eye.y(), bt_eye.z()};
       b3Scalar target_position[3] = {0, 0, 0};
       b3Scalar camera_up[3]       = {bt_cup.x(), bt_cup.y(), bt_cup.z()};
