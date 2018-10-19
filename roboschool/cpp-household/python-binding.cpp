@@ -290,16 +290,10 @@ struct Camera {
             int depIndex = j + i * imageData.m_pixelHeight;
             listDep.append(imageData.m_depthValues[depIndex]);
             listSeg.append(imageData.m_segmentationMaskValues[depIndex]);
-
-            for (int p = 0; p < bytesPerPixel; p++)
-            {
-              int pixelIndex = bytesPerPixel * depIndex + p;
-              listRGB.append(imageData.m_rgbColorData[pixelIndex]);
-            }
           }
         }
 
-        return boost::python::make_tuple(imageData.m_pixelWidth, imageData.m_pixelHeight, listRGB, listDep, listSeg);
+        return boost::python::make_tuple(object(handle<>(PyBytes_FromStringAndSize(reinterpret_cast<const char*>(imageData.m_rgbColorData), imageData.m_pixelWidth * imageData.m_pixelHeight * 4))), listDep, listSeg);
       }
     }
     return boost::python::object();
