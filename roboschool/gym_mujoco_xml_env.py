@@ -84,6 +84,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
             self.camera_adjust()
             rgb = self.camera.render_direct()
             rgb = np.fromstring(rgb, dtype=np.uint8).reshape((self.VIDEO_H, self.VIDEO_W, 4))
+            rgb = rgb[:,:,0:3]
             return rgb
         else:
             assert(0)
