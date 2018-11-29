@@ -2,6 +2,8 @@
 #include <boost/weak_ptr.hpp>
 
 #include "render-glwidget.h"
+#include <bullet/Bullet3Common/b3Vector3.h>
+#include <bullet/Bullet3Common/b3Matrix3x3.h>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
@@ -237,6 +239,52 @@ struct Camera {
 				render_labeling ? object(handle<>(PyBytes_FromStringAndSize(cref->camera_labeling_mask.c_str(), cref->camera_labeling_mask.size()))) : object()
 				);
 	}
+
+  boost::python::object render_direct()
+  {
+    auto const camera_pose = cref->camera_pose;
+
+    b3Scalar viewMatrix[16];
+
+    {
+      auto const bt_eye = camera_pose.getOrigin();
+      auto const bt_cup = btMatrix3x3(camera_pose.getRotation()) * btVector3(0, 1, 0);
+      b3Scalar camera_position[3] = {bt_eye.x(), bt_eye.y(), bt_eye.z()};
+      b3Scalar target_position[3] = {0, 0, 0};
+      b3Scalar camera_up[3]       = {bt_cup.x(), bt_cup.y(), bt_cup.z()};
+      b3ComputeViewMatrixFromPositions(camera_position, target_position, camera_up, viewMatrix);
+    }
+
+    b3Scalar projectionMatrix[16];
+    b3ComputeProjectionMatrixFOV(cref->camera_hfov, cref->camera_res_w / cref->camera_res_h, cref->camera_near, cref->camera_far, projectionMatrix);
+
+
+    b3SharedMemoryCommandHandle command;
+    command = b3InitRequestCameraImage(wref->client);
+    b3RequestCameraImageSetPixelResolution(command, cref->camera_res_w, cref->camera_res_h);
+
+    b3RequestCameraImageSetCameraMatrices(command, viewMatrix, projectionMatrix);
+
+    b3RequestCameraImageSetShadow(command, false);
+    b3RequestCameraImageSetLightAmbientCoeff(command, 0.6);
+    b3RequestCameraImageSetLightDiffuseCoeff(command, 0.35);
+    b3RequestCameraImageSetLightSpecularCoeff(command, 0.05);
+    b3RequestCameraImageSelectRenderer(command, ER_TINY_RENDERER);
+
+    if (b3CanSubmitCommand(wref->client))
+    {
+      auto const statusHandle = b3SubmitClientCommandAndWaitStatus(wref->client, command);
+      int statusType = b3GetStatusType(statusHandle);
+      if (statusType == CMD_CAMERA_IMAGE_COMPLETED)
+      {
+        b3CameraImageData imageData;
+        b3GetCameraImageData(wref->client, &imageData);
+
+        return boost::python::object(boost::python::handle<>(PyBytes_FromStringAndSize(reinterpret_cast<const char*>(imageData.m_rgbColorData), imageData.m_pixelWidth * imageData.m_pixelHeight * 4)));
+      }
+    }
+    return boost::python::object();
+  }
 
 	void move_and_look_at(float from_x, float from_y, float from_z, float obj_x, float obj_y, float obj_z)
 	{
@@ -641,6 +689,7 @@ void cpp_household_init()
 	.add_property("name", &Camera::name)
 	.add_property("resolution", &Camera::resolution)
 	.def("render", &Camera::render)
+	.def("render_direct", &Camera::render_direct)
 	.def("test_window", &Camera::test_window)
 	.def("test_window_score", &Camera::test_window_score)
 	.def("set_key_callback", &Camera::set_key_callback)

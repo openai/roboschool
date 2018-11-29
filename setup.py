@@ -27,7 +27,7 @@ if not os.path.exists(blib):
 from sys import platform
 if platform=="darwin":
     bulletlibs  = "libBullet2FileLoader libBulletCollision libBullet3Collision libBulletDynamics libBullet3Common libBulletInverseDynamics".split()
-    bulletlibs += "libBullet3Dynamics libBulletSoftBody libBullet3Geometry libLinearMath libBullet3OpenCL_clew libPhysicsClientC_API".split()
+    bulletlibs += "libBullet3Dynamics libBulletSoftBody libBullet3Geometry libLinearMath libBullet3OpenCL_clew libBulletRobotics".split()
     for x in bulletlibs:
         os.system("install_name_tool -id @loader_path/cpp-household/bullet_local_install/lib/%s.2.87.dylib %s/%s.2.87.dylib" % (x,blib,x))
         for y in bulletlibs:

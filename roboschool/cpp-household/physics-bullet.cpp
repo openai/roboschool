@@ -30,6 +30,11 @@ void World::bullet_init(float gravity, float timestep)
 		fprintf(stderr, "Start chrome trace log, handle %i\n", chrome_trace_log);
 	}
 #endif
+  {
+    b3SharedMemoryCommandHandle commandHandle = b3InitConfigureOpenGLVisualizer(client);
+    b3ConfigureOpenGLVisualizerSetVisualizationFlags(commandHandle, COV_ENABLE_TINY_RENDERER, 1);
+    b3SubmitClientCommandAndWaitStatus(client, commandHandle);
+  }
 }
 
 World::~World()
@@ -95,7 +100,6 @@ shared_ptr<Robot> World::load_urdf(const std::string& fn, const btTransform& tr,
 std::list<shared_ptr<Robot>> World::load_sdf_mjcf(const std::string& fn, bool mjcf)
 {
 	std::list<shared_ptr<Robot>> ret;
-	const int MAX_SDF_BODIES = 512;
 	int bodyIndicesOut[MAX_SDF_BODIES];
 	int N;
 	if (mjcf) {

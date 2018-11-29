@@ -49,9 +49,9 @@ endif
 
 $(info Link against python $(PYTHON))
 INC     += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python-$(PYTHON)`
-LIBS    += -lstdc++ `$(PKG) --libs Qt5OpenGL Qt5Widgets assimp python-$(PYTHON)`
+LIBS    += -lstdc++ `$(PKG) --libs Qt5OpenGL Qt5Widgets assimp tinyxml python-$(PYTHON)`
 INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet
-LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API
+LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletRobotics
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
