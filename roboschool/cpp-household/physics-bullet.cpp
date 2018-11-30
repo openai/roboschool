@@ -14,7 +14,12 @@ void World::bullet_init(float gravity, float timestep)
 	char* fake_argv[] = { 0 };
 	//client = b3CreateInProcessPhysicsServerAndConnectMainThread(0, fake_argv);
 	//client = b3CreateInProcessPhysicsServerAndConnect(0, fake_argv);
-	client = b3ConnectPhysicsDirect();
+	client = b3ConnectSharedMemory(SHARED_MEMORY_KEY);
+	if (!b3CanSubmitCommand(client))
+        {
+		b3DisconnectSharedMemory(client);
+		client = b3ConnectPhysicsDirect();
+	}
 	settings_gravity = gravity;
 	settings_timestep = timestep;
 	settings_apply();
