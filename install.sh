@@ -15,7 +15,7 @@ mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
 curl -OL https://storage.googleapis.com/games-src/qt5/qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
 tar -xf qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
 cd qtbase-opensource-src-5.7.1
-./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -no-network -widgets -opengl -make libs
+./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -widgets -opengl -make libs
 make -j4 > /dev/null
 make install > /dev/null
 
