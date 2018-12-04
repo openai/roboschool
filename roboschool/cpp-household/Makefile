@@ -51,7 +51,7 @@ endif
 $(info Link against python $(PYTHON))
 INC     += `$(PKG) --cflags python-$(PYTHON)`
 LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
-INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet -Iassimp_local_install/include -Iboost_local_install/include
+INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet -Iassimp_local_install/include -Iboost_local_install/include -Iqt5_local_install/include
 LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API -lassimp -Lqt5_local_install/lib -Iqt5_local_install/include -lQt5OpenGL -lQt5Widgets
 
 ifeq ($(PYTHON),2.7)
