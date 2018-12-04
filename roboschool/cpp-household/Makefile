@@ -28,7 +28,7 @@ ifeq ($(UNAME),Linux)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib',-rpath,'$$ORIGIN/cpp-household/assimp_local_install/lib'
+  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib',-rpath,'$$ORIGIN/cpp-household/assimp_local_install/lib',-rpath,'$$ORIGIN/cpp-household/qt5_local_install/lib'
 endif
 
 ifeq ($(UNAME),Darwin)
@@ -49,10 +49,10 @@ ifeq ($(UNAME),Darwin)
 endif
 
 $(info Link against python $(PYTHON))
-INC     += `$(PKG) --cflags Qt5Widgets Qt5OpenGL python-$(PYTHON)`
-LIBS    += -lstdc++ `$(PKG) --libs Qt5OpenGL Qt5Widgets python-$(PYTHON)`
+INC     += `$(PKG) --cflags python-$(PYTHON)`
+LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet -Iassimp_local_install/include -Iboost_local_install/include
-LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API -lassimp
+LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API -lassimp -Lqt5_local_install/lib -Iqt5_local_install/include -lQt5OpenGL -lQt5Widgets
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
