@@ -11,9 +11,9 @@ install:
   # - before_install 
   # - build_wheel $REPO_DIR $PLAT
 script: 
-  # - install_run $PLAT
+   - install_run $PLAT
 
-after_success:
+# after_success:
   # - ./deploy.sh
 
     
