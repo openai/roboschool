@@ -7,9 +7,9 @@ env:
 install: 
   - git clone https://github.com/matthew-brett/multibuild && cd multibuild && git checkout 254ad28 && cd ..
   - . multibuild/common_utils.sh
-  # - . multibuild/travis_steps.sh
-  # - before_install 
-  # - build_wheel $REPO_DIR $PLAT
+  - . multibuild/travis_steps.sh
+  - before_install 
+  - build_wheel $REPO_DIR $PLAT
 script: 
    - install_run $PLAT
 
