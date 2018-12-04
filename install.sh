@@ -15,8 +15,9 @@ mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
 curl -OL https://storage.googleapis.com/games-src/qt5/qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
 tar -xf qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
 cd qtbase-opensource-src-5.7.1
-./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -make libs
-make && make install
+./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -no-network -no-sql -widgets -opengl -make libs
+make -j4 > /dev/null
+make install > /dev/null
 
 ASSIMP_SRCDIR=$TMPDIR/assimp
 mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
@@ -25,7 +26,7 @@ tar -xf assimp-4.1.0.tar.gz
 cd assimp-4.1.0
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/assimp_local_install . 
 make -j4
-make install
+make install > /dev/null
 cd $ROBOSCHOOL_PATH
 
 BOOST_SRCDIR=$TMPDIR/boost
@@ -35,7 +36,7 @@ tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
 export CPATH=$CPATH:/usr/local/include/python3.6m
  ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python
- ./b2 install
+ ./b2 install > /dev/null
 
 BULLET_SRCDIR=$TMPDIR/bullet3
 rm -rf $BULLET_SRCDIR
@@ -44,7 +45,7 @@ git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision .
 mkdir build && cd build
 cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
 make -j4
-make install
+make install > /dev/null
 
 cd $ROBOSCHOOL_PATH
 pip wheel .
