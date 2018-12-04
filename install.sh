@@ -3,9 +3,6 @@
 set -ex
 cd $(dirname "$0")
 
-tar --version
-tar --help
-
 ROBOSCHOOL_PATH=$(pwd)
 CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
