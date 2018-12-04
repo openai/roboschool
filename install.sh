@@ -2,6 +2,10 @@
 
 set -ex
 cd $(dirname "$0")
+
+tar --version
+tar --help
+
 ROBOSCHOOL_PATH=$(pwd)
 CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
@@ -11,7 +15,7 @@ mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
 curl -OL http://deb.debian.org/debian/pool/main/q/qtbase-opensource-src/qtbase-opensource-src_5.7.1+dfsg.orig.tar.xz
 tar -xJf qtbase-opensource-src_5.7.1+dfsg.orig.tar.xz 
 cd qtbase-opensource-src-5.7.1
-./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -qt-xcb
+./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl
 make && make install
 
 ASSIMP_SRCDIR=$TMPDIR/assimp
