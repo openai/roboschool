@@ -9,7 +9,7 @@ pip install cmake
 QT5_SRCDIR=$TMPDIR/qt5
 mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
 curl -OL http://deb.debian.org/debian/pool/main/q/qtbase-opensource-src/qtbase-opensource-src_5.7.1+dfsg.orig.tar.xz
-tar -xf qtbase-opensource-src_5.7.1+dfsg.orig.tar.xz 
+tar -xJf qtbase-opensource-src_5.7.1+dfsg.orig.tar.xz 
 cd qtbase-opensource-src-5.7.1
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -qt-xcb
 make && make install
@@ -34,6 +34,7 @@ export CPATH=$CPATH:/usr/local/include/python3.6m
  ./b2 install
 
 BULLET_SRCDIR=$TMPDIR/bullet3
+rm -rf $BULLET_SRCDIR
 mkdir -p $BULLET_SRCDIR && cd $BULLET_SRCDIR
 git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision .
 mkdir build && cd build
