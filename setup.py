@@ -1,5 +1,9 @@
 from setuptools import setup, find_packages
+from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext
+import subprocess
 import sys, os
+import re
 
 dep = """
 C++ dependencies for this project are:
@@ -18,7 +22,6 @@ from setuptools.command.install import install as DistutilsInstall
 from setuptools.command.egg_info import egg_info as EggInfo
 
 setup_py_dir = os.path.dirname(os.path.realpath(__file__))
-
 blib = setup_py_dir + "/roboschool/cpp-household/bullet_local_install/lib"
 if not os.path.exists(blib):
     print("Please follow instructions in README to build local (not global for your system) Bullet installation.")
@@ -33,6 +36,18 @@ if platform=="darwin":
         for y in bulletlibs:
             os.system("install_name_tool -change @rpath/%s.2.87.dylib @loader_path/%s.2.87.dylib %s/%s.2.87.dylib" % (x,x,blib,y))
 
+# with open(os.path.join(os.path.dirname(__file__), 'atari_py/package_data.txt')) as f:
+#    package_data = [line.rstrip() for line in f.readlines()]
+
+class CMakeExtension(Extension):
+    def __init__(self, name, sourcedir=''):
+        Extension.__init__(self, name, sources=[])
+        self.sourcedir = os.path.abspath(sourcedir)
+
+class Build(build_ext):
+    def run(self):
+        recompile()
+
 def recompile():
     USE_PYTHON3 = ""
     if sys.version_info[0]==2:
@@ -44,28 +59,20 @@ def recompile():
         print(dep)
         sys.exit(1)
 
-class MyInstall(DistutilsInstall):
-    def run(self):
-        recompile()
-        DistutilsInstall.run(self)
-
-class MyEgg(EggInfo):
-    def run(self):
-        recompile()
-        EggInfo.run(self)
-
 need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
+need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl 87 dylib'.split()
+need_files_re = [re.compile(r'.+\.'+p) for p in need_files_ext]
+need_files_re.append(re.compile(r'.+\.so(.\d+)*'))
 
 for root, dirs, files in os.walk(hh):
     for fn in files:
-        ext = os.path.splitext(fn)[1][1:]
-        if ext and ext in 'png jpg urdf obj mtl dae off stl STL xml glsl so 87 dylib'.split():
+        if any([p.match(fn) for p in need_files_re]):
             fn = root + "/" + fn
             need_files.append(fn[1+len(hh):])
 
 print("found resource files: %i" % len(need_files))
-#for n in need_files: print("-- %s" % n)
+for n in need_files: print("-- %s" % n)
 
 setup(
     name = 'roboschool',
@@ -75,9 +82,8 @@ setup(
     maintainer_email = 'omgtech@gmail.com',
     url = 'https://github.com/openai/roboschool',
     packages=[x for x in find_packages()],
-    cmdclass = {
-        'install': MyInstall,
-        'egg_info': MyEgg
-        },
+    ext_modules=[CMakeExtension('roboschool')],
+    cmdclass={'build_ext': Build},
+    install_requires=['gym'],
     package_data = { '': need_files }
-    )
+)
