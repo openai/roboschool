@@ -8,12 +8,12 @@ CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
 
 QT5_SRCDIR=$TMPDIR/qt5
-QT_SRC=qt-everywhere-opensource-src-5.9.7.zip
+QT_SRC=qt-everywhere-opensource-src-5.6.0.tar.gz
 mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
 # curl -OL https://storage.googleapis.com/games-src/qt5/qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
-if [ ! -f $QT_SRC ]; then curl -OL http://download.qt.io/archive/qt/5.9/5.9.7/single/$QT_SRC; fi
+if [ ! -f $QT_SRC ]; then curl -OL http://download.qt.io/archive/qt/5.6/5.6.0/single/$QT_SRC; fi
 unzip $QT_SRC > /dev/null
-cd ${QT_SRC%.zip}
+cd ${QT_SRC%.tar.gz}
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -widgets -opengl -make libs
 make -j4 > /dev/null
 make install > /dev/null
