@@ -48,11 +48,13 @@ ifeq ($(UNAME),Darwin)
   RPATH =
 endif
 
+MOC = '$$ORIGIN/cpp-household/qt5_local_install/bin/moc'
+
 $(info Link against python $(PYTHON))
 INC     += `$(PKG) --cflags python-$(PYTHON)`
 LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet -Iassimp_local_install/include -Iboost_local_install/include -Iqt5_local_install/include
-LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API -lassimp -Lqt5_local_install/lib -Iqt5_local_install/include -lQt5OpenGL -lQt5Widgets
+LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API -lassimp -Lqt5_local_install/lib -Iqt5_local_install/include -lQt5OpenGL -lQt5Widgets 
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
@@ -72,7 +74,8 @@ CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-depre
 SHARED  = -shared
 DEPENDS = -MMD -MF $@.dep
 
-EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
+# EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
+EVERY_BIN=../cpp_household.so ../cpp_household_d.so
 
 SIM = \
  physics-bullet.cpp \
@@ -117,10 +120,10 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 #../robot-test-tool: $(SIM_R) $(TWND_R)
 #../robot-test-tool_d: $(SIM_D) $(TWND_D)
 
-../robot-test-tool: $(SIM_R) $(TWND_R)
-	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)
-../robot-test-tool_d: $(SIM_D) $(TWND_D)
-	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)
+#../robot-test-tool: $(SIM_R) $(TWND_R)
+#	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)
+#../robot-test-tool_d: $(SIM_D) $(TWND_D)
+#	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)
 
 ../cpp_household.so: $(SIM_R) $(PYTH_R)
 	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
