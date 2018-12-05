@@ -34,18 +34,18 @@ matrix:
 
 
     - os: osx
-      osx_image: xcode9
+      osx_image: xcode9.4
       env:
         - MB_PYTHON_VERSION=3.5
         - DEPLOY_SDIST=true
  
     - os: osx
-      osx_image: xcode9
+      osx_image: xcode9.3
       env:
         - MB_PYTHON_VERSION=3.6
  
     - os: osx
-      osx_image: xcode9
+      osx_image: xcode9.2
       env:
         - MB_PYTHON_VERSION=3.7
  
