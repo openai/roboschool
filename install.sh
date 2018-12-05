@@ -12,7 +12,7 @@ QT_SRC=qt-everywhere-opensource-src-5.6.0.tar.gz
 mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
 # curl -OL https://storage.googleapis.com/games-src/qt5/qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
 if [ ! -f $QT_SRC ]; then curl -OL http://download.qt.io/archive/qt/5.6/5.6.0/single/$QT_SRC; fi
-unzip $QT_SRC > /dev/null
+tar -xf $QT_SRC
 cd ${QT_SRC%.tar.gz}
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -widgets -opengl -make libs
 make -j4 > /dev/null
