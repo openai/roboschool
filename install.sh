@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -ex
+set -e
 cd $(dirname "$0")
 
 ROBOSCHOOL_PATH=$(pwd)
@@ -29,7 +29,8 @@ echo "QMAKE_CXX_FLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/of
              -no-xcb -no-harfbuzz -no-mtdev -no-freetype -no-gtkstyle \
              -no-xinput2 -no-libinput
 
-make -j4 > /dev/null
+make -j4 > /qt5_build.log
+tail -500 /qt5_build.log
 make install > /dev/null
 
 ASSIMP_SRCDIR=$TMPDIR/assimp
