@@ -3,6 +3,8 @@
 set -x
 cd $(dirname "$0")
 
+. ./exports.sh
+
 ROBOSCHOOL_PATH=$(pwd)
 CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
@@ -22,12 +24,6 @@ curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
 tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
 
-PYTHON_BIN=$(readlink -f $(which python))
-PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
-PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
-
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PYTHON_ROOT}/lib/pkgconfig
-export CPATH=$CPATH:${PYTHON_ROOT}/include/python${PYTHON_VER}m
  ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python 
  ./b2 install > $TMPDIR/boost_make.log
 tail -100 $TMPDIR/boost_make.log
