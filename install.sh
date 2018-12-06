@@ -29,7 +29,7 @@ fi
              -no-gstreamer -no-pulseaudio -no-alsa \
              -no-securetransport -no-openssl -no-libproxy \
              -no-xcb -no-harfbuzz \
-             -no-libinput
+             -no-libinput -no-evdev
 
 cat qtbase/src/plugins/platforms/offscreen/offscreen.pro
 
