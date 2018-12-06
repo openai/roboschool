@@ -47,6 +47,8 @@ cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PAT
 make -j4
 make install > /dev/null
 
+ls $CPP_HOUSEHOLD/bullet_local_install/lib
+
 cd $ROBOSCHOOL_PATH
 # pip wheel . -w wheelhouse
 # ls wheelhouse
