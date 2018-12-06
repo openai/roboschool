@@ -15,8 +15,10 @@ if [ ! -f $QT_SRC ]; then curl -OL http://download.qt.io/archive/qt/5.6/5.6.0/si
 tar -xf $QT_SRC
 cd ${QT_SRC%.tar.gz}
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -widgets -opengl -make libs
+
 # remove reference to signalfd.h not present on CentOS 5
-sed -i '/signalfd/d' qtbase/src/fbconvenience/platformsupport/fbconvenience/qfbvthandler.cpp
+sed -i '/signalfd/d' qtbase/src/platformsupport/fbconvenience/qfbvthandler.cpp
+
 make -j4 > /dev/null
 make install > /dev/null
 
