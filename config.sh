@@ -1,7 +1,8 @@
 #!/bin/bash
 function pre_build {
     set -ex
-    ./install.sh
+    . ./install.sh
+    env
 }
 
 function run_tests {

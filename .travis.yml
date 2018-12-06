@@ -23,7 +23,6 @@ matrix:
     - os: linux
       env:
         - MB_PYTHON_VERSION=3.5
-        - PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/python/cp35-cp35m/lib/pkgconfig
     
     - os: linux
       env:
