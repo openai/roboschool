@@ -22,12 +22,12 @@ curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
 tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
 
-PYTHON=$(readlink -f $(which python))
-PYTHON_ROOT=${PYTHON%/bin/python}
-PYTHON_VER=${PYTHON#$PYTHON_ROOT/bin/python}
+PYTHON_BIN=$(readlink -f $(which python))
+PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
+PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
 
 export CPATH=$CPATH:${PYTHON_ROOT}/include/python${PYTHON_VER}m
- ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$PYTHON --with-libraries=python 
+ ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python 
  ./b2 install > $TMPDIR/boost_make.log
 tail -100 $TMPDIR/boost_make.log
 
