@@ -7,42 +7,14 @@ ROBOSCHOOL_PATH=$(pwd)
 CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
 
-QT5_SRCDIR=$TMPDIR/qt5
-QT_SRC=qt-everywhere-opensource-src-5.8.0.tar.gz
-mkdir -p $QT5_SRCDIR && cd $QT5_SRCDIR
-# curl -OL https://storage.googleapis.com/games-src/qt5/qtbase-opensource-src_5.7.1+dfsg.orig.tar.bz2
-if [ ! -f $QT_SRC ]; then curl -OL http://download.qt.io/archive/qt/5.8/5.8.0/single/$QT_SRC; fi
-tar -xf $QT_SRC
-cd ${QT_SRC%.tar.gz}
-
-# possibly make a diff patch out of these
 if [ $(uname) == 'Linux' ]; then
-    # Tweak Qt code a little bit (build errors without these):
-    # 1. remove reference to signalfd.h not present on CentOS 5
-    sed -i '/signalfd/d' qtbase/src/platformsupport/fbconvenience/qfbvthandler.cpp
-    # 2. remove reference to asm/byteorder.h - present, but fails to compile with --std=c++0x
-    sed -i '/byteorder/d' qtbase/src/testlib/3rdparty/linux_perf_event_p.h
-    # 3. add legacy glx flag to the compiler
-    echo "QMAKE_CXXFLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/offscreen/offscreen.pro
-fi
-if [ $(uname) == 'Darwin' ]; then
-    # Tweak Qt code a little bit (build errors without these):
-    sed -i '' '/InvalidContext/d' qtbase/src/gui/painting/qcoregraphics.mm
-    sed -i '' '/InvalidBounds/d' qtbase/src/gui/painting/qcoregraphics.mm
-    sed -i '' '/InvalidImage/d' qtbase/src/gui/painting/qcoregraphics.mm
+  QT5_BIN=qt5.8.0_centos5_2018-12-06.tar.gz
 fi
 
-./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -widgets -opengl -make libs \
-             -no-gstreamer -no-pulseaudio -no-alsa \
-             -no-securetransport -no-openssl -no-libproxy \
-             -no-xcb -no-harfbuzz \
-             -no-libinput -no-evdev
-
-cat qtbase/src/plugins/platforms/offscreen/offscreen.pro
-
-make -j4 > $TMPDIR/qt5_build.log
-tail -500 $TMPDIR/qt5_build.log
-make install > /dev/null
+cd $CPP_HOUSEHOLD
+curl -OL https://storage.googleapis.com/games-src/qt5/$QT5_BIN
+tar -xf $QT5_BIN
+rm -rf $QT5_BIN
 
 ASSIMP_SRCDIR=$TMPDIR/assimp
 mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
