@@ -8,7 +8,7 @@ CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
 
 if [ $(uname) == 'Linux' ]; then
-  QT5_BIN=qt5.8.0_centos5_2018-12-06.tar.gz
+  QT5_BIN=qt5.6.0_centos5_2018-12-06.tar.gz
 fi
 
 cd $CPP_HOUSEHOLD
@@ -23,6 +23,8 @@ tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
 export CPATH=$CPATH:/usr/local/include/python3.6m
 PYTHON=$(which python)
+PYTHON_BIN=$(readlink -f $PYTHON) 
+ln -sf $PYTHON_BIN ${PYTHON_BIN}m
 PYTHON_ROOT=${PYTHON%/bin/python}
  ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$PYTHON --with-python-root=$PYTHON_ROOT --with-libraries=python 
  ./b2 install > $TMPDIR/boost_make.log
