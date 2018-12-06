@@ -26,6 +26,7 @@ PYTHON_BIN=$(readlink -f $(which python))
 PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
 PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
 
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PYTHON_ROOT}/lib/pkgconfig
 export CPATH=$CPATH:${PYTHON_ROOT}/include/python${PYTHON_VER}m
  ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python 
  ./b2 install > $TMPDIR/boost_make.log
