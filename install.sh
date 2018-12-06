@@ -27,7 +27,7 @@ echo "QMAKE_CXX_FLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/of
              -no-gstreamer -no-pulseaudio -no-alsa \
              -no-securetransport -no-openssl -no-libproxy \
              -no-xcb -no-harfbuzz -no-mtdev -no-freetype -no-gtkstyle \
-             -no-xinput2
+             -no-xinput2 -no-libinput
 
 make -j4 > /dev/null
 make install > /dev/null
