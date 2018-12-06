@@ -21,7 +21,7 @@ sed -i '' '/signalfd/d' qtbase/src/platformsupport/fbconvenience/qfbvthandler.cp
 # 2. remove reference to asm/byteorder.h - present, but fails to compile with --std=c++0x
 sed -i '' '/byteorder/d' qtbase/src/testlib/3rdparty/linux_perf_event_p.h
 # 3. add legacy glx flag to the compiler
-echo "QMAKE_CXX_FLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/offscreen/offscreen.pro
+echo "QMAKE_CXXFLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/offscreen/offscreen.pro
 
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -widgets -opengl -make libs \
              -no-gstreamer -no-pulseaudio -no-alsa \
