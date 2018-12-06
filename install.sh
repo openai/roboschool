@@ -21,12 +21,13 @@ mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR
 curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
 tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
-export CPATH=$CPATH:/usr/local/include/python3.6m
-PYTHON=$(which python)
-PYTHON_BIN=$(readlink -f $PYTHON) 
-ln -sf $PYTHON_BIN ${PYTHON_BIN}m
+
+PYTHON=$(readlink -f $(which python))
 PYTHON_ROOT=${PYTHON%/bin/python}
- ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$PYTHON --with-python-root=$PYTHON_ROOT --with-libraries=python 
+PYTHON_VER=${PYTHON#$PYTHON_ROOT/bin/python}
+
+export CPATH=$CPATH:${PYTHON_ROOT}/include/python${PYTHON_VER}m
+ ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$PYTHON --with-libraries=python 
  ./b2 install > $TMPDIR/boost_make.log
 tail -100 $TMPDIR/boost_make.log
 
