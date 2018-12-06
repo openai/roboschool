@@ -15,6 +15,7 @@ if [ ! -f $QT_SRC ]; then curl -OL http://download.qt.io/archive/qt/5.8/5.8.0/si
 tar -xf $QT_SRC
 cd ${QT_SRC%.tar.gz}
 
+# possibly make a diff patch out of these
 if [ $(uname) == 'Linux' ]; then
     # Tweak Qt code a little bit (build errors without these):
     # 1. remove reference to signalfd.h not present on CentOS 5
@@ -26,9 +27,9 @@ if [ $(uname) == 'Linux' ]; then
 fi
 if [ $(uname) == 'Darwin' ]; then
     # Tweak Qt code a little bit (build errors without these):
-    sed -i '/InvalidContext/d' qtbase/src/gui/painting/qcoregraphics.mm
-    sed -i '/InvalidBounds/d' qtbase/src/gui/painting/qcoregraphics.mm
-    sed -i '/InvalidImage/d' qtbase/src/gui/painting/qcoregraphics.mm
+    sed -i '' '/InvalidContext/d' qtbase/src/gui/painting/qcoregraphics.mm
+    sed -i '' '/InvalidBounds/d' qtbase/src/gui/painting/qcoregraphics.mm
+    sed -i '' '/InvalidImage/d' qtbase/src/gui/painting/qcoregraphics.mm
 fi
 
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -widgets -opengl -make libs \
