@@ -24,6 +24,12 @@ if [ $(uname) == 'Linux' ]; then
     # 3. add legacy glx flag to the compiler
     echo "QMAKE_CXXFLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/offscreen/offscreen.pro
 fi
+if [ $(uname) == 'Darwin' ]; then
+    # Tweak Qt code a little bit (build errors without these):
+    sed -i '/InvalidContext/d' qtbase/src/gui/painting/qcoregraphics.mm
+    sed -i '/InvalidBounds/d' qtbase/src/gui/painting/qcoregraphics.mm
+    sed -i '/InvalidImage/d' qtbase/src/gui/painting/qcoregraphics.mm
+fi
 
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -widgets -opengl -make libs \
              -no-gstreamer -no-pulseaudio -no-alsa \
