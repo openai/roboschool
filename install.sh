@@ -23,7 +23,7 @@ sed -i '/byteorder/d' qtbase/src/testlib/3rdparty/linux_perf_event_p.h
 # 3. add legacy glx flag to the compiler
 echo "QMAKE_CXX_FLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/plugins/platforms/offscreen/offscreen.pro
 
-./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -widgets -opengl -make libs
+./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -no-xcb -no-openssl -widgets -opengl -make libs -no-gstreamer -no-pulseaudio -no-securetransport
 
 make -j4 > /dev/null
 make install > /dev/null
