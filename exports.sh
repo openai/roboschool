@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 PYTHON_BIN=$(readlink -f $(which python))
 PYTHON_ROOT=${PYTHON_BIN%/bin/python*}

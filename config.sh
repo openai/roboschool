@@ -1,7 +1,9 @@
 #!/bin/bash
 function pre_build {
     set -ex
-    . ./install.sh
+    . ./exports.sh
+    env
+    ./install.sh
     env
 }
 
