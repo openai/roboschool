@@ -8,7 +8,7 @@ CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 pip install cmake
 
 if [ $(uname) == 'Linux' ]; then
-  QT5_BIN=qt5.6.0_centos5_2018-12-06.tar.gz
+  QT5_BIN=qt5.6.0_centos5_2018-12-06a.tar.gz
 fi
 
 cd $CPP_HOUSEHOLD
