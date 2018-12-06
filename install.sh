@@ -19,7 +19,9 @@ cd ${QT_SRC%.tar.gz}
 # remove reference to signalfd.h not present on CentOS 5
 sed -i '/signalfd/d' qtbase/src/platformsupport/fbconvenience/qfbvthandler.cpp
 # remove reference to asm/byteorder.h - present, but fails to compile with --std=c++0x
-sed -i '/byteorder/d' qtbase/src/testlib/3dparty/qtbase/src/testlib/3rdparty/linux_perf_event_p.h
+sed -i '/byteorder/d' qtbase/src/testlib/3rdparty/linux_perf_event_p.h
+# add legacy glx flag to the compiler
+echo "QMAKE_CXX_FLAGS += -DGLX_GLXEXT_LEGACY" >> qtbase/src/src.pro
 
 make -j4 > /dev/null
 make install > /dev/null
