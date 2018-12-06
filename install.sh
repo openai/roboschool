@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -x
+set -ex
 cd $(dirname "$0")
 
 ROBOSCHOOL_PATH=$(pwd)
@@ -33,8 +33,8 @@ fi
 
 cat qtbase/src/plugins/platforms/offscreen/offscreen.pro
 
-make -j4 > /qt5_build.log
-tail -500 /qt5_build.log
+make -j4 > $TMPDIR/qt5_build.log
+tail -500 $TMPDIR/qt5_build.log
 make install > /dev/null
 
 ASSIMP_SRCDIR=$TMPDIR/assimp
