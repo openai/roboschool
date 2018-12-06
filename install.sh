@@ -28,7 +28,7 @@ fi
 ./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -widgets -opengl -make libs \
              -no-gstreamer -no-pulseaudio -no-alsa \
              -no-securetransport -no-openssl -no-libproxy \
-             -no-xcb -no-harfbuzz -no-mtdev -no-freetype -no-gtkstyle \
+             -no-xcb -no-harfbuzz -no-mtdev -no-gtkstyle \
              -no-xinput2 -no-libinput
 
 cat qtbase/src/plugins/platforms/offscreen/offscreen.pro
