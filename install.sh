@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -x
+set -ex
 cd $(dirname "$0")
 
 ROBOSCHOOL_PATH=$(pwd)
@@ -22,7 +22,9 @@ curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
 tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
 export CPATH=$CPATH:/usr/local/include/python3.6m
- ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python
+PYTHON=$(which python)
+PYTHON_ROOT=${PYTHON%/bin/python}
+ ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$PYTHON --with-python-root=$PYTHON_ROOT --with-libraries=python 
  ./b2 install > $TMPDIR/boost_make.log
 tail -100 $TMPDIR/boost_make.log
 
