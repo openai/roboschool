@@ -25,8 +25,7 @@ tar -xf boost_1_58_0.tar.bz2
 cd boost_1_58_0
 
  ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python 
- ./b2 install > $TMPDIR/boost_make.log
-tail -100 $TMPDIR/boost_make.log
+ ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
 
 ASSIMP_SRCDIR=$TMPDIR/assimp
 mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
@@ -34,8 +33,8 @@ curl https://codeload.github.com/assimp/assimp/tar.gz/v4.1.0 -o assimp-4.1.0.tar
 tar -xf assimp-4.1.0.tar.gz
 cd assimp-4.1.0
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/assimp_local_install . 
-make -j4 
-make install > /dev/null
+make -j4 > $TMPDIR/assimp_make.log || tail -100 $TMPDIR/assimp_make.log
+make install 
 cd $ROBOSCHOOL_PATH
 
 BULLET_SRCDIR=$TMPDIR/bullet3
@@ -44,10 +43,11 @@ mkdir -p $BULLET_SRCDIR && cd $BULLET_SRCDIR
 git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision .
 mkdir build && cd build
 cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
-make -j4
+make -j4 > $TMPDIR/bullet_make.log || tail -100 $TMPDIR/bullet_make.log
 make install
 
 ls $CPP_HOUSEHOLD/bullet_local_install/lib
+cd $CPP_HOUSEHOLD && make -j4 
 
 cd $ROBOSCHOOL_PATH
 # pip wheel . -w wheelhouse
