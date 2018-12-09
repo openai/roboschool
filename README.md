@@ -91,7 +91,11 @@ The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For 
     Users report in issue #15 that `sudo pip3 install pyopengl` can make OpenGL errors go away, because it arranges OpenGL libraries in
     an Ubuntu system in the right way.
 
+- Fedora:
 
+  ```bash
+    dnf install cmake ffmpeg pkgconfig qt5-devel assimp-devel python3-devel boost-python3-devel tinyxml-devel
+    ```
 
 - Linuxbrew
 
