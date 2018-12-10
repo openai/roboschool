@@ -50,5 +50,7 @@ ls $CPP_HOUSEHOLD/bullet_local_install/lib
 cd $CPP_HOUSEHOLD && make -j4 
 
 cd $ROBOSCHOOL_PATH
-# pip wheel . -w wheelhouse
+pip wheel . -w wheelhouse
+auditwheel repair  wheelhouse/roboschool-1.0-cp35-cp35m-linux_x86_64.whl
 # ls wheelhouse
+

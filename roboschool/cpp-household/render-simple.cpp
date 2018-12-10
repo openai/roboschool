@@ -22,6 +22,11 @@ namespace SimpleRender {
 
 using namespace Household;
 
+
+#define glGenerateMipmap glGenerateMipmapEXT
+#define glEnableVertexAttribArray glEnableVertexAttribArrayARB
+#define glFramebufferTexture2D glFramebufferTexture2DEXT
+
 static float line_vertex[] = {
 +1,+1,0, -1,+1,0,
 -1,+1,0, -1,-1,0,
@@ -293,8 +298,10 @@ ContextViewport::ContextViewport(const shared_ptr<Context>& cx, int W, int H, do
 	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, W, H);
 	glBindTexture(GL_TEXTURE_2D, 0);
 #endif
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,        tex_color->handle, 0);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, tex_depthstencil->handle, 0);
+	// glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,        tex_color->handle, 0);
+	// glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, tex_depthstencil->handle, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,        GL_TEXTURE_2D, tex_color->handle, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, tex_depthstencil->handle, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	W16  = W;

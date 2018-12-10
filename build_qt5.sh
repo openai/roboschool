@@ -1,3 +1,4 @@
+set -ex
 # Run in a centos5 / manylinux docker image
 QT5_SRCDIR=$TMPDIR/qt5
 QT_SRC=qt-everywhere-opensource-src-5.6.0.tar.gz
@@ -23,16 +24,15 @@ if [ $(uname) == 'Darwin' ]; then
     sed -i '' '/InvalidImage/d' qtbase/src/gui/painting/qcoregraphics.mm
 fi
 
-./configure -opensource -confirm-license -prefix $CPP_HOUSEHOaLD/qt5_local_install -widgets -opengl -make libs \
+./configure -opensource -confirm-license -prefix $CPP_HOUSEHOLD/qt5_local_install -widgets -opengl -make libs \
              -no-gstreamer -no-pulseaudio -no-alsa \
              -no-securetransport -no-openssl -no-libproxy \
-             -no-xcb -no-harfbuzz \
+             -no-harfbuzz \
              -no-libinput -no-evdev
 
 cat qtbase/src/plugins/platforms/offscreen/offscreen.pro
 
-make -j4 > $TMPDIR/qt5_build.log
-tail -500 $TMPDIR/qt5_build.log
+make -j4 > $TMPDIR/qt5_build.log || tail -500 $TMPDIR/qt5_build.log
 make install > /dev/null
 
 
