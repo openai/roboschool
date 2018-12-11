@@ -42,7 +42,7 @@ rm -rf $BULLET_SRCDIR
 mkdir -p $BULLET_SRCDIR && cd $BULLET_SRCDIR
 git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision .
 mkdir build && cd build
-cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
+cmake -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
 make -j4 > $TMPDIR/bullet_make.log || tail -100 $TMPDIR/bullet_make.log
 make install
 
@@ -51,11 +51,11 @@ cd $CPP_HOUSEHOLD && make -j4
 
 cd $ROBOSCHOOL_PATH
 pip wheel . -w wheelhouse
-cd wheelhouse
-unzip roboschool-1.0-cp35-cp35m-linux_x86_64.whl
-ls -lht roboschool/cpp-household/bullet_local_install/lib
-
-auditwheel -v show roboschool-1.0-cp35-cp35m-linux_x86_64.whl
-auditwheel repair roboschool-1.0-cp35-cp35m-linux_x86_64.whl
+# cd wheelhouse
+# unzip roboschool-1.0-cp35-cp35m-linux_x86_64.whl
+# ls -lht roboschool/cpp-household/bullet_local_install/lib
+# 
+# auditwheel -v show roboschool-1.0-cp35-cp35m-linux_x86_64.whl
+# auditwheel repair roboschool-1.0-cp35-cp35m-linux_x86_64.whl
 # ls wheelhouse
 
