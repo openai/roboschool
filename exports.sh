@@ -1,8 +1,8 @@
 #!/bin/bash
 
 cd $(dirname "$0")
-ROBOSCHOOL_PATH=$(pwd)
-CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
+export ROBOSCHOOL_PATH=$(pwd)
+export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 
 PYTHON_BIN=$(readlink -f $(which python))
 PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
