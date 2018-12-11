@@ -28,11 +28,11 @@ matrix:
       env:
         - MB_PYTHON_VERSION=3.6
  
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.7
-
-
+#     - os: linux
+#       env:
+#         - MB_PYTHON_VERSION=3.7
+# 
+# 
 #     - os: osx
 #       osx_image: xcode8.3
 #       env:
