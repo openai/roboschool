@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cd $(dirname "$0")
-export ROBOSCHOOL_PATH=$(pwd)
+export ROBOSCHOOL_PATH=$(dirname "$0")
 export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 
 PYTHON_BIN=$(readlink -f $(which python))
