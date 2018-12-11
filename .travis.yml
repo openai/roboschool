@@ -10,11 +10,11 @@ install:
   - . multibuild/travis_steps.sh
   - before_install 
   - build_wheel $REPO_DIR $PLAT
-# script: 
-#   - install_run $PLAT
+script: 
+  - install_run $PLAT
 
-# after_success:
-  # - ./deploy.sh
+after_success:
+   - ./deploy.sh
 
     
 matrix:
