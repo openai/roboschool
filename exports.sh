@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# export ROBOSCHOOL_PATH=$( cd "$(dirname "$0")" ; pwd -P )
+export ROBOSCHOOL_PATH=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
 export ROBOSCHOOL_PATH=/io
 export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 
