@@ -11,10 +11,15 @@ if [ $(uname) == 'Linux' ]; then
   QT5_BIN=qt5.6.0_centos5_2018-12-11.tar.gz
 fi
 
-cd $CPP_HOUSEHOLD
-curl -OL https://storage.googleapis.com/games-src/qt5/$QT5_BIN
-tar -xf $QT5_BIN
-rm -rf $QT5_BIN
+if [ $(uname) == 'Linux' ]; then
+    cd $CPP_HOUSEHOLD
+    curl -OL https://storage.googleapis.com/games-src/qt5/$QT5_BIN
+    tar -xf $QT5_BIN
+    rm -rf $QT5_BIN
+fi
+if [ $(uname) == 'Darwin' ]; then
+    brew install qt
+fi
 
 BOOST_SRCDIR=$TMPDIR/boost
 mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR
