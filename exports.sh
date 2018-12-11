@@ -10,7 +10,8 @@ if [ $(uname) == 'Linux' ]; then
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
 fi
 if [ $(uname) == 'Darwin' ]; then
-    PYTHON_BIN=$(which python)
+    brew install coreutils
+    PYTHON_BIN=$(greadlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
 fi
