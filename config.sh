@@ -8,6 +8,6 @@ function pre_build {
 }
 
 function run_tests {
-    python -c "import roboschool; gym.make('RoboschoolAnt-v1')"
+    python -c "import roboschool; import gym; gym.make('RoboschoolAnt-v1')"
 }
 
