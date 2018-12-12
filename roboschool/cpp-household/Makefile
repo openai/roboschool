@@ -29,7 +29,7 @@ ifeq ($(UNAME),Linux)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
   RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib',-rpath,'$$ORIGIN/cpp-household/assimp_local_install/lib',-rpath,'$$ORIGIN/cpp-household/qt5_local_install/lib'
-  LIBS += -Lqt5_local_install/lib
+  LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets
   INC += -Iqt5_local_install/include
 endif
 
@@ -42,7 +42,7 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL` -L/usr/local/opt/qt/lib
+  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL`
   INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL`
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
@@ -57,7 +57,7 @@ $(info Link against python $(PYTHON))
 # LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 LIBS    += -lstdc++
 INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet -Iassimp_local_install/include -Iboost_local_install/include
-LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API -lassimp -lQt5OpenGL -lQt5Widgets 
+LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API -lassimp
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
