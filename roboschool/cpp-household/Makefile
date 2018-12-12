@@ -29,8 +29,8 @@ ifeq ($(UNAME),Linux)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
   RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib',-rpath,'$$ORIGIN/cpp-household/assimp_local_install/lib',-rpath,'$$ORIGIN/cpp-household/qt5_local_install/lib'
-  LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets
-  INC += -Iqt5_local_install/include
+  LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets -lassimp -Lboost_local_install/lib -Lassimp_local_install/lib
+  INC += -Iqt5_local_install/include -Iassimp_local_install/include -Iboost_local_install/include
 endif
 
 ifeq ($(UNAME),Darwin)
@@ -42,8 +42,8 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL python3`
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL python3`
+  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp`
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp`
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
@@ -56,8 +56,8 @@ $(info Link against python $(PYTHON))
 # INC     += `$(PKG) --cflags python-$(PYTHON)`
 # LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 LIBS    += -lstdc++
-INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet -Iassimp_local_install/include -Iboost_local_install/include
-LIBS    += $(RPATH) -Lassimp_local_install/lib -Lbullet_local_install/lib -Lboost_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API -lassimp
+INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet
+LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python

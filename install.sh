@@ -13,32 +13,33 @@ if [ $(uname) == 'Linux' ]; then
     curl -OL https://storage.googleapis.com/games-src/qt5/$QT5_BIN
     tar -xf $QT5_BIN
     rm -rf $QT5_BIN
+    BOOST_SRCDIR=$TMPDIR/boost
+    mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR
+    curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
+    tar -xf boost_1_58_0.tar.bz2
+    cd boost_1_58_0
+
+     ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python 
+     ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
+
+    ASSIMP_SRCDIR=$TMPDIR/assimp
+    mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
+    curl https://codeload.github.com/assimp/assimp/tar.gz/v4.1.0 -o assimp-4.1.0.tar.gz
+    tar -xf assimp-4.1.0.tar.gz
+    cd assimp-4.1.0
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/assimp_local_install . 
+    make -j4 > $TMPDIR/assimp_make.log || tail -100 $TMPDIR/assimp_make.log
+    make install 
+    cd $ROBOSCHOOL_PATH
+
 fi
+
 if [ $(uname) == 'Darwin' ]; then
-    brew install qt
+    brew install qt boost-python3 assimp
     pkg-config --libs Qt5Widgets Qt5OpenGL
     ls /usr/local/opt/qt/lib
     # find / -name "python*.pc"
 fi
-
-BOOST_SRCDIR=$TMPDIR/boost
-mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR
-curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
-tar -xf boost_1_58_0.tar.bz2
-cd boost_1_58_0
-
- ./bootstrap.sh --prefix=$ROBOSCHOOL_PATH/roboschool/cpp-household/boost_local_install --with-python=$(which python) --with-libraries=python 
- ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
-
-ASSIMP_SRCDIR=$TMPDIR/assimp
-mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
-curl https://codeload.github.com/assimp/assimp/tar.gz/v4.1.0 -o assimp-4.1.0.tar.gz
-tar -xf assimp-4.1.0.tar.gz
-cd assimp-4.1.0
-cmake -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/assimp_local_install . 
-make -j4 > $TMPDIR/assimp_make.log || tail -100 $TMPDIR/assimp_make.log
-make install 
-cd $ROBOSCHOOL_PATH
 
 BULLET_SRCDIR=$TMPDIR/bullet3
 rm -rf $BULLET_SRCDIR
