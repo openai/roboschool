@@ -42,8 +42,8 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp`
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp`
+  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3`
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python3`
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
@@ -131,11 +131,9 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 #	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)
 
 ../cpp_household.so: $(SIM_R) $(PYTH_R)
-	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS)
-	# $(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
+	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
 ../cpp_household_d.so: $(SIM_D) $(PYTH_D)
-	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS)
-	# $(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
+	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
 
 $(OBJDIRR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $<  $(MINUS_O)$@ $(DEPENDS)
