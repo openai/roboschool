@@ -42,7 +42,7 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL`
+  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL` -L/usr/local/opt/qt/lib
   INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL`
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
