@@ -131,9 +131,11 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 #	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)
 
 ../cpp_household.so: $(SIM_R) $(PYTH_R)
-	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
+	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS)
+	# $(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
 ../cpp_household_d.so: $(SIM_D) $(PYTH_D)
-	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
+	$(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS)
+	# $(LINK) $(SHARED) $(LINK_OUT)$@ $^ $(LIBS) $(BOOST_PYTHON)
 
 $(OBJDIRR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $<  $(MINUS_O)$@ $(DEPENDS)
