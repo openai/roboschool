@@ -16,6 +16,7 @@ if [ $(uname) == 'Linux' ]; then
 fi
 if [ $(uname) == 'Darwin' ]; then
     brew install qt
+    pkg-config --libs Qt5Widgets Qt5OpenGL
 fi
 
 BOOST_SRCDIR=$TMPDIR/boost
