@@ -1,6 +1,5 @@
 #!/bin/bash
 
-find / -name "python*.pc"
 export ROBOSCHOOL_PATH=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
 export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 
