@@ -14,6 +14,7 @@ if [ $(uname) == 'Darwin' ]; then
     PYTHON_BIN=$(greadlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
+    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/qt/lib/pkgconfig
 fi
 
 
