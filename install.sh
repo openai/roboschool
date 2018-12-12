@@ -18,6 +18,7 @@ if [ $(uname) == 'Darwin' ]; then
     brew install qt
     pkg-config --libs Qt5Widgets Qt5OpenGL
     ls /usr/local/opt/qt/lib
+    find / -name "python*.pc"
 fi
 
 BOOST_SRCDIR=$TMPDIR/boost
