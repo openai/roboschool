@@ -7,7 +7,7 @@ if [ $(uname) == 'Linux' ]; then
     PYTHON_BIN=$(readlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CPP_HOUSEHOLD/qt5_local_install/lib
+    # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CPP_HOUSEHOLD/qt5_local_install/lib
 fi
 if [ $(uname) == 'Darwin' ]; then
     brew install coreutils
