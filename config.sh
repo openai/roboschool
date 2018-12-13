@@ -4,6 +4,7 @@ function pre_build {
     . ./exports.sh
     env
     ./install.sh
+    . ./exports.sh
     env
 }
 
