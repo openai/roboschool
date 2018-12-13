@@ -61,7 +61,7 @@ make install
 if [ $(uname) == 'Darwin' ]; then 
     BULLETLIBS="Bullet2FileLoader BulletCollision Bullet3Collision BulletDynamics Bullet3Common BulletInverseDynamics Bullet3Dynamics BulletSoftBody Bullet3Geometry LinearMath Bullet3OpenCL_clew PhysicsClientC_API"
     for lib in $BULLETLIBS; do
-        cp /usr/local/lib${lib}.*.dylib $ROBOSCHOOL_PATH
+        cp /usr/local/lib/lib${lib}.*.dylib $ROBOSCHOOL_PATH
     done
 fi
 
