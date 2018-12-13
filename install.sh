@@ -57,7 +57,13 @@ cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DBUILD_CPU_DEMOS=OFF -DBU
 make -j4 > $TMPDIR/bullet_make.log || tail -100 $TMPDIR/bullet_make.log
 make install
 
-ls $CPP_HOUSEHOLD/bullet_local_install/lib
-cd $CPP_HOUSEHOLD && make -j4 
+
+if [ $(uname) == 'Darwin' ]; then 
+    BULLETLIBS="Bullet2FileLoader BulletCollision Bullet3Collision BulletDynamics Bullet3Common BulletInverseDynamics Bullet3Dynamics BulletSoftBody Bullet3Geometry LinearMath Bullet3OpenCL_clew PhysicsClientC_API"
+    for lib in $BULLETLIBS; do
+        cp /usr/local/lib${lib}.*.dylib $ROBOSCHOOL_PATH
+    done
+fi
+
 
 cd $ROBOSCHOOL_PATH
