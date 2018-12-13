@@ -56,7 +56,7 @@ $(info Link against python $(PYTHON))
 # INC     += `$(PKG) --cflags python-$(PYTHON)`
 # LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 LIBS    += -lstdc++
-# INC     += -I/usr/local/include/bullet
+INC     += -I/usr/local/include/bullet
 LIBS    += $(RPATH) -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
 
 ifeq ($(PYTHON),2.7)
