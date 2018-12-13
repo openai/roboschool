@@ -14,6 +14,7 @@ if [ $(uname) == 'Darwin' ]; then
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
     export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/qt/lib/pkgconfig:/Library/Frameworks/Python.framework/Versions/${PYTHON_VER}/lib/pkgconfig/
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$CPP_HOUSEHOLD/bullet_local_install/lib
 fi
 
 
