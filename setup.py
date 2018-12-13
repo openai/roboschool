@@ -67,7 +67,7 @@ need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl'.split()
 need_files_re = [re.compile(r'.+\.'+p) for p in need_files_ext]
 
 # need_files_re.append(re.compile(r'cpp-household/qt5_local_install/lib/.+\.so(.\d+)*'))
-# need_files_re.append(re.compile(r'cpp-household/qt5_local_install/plugins/.+'))
+need_files_re.append(re.compile(r'cpp-household/qt5_local_install/plugins/.+'))
 need_files_re.append(re.compile(r'.+\.so(.\d+)+'))
 
 for root, dirs, files in os.walk(hh):
