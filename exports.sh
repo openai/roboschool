@@ -19,7 +19,7 @@ if [ $(uname) == 'Darwin' ]; then
 fi
 
 
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PYTHON_ROOT}/lib/pkgconfig
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PYTHON_ROOT}/lib/pkgconfig:$CPP_HOUSEHOLD/bullet_local_install/lib/pkgconfig/
 export CPATH=$CPATH:${PYTHON_ROOT}/include/python${PYTHON_VER}m
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CPP_HOUSEHOLD/bullet_local_install/lib
 
