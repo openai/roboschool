@@ -67,7 +67,7 @@ fi
 
 
 cd $ROBOSCHOOL_PATH
-if [ $(uname) == 'Linux' ]; then
-    pip wheel -w wheelhouse . --no-deps
-    auditwheel -v repair wheelhouse/roboschool-*.whl
-fi
+# if [ $(uname) == 'Linux' ]; then
+#     pip wheel -w wheelhouse . --no-deps
+#     auditwheel -v repair wheelhouse/roboschool-*.whl
+# fi
