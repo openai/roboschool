@@ -4,8 +4,6 @@ function pre_build {
     . ./exports.sh
     env
     ./install.sh
-    . ./exports.sh
-    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$CPP_HOUSEHOLD/bullet_local_install/lib
     env
 }
 

@@ -42,8 +42,8 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3`
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python3`
+  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3 bullet`
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python3 bullet`
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
@@ -56,7 +56,7 @@ $(info Link against python $(PYTHON))
 # INC     += `$(PKG) --cflags python-$(PYTHON)`
 # LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 LIBS    += -lstdc++
-INC     += -I/usr/local/include/bullet
+# INC     += -I/usr/local/include/bullet
 LIBS    += $(RPATH) -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
 
 ifeq ($(PYTHON),2.7)
