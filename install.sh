@@ -57,4 +57,4 @@ ls $CPP_HOUSEHOLD/bullet_local_install/lib
 cd $CPP_HOUSEHOLD && make -j4 
 
 cd $ROBOSCHOOL_PATH
-pip wheel -w /wheelhouse .
+pip wheel -w $TMPDIR/wheelhouse .
