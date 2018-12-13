@@ -56,8 +56,8 @@ $(info Link against python $(PYTHON))
 # INC     += `$(PKG) --cflags python-$(PYTHON)`
 # LIBS    += -lstdc++ `$(PKG) --libs python-$(PYTHON)`
 LIBS    += -lstdc++
-INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet
-LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
+INC     += -I/usr/local/include/bullet
+LIBS    += $(RPATH) -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
