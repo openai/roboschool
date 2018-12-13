@@ -63,6 +63,7 @@ need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
 need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl'.split()
 need_files_re = [re.compile(r'.+\.'+p) for p in need_files_ext]
+need_files_re += [re.compile(r'cpp_household\.so')]
 
 for root, dirs, files in os.walk(hh):
     for fn in files:
@@ -75,7 +76,7 @@ for n in need_files: print("-- %s" % n)
 
 setup(
     name = 'roboschool',
-    version = '1.0.6',
+    version = '1.0.7',
     description = 'OpenAI Household Simulator: mobile manipulation using Bullet',
     maintainer = 'Oleg Klimov',
     maintainer_email = 'omgtech@gmail.com',
