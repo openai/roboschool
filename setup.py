@@ -21,7 +21,7 @@ Install dependencies that pkg-config cannot find.
 from setuptools.command.install import install as DistutilsInstall
 from setuptools.command.egg_info import egg_info as EggInfo
 
-# setup_py_dir = os.path.dirname(os.path.realpath(__file__))
+setup_py_dir = os.path.dirname(os.path.realpath(__file__))
 # blib = setup_py_dir + "/roboschool/cpp-household/bullet_local_install/lib"
 # if not os.path.exists(blib):
 #     print("Please follow instructions in README to build local (not global for your system) Bullet installation.")
@@ -61,7 +61,7 @@ def recompile():
 
 need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
-need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl 87 dylib'.split()
+need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl dylib'.split()
 need_files_re = [re.compile(r'.+\.'+p) for p in need_files_ext]
 need_files_re.append(re.compile(r'.+\.so(.\d+)*'))
 
