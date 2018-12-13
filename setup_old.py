@@ -45,29 +45,25 @@ class CMakeExtension(Extension):
         self.sourcedir = os.path.abspath(sourcedir)
 
 class Build(build_ext):
-   def run(self):
-       pass
+    def run(self):
+        recompile()
 
 def recompile():
     USE_PYTHON3 = ""
     if sys.version_info[0]==2:
         USE_PYTHON3 = "USE_PYTHON3=0"
-    wd = os.path.join(setup_py_dir, 'roboschool', 'cpp-household')
-    cmd = "cd %s && make clean && make -j4 dirs %s ../cpp_household.so" % (wd, USE_PYTHON3)
+    cmd = "cd %s/roboschool/cpp-household && make clean && make -j4 dirs %s ../cpp_household.so" % (setup_py_dir, USE_PYTHON3)
     print(cmd)
     res = os.system(cmd)
     if res:
         print(dep)
         sys.exit(1)
 
-recompile()
 need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
 need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl'.split()
 need_files_re = [re.compile(r'.+\.'+p) for p in need_files_ext]
-# need_files_re.append(re.compile(r'.+\.so(.\d+)*'))
-# need_files_re += [re.compile(r'.+\.so')]
-# need_files_re += [re.compile(r'cpp_household\.so')]
+need_files_re += [re.compile(r'cpp_household\.so')]
 
 for root, dirs, files in os.walk(hh):
     for fn in files:
