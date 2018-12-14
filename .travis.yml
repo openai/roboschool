@@ -7,8 +7,8 @@ install:
 - "./build_wheel.sh"
 script:
 - "./test_wheel.sh"
-after_success:
-- "./deploy.sh"
+# after_success:
+# - "./deploy.sh"
 matrix:
   include:
   - os: linux
