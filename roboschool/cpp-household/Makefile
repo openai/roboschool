@@ -28,9 +28,9 @@ ifeq ($(UNAME),Linux)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib',-rpath,'$$ORIGIN/cpp-household/assimp_local_install/lib',-rpath,'$$ORIGIN/cpp-household/qt5_local_install/lib'
-  LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets -lassimp -Lboost_local_install/lib -Lassimp_local_install/lib -Lbullet_local_install/lib
-  INC += -Iqt5_local_install/include -Iassimp_local_install/include -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
+  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib'
+  LIBS += -Lboost_local_install/lib -Lbullet_local_install/lib
+  INC += -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
   INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp`
   LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp`
 endif
@@ -46,8 +46,8 @@ ifeq ($(UNAME),Darwin)
   PKG   =pkg-config
   LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3 bullet`
   INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python3 bullet`
-  LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets -lassimp -Lboost_local_install/lib -Lassimp_local_install/lib -Lbullet_local_install/lib
-  INC += -Iqt5_local_install/include -Iassimp_local_install/include -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
+  LIBS += -Lboost_local_install/lib -Lbullet_local_install/lib
+  INC += -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
