@@ -1,9 +1,13 @@
 # !/bin/bash
-cd wheelhouse
+set -ex
 # ** HACK - rename linux wheels to manylinux1 wheels
-# for f in "roboschool-*linux*.whl"; do
-#     mv sss
-# done 
+cd wheelhouse
+for whl in "roboschool-*linux*.whl"; do
+    echo "Renaming $whl --> ${whl%linux_x86_64.whl}manylinux1_x86_64.whl"
+    mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
+done 
+cd ..
+# ** END HACK
 
 if [[ ! -z "$TRAVIS_TAG" ]]; then
     pip install twine
