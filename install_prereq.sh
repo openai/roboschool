@@ -38,11 +38,7 @@ if [ $(uname) == 'Linux' ]; then
 fi
 
 if [ $(uname) == 'Darwin' ]; then
-    brew install qt boost-python3 assimp
-    pkg-config --libs Qt5Widgets Qt5OpenGL
-    ls /usr/local/opt/qt/lib
-    cp -r /usr/local/opt/qt $CPP_HOUSEHOLD/qt5_local_install
-    ls -lht $CPP_HOUSEHOLD/qt5_local_install
+    brew install boost-python3
 fi
 
 BULLET_SRCDIR=$TMPDIR/bullet3
