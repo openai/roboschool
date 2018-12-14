@@ -46,10 +46,10 @@ rm -rf $BULLET_SRCDIR
 mkdir -p $BULLET_SRCDIR && cd $BULLET_SRCDIR
 git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision .
 
-if [ $(uname) == 'Darwin' ]; then 
-    sed -i '' 's/SET CMP0042 NEW/SET CMP0042 OLD/g' CMakeLists.txt; 
-    sed -i '' 's/SET CMP0003 NEW/SET CMP0003 OLD/g' CMakeLists.txt; 
-fi
+# if [ $(uname) == 'Darwin' ]; then 
+#     sed -i '' 's/SET CMP0042 NEW/SET CMP0042 OLD/g' CMakeLists.txt; 
+#     sed -i '' 's/SET CMP0003 NEW/SET CMP0003 OLD/g' CMakeLists.txt; 
+# fi
 
 mkdir build && cd build
 cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
@@ -58,12 +58,12 @@ make -j4 > $TMPDIR/bullet_make.log || tail -100 $TMPDIR/bullet_make.log
 make install
 
 
-if [ $(uname) == 'Darwin' ]; then 
-    BULLETLIBS="Bullet2FileLoader BulletCollision Bullet3Collision BulletDynamics Bullet3Common BulletInverseDynamics Bullet3Dynamics BulletSoftBody Bullet3Geometry LinearMath Bullet3OpenCL_clew PhysicsClientC_API"
-    for lib in $BULLETLIBS; do
-        cp $CPP_HOUSEHOLD/bullet_local_install/lib/lib${lib}.*.dylib $ROBOSCHOOL_PATH
-    done
-fi
+# if [ $(uname) == 'Darwin' ]; then 
+#     BULLETLIBS="Bullet2FileLoader BulletCollision Bullet3Collision BulletDynamics Bullet3Common BulletInverseDynamics Bullet3Dynamics BulletSoftBody Bullet3Geometry LinearMath Bullet3OpenCL_clew PhysicsClientC_API"
+#     for lib in $BULLETLIBS; do
+#         cp $CPP_HOUSEHOLD/bullet_local_install/lib/lib${lib}.*.dylib $ROBOSCHOOL_PATH
+#     done
+# fi
 
 
 cd $ROBOSCHOOL_PATH
