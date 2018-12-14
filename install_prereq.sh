@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -x
+set -ex
 cd $(dirname "$0")
 
 . ./exports.sh
@@ -39,7 +39,7 @@ cd boost_1_58_0
 
  # ./bootstrap.sh --with-python=$(which python) --with-libraries=python 
  ./bootstrap.sh --with-python=$(which python) --with-libraries=python  --prefix=$CPP_HOUSEHOLD/boost_local_install
- ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
+ ./b2 install > $TMPDIR/boost_make.log || (tail -100 $TMPDIR/boost_make.log; exit 1)
 
 BULLET_SRCDIR=$TMPDIR/bullet3
 rm -rf $BULLET_SRCDIR
@@ -54,8 +54,8 @@ git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision .
 mkdir build && cd build
 cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
 #cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
-make -j4 > $TMPDIR/bullet_make.log || tail -100 $TMPDIR/bullet_make.log
-make install > $TMPDIR/bullet_install.log || tail -100 $TMPDIR/bullet_install.log
+make -j4 > $TMPDIR/bullet_make.log || (tail -100 $TMPDIR/bullet_make.log; exit 1)
+make install > $TMPDIR/bullet_install.log || (tail -100 $TMPDIR/bullet_install.log; exit 1)
 
 
 # if [ $(uname) == 'Darwin' ]; then 
