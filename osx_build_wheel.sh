@@ -7,5 +7,5 @@ before_install
 
 brew install qt assimp
 ./install_prereq.sh
-pip wheel --no-deps -w wheelhouse
+pip wheel --no-deps -w wheelhouse .
 
