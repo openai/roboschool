@@ -7,7 +7,7 @@ cd $(dirname "$0")
 
 pip install cmake
 
-if [ $(uname) == 'Linux' ]; then
+# if [ $(uname) == 'Linux' ]; then
 #     QT5_BIN=qt5.6.0_centos5_2018-12-11.tar.gz
 #     cd $CPP_HOUSEHOLD
 #     curl -OL https://storage.googleapis.com/games-src/qt5/$QT5_BIN
@@ -25,7 +25,7 @@ if [ $(uname) == 'Linux' ]; then
 #     make install 
 #     cd $ROBOSCHOOL_PATH
 
-fi
+# fi
 
 # if [ $(uname) == 'Darwin' ]; then
 #     brew install boost-python3
