@@ -6,6 +6,5 @@ if [ $(uname) == 'Linux' ]; then
 fi
 
 if [ $(uname) == 'Darwin' ]; then;
-    echo "In construction"
-    exit 1
+    ./osx_build_wheel.sh
 fi
