@@ -31,8 +31,8 @@ ifeq ($(UNAME),Linux)
   RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib',-rpath,'$$ORIGIN/cpp-household/boost_local_install/lib',-rpath,'$$ORIGIN/cpp-household/assimp_local_install/lib',-rpath,'$$ORIGIN/cpp-household/qt5_local_install/lib'
   LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets -lassimp -Lboost_local_install/lib -Lassimp_local_install/lib -Lbullet_local_install/lib
   INC += -Iqt5_local_install/include -Iassimp_local_install/include -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
-  INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL`
-  LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL`
+  INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp`
+  LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp`
 endif
 
 ifeq ($(UNAME),Darwin)

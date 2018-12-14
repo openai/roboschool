@@ -24,16 +24,16 @@ if [ $(uname) == 'Linux' ]; then
      ./bootstrap.sh --with-python=$(which python) --with-libraries=python  --prefix=$CPP_HOUSEHOLD/boost_local_install
      ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
 
-    ASSIMP_SRCDIR=$TMPDIR/assimp
-    mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
-    curl https://codeload.github.com/assimp/assimp/tar.gz/v4.1.0 -o assimp-4.1.0.tar.gz
-    tar -xf assimp-4.1.0.tar.gz
-    cd assimp-4.1.0
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/assimp_local_install 
-    # cmake . 
-    make -j4 > $TMPDIR/assimp_make.log || tail -100 $TMPDIR/assimp_make.log
-    make install 
-    cd $ROBOSCHOOL_PATH
+#     ASSIMP_SRCDIR=$TMPDIR/assimp
+#     mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
+#     curl https://codeload.github.com/assimp/assimp/tar.gz/v4.1.0 -o assimp-4.1.0.tar.gz
+#     tar -xf assimp-4.1.0.tar.gz
+#     cd assimp-4.1.0
+#     cmake -DCMAKE_INSTALL_PREFIX:PATH=$CPP_HOUSEHOLD/assimp_local_install 
+#     # cmake . 
+#     make -j4 > $TMPDIR/assimp_make.log || tail -100 $TMPDIR/assimp_make.log
+#     make install 
+#     cd $ROBOSCHOOL_PATH
 
 fi
 
