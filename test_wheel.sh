@@ -6,5 +6,5 @@ if [ $(uname) == 'Linux' ]; then
 fi
 
 if [ $(uname) == 'Darwin' ]; then;
-    echo "In construction'
+    echo "In construction"
 fi
