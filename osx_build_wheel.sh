@@ -6,6 +6,7 @@ git clone https://github.com/matthew-brett/multibuild && cd multibuild && git ch
 before_install
 
 brew install qt assimp
+. ./exports.sh
 ./install_prereq.sh
 pip wheel --no-deps -w wheelhouse .
 
