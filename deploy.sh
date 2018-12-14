@@ -4,7 +4,7 @@ set -ex
 cd wheelhouse
 for whl in $(ls roboschool-*linux*.whl); do
     echo "HACK!!! Renaming $whl --> ${whl%linux_x86_64.whl}manylinux1_x86_64.whl"
-    mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
+    sudo mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
 done 
 cd ..
 # ** END HACK
