@@ -14,16 +14,6 @@ if [ $(uname) == 'Linux' ]; then
 #     tar -xf $QT5_BIN
 #     rm -rf $QT5_BIN
 
-    BOOST_SRCDIR=$TMPDIR/boost
-    mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR
-    curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
-    tar -xf boost_1_58_0.tar.bz2
-    cd boost_1_58_0
-
-     # ./bootstrap.sh --with-python=$(which python) --with-libraries=python 
-     ./bootstrap.sh --with-python=$(which python) --with-libraries=python  --prefix=$CPP_HOUSEHOLD/boost_local_install
-     ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
-
 #     ASSIMP_SRCDIR=$TMPDIR/assimp
 #     mkdir -p $ASSIMP_SRCDIR && cd $ASSIMP_SRCDIR
 #     curl https://codeload.github.com/assimp/assimp/tar.gz/v4.1.0 -o assimp-4.1.0.tar.gz
@@ -37,9 +27,19 @@ if [ $(uname) == 'Linux' ]; then
 
 fi
 
-if [ $(uname) == 'Darwin' ]; then
-    brew install boost-python3
-fi
+# if [ $(uname) == 'Darwin' ]; then
+#     brew install boost-python3
+# fi
+
+BOOST_SRCDIR=$TMPDIR/boost
+mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR
+curl -OL https://storage.googleapis.com/games-src/boost/boost_1_58_0.tar.bz2
+tar -xf boost_1_58_0.tar.bz2
+cd boost_1_58_0
+
+ # ./bootstrap.sh --with-python=$(which python) --with-libraries=python 
+ ./bootstrap.sh --with-python=$(which python) --with-libraries=python  --prefix=$CPP_HOUSEHOLD/boost_local_install
+ ./b2 install > $TMPDIR/boost_make.log || tail -100 $TMPDIR/boost_make.log
 
 BULLET_SRCDIR=$TMPDIR/bullet3
 rm -rf $BULLET_SRCDIR
