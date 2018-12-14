@@ -12,8 +12,8 @@ install:
 - build_wheel $REPO_DIR $PLAT
 script:
 - install_run $PLAT
-after_success:
-- "./deploy.sh"
+# after_success:
+# - "./deploy.sh"
 matrix:
   include:
   - os: linux
