@@ -2,9 +2,9 @@
 set -ex
 # ** HACK - rename linux wheels to manylinux1 wheels
 cd wheelhouse
-for whl in "roboschool-*linux*.whl"; do
+for whl in $(ls roboschool-*linux*.whl); do
     echo "Renaming $whl --> ${whl%linux_x86_64.whl}manylinux1_x86_64.whl"
-    mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
+    sudo mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
 done 
 cd ..
 # ** END HACK
