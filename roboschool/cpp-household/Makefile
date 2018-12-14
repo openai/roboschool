@@ -46,6 +46,8 @@ ifeq ($(UNAME),Darwin)
   PKG   =pkg-config
   LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3 bullet`
   INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python3 bullet`
+  LIBS += -Lqt5_local_install/lib -lQt5OpenGL -lQt5Widgets -lassimp -Lboost_local_install/lib -Lassimp_local_install/lib -Lbullet_local_install/lib
+  INC += -Iqt5_local_install/include -Iassimp_local_install/include -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
