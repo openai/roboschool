@@ -4,11 +4,12 @@ env:
   - BUILD_COMMIT=$TRAVIS_COMMIT
   - PLAT=x86_64
 install:
-- "./build_wheel.sh"
+  - "./build_wheel.sh"
 script:
-- "./test_wheel.sh"
-# after_success:
-# - "./deploy.sh"
+  - "./test_wheel.sh"
+after_success:
+  - "./deploy.sh"
+
 matrix:
   include:
   - os: linux
@@ -17,8 +18,6 @@ matrix:
   - os: linux
     env:
     - MB_PYTHON_VERSION=3.6
-after_success:
-  - ./deploy.sh
 
 
   - os: osx
@@ -31,6 +30,7 @@ after_success:
     osx_image: xcode9.3
     env:
     - MB_PYTHON_VERSION=3.6
+  - ./deploy.sh
 
 # deploy:
 #   provider: s3
