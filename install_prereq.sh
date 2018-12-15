@@ -51,6 +51,6 @@ cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PAT
 make -j4 > $TMPDIR/bullet_make.log || (tail -100 $TMPDIR/bullet_make.log; exit 1)
 make install > $TMPDIR/bullet_install.log || (tail -100 $TMPDIR/bullet_install.log; exit 1)
 
+cd $ROBOSCHOOL_PATH
 ./roboschool_compile_and_graft.sh
 
-cd $ROBOSCHOOL_PATH
