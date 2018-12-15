@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -ex
+set -x
 cd $(dirname "$0")
 
 . ./exports.sh
