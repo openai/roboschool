@@ -10,12 +10,12 @@ cd ..
 # ** END HACK
 
 if [[ ! -z "$TRAVIS_TAG" ]]; then
-    pip install twine
-    twine upload wheelhouse/*
+    pip install --user twine
+    python -m twine upload wheelhouse/*
 
     if [[ ! -z "$DEPLOY_SDIST" ]]; then
         python setup.py sdist
-        twine upload dist/*       
+        python -m twine upload dist/*       
     fi
 fi
 
