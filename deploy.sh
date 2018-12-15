@@ -8,15 +8,16 @@ if [ $(uname) == 'Linux' ]; then
         sudo mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
     done 
     cd ..
+    pip install --user twine
 fi
 # ** END HACK
 
 if [ $(uname) == 'Darwin' ]; then
     export PATH=$PWD/venv/bin:$PATH
+    pip install twine
 fi
 
 if [[ ! -z "$TRAVIS_TAG" ]]; then
-    pip install --user twine
     python -m twine upload wheelhouse/*
 
     if [[ ! -z "$DEPLOY_SDIST" ]]; then
