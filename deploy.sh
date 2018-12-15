@@ -1,13 +1,19 @@
 # !/bin/bash
 set -ex
 # ** HACK - rename linux wheels to manylinux1 wheels
-cd wheelhouse
-for whl in $(ls roboschool-*linux*.whl); do
-    echo "HACK!!! Renaming $whl --> ${whl%linux_x86_64.whl}manylinux1_x86_64.whl"
-    sudo mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
-done 
-cd ..
+if [ $(uname) == 'Linux' ]; then
+    cd wheelhouse
+    for whl in $(ls roboschool-*linux*.whl); do
+        echo "HACK!!! Renaming $whl --> ${whl%linux_x86_64.whl}manylinux1_x86_64.whl"
+        sudo mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
+    done 
+    cd ..
+fi
 # ** END HACK
+
+if [ $(uname) == 'Darwin' ]; then
+    export PATH=$PWD/venv/bin:$PATH
+fi
 
 if [[ ! -z "$TRAVIS_TAG" ]]; then
     pip install --user twine
