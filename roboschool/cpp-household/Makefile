@@ -44,10 +44,10 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3 bullet`
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python3 bullet`
-  LIBS += -Lboost_local_install/lib -Lbullet_local_install/lib
-  INC += -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
+  LIBS  =-framework OpenGL `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp python3`
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp`
+  LIBS += -Lbullet_local_install/lib
+  INC += -Ibullet_local_install/include -Ibullet_local_install/include/bullet
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
@@ -83,7 +83,8 @@ CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-depre
 SHARED  = -shared
 DEPENDS = -MMD -MF $@.dep
 
-EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
+EVERY_BIN=../cpp_household.so ../cpp_household_d.so
+# EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
 
 SIM = \
  physics-bullet.cpp \

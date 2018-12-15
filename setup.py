@@ -42,24 +42,22 @@ setup_py_dir = os.path.dirname(os.path.realpath(__file__))
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
-        self.sourcedir = os.path.abspath(sourcedir)
+        self.sourcedir = os.path.abspath(sourcedir) 
+ 
 
 class Build(build_ext):
    def run(self):
        pass
 
 def recompile():
+    import subprocess
     USE_PYTHON3 = ""
     if sys.version_info[0]==2:
         USE_PYTHON3 = "USE_PYTHON3=0"
+    
     wd = os.path.join(setup_py_dir, 'roboschool', 'cpp-household')
-    cmd = "cd %s && make clean && make -j4 dirs %s ../cpp_household.so" % (wd, USE_PYTHON3)
-    print(cmd)
-    res = os.system(cmd)
-    if res:
-        print(dep)
-        sys.exit(1)
-
+    subprocess.check_call(['./roboschool_compile_and_graft.sh'], cwd=wd)
+    
 recompile()
 need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
