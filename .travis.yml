@@ -44,12 +44,12 @@ matrix:
 #     repo: openai/roboschool
 #     branch: peterz_not_really_manylinux
 
-# deploy:
-#   provider: pypi
-#   local-dir: wheelhouse
-#   user: peterz-openai
-#   password:
-#     secure: utWkyA8KlNzeq6N8NjpAzeVTYIIVsEYA0m+oR7QW5kZFfG6+T62BHLVY48sI2pBzcjZ6E9Mz21/hu1PKFJRjn8cfxo/Pvuc1jY3TxX/UU/TnArknjDfCTqWl1g4dRFHzjZos5lp3daIfqXuF8OVW4tAXlGydhBGqSdfqlRhA1V75oIQCzagHM5y5YXVszW8cpttxSCDOEFCzke7DYZm54fTeJI+0yeG15LPzUD4W1aXKjx9U4tIkOZ+8ovingLvO58r/aywPaWTw3du7p0jhyqkgdXRzBGOHMjbmSiTzK3Xp5Zc1ysMccjfwpINJB9/OpyqXUHgDUy3X5Q0iY6wNEiaBIYQWigDEyl++MQgmho4uOOBkmLlBwknDcQjCjDOpSgtGen5hF+oQTfLc/ksJQ7FG0Qij/K22tgqZC/F1g+tcFq3FuYpZo5ZJz2n61LXgvgz8Wkdu5wh0Y8AWGyaMZGh1WJV2U8J3FOOmRDcCo3j2fy534grHbIE0OQ9ykR34+TfIiwD3849yu0qDvdJbSA4XsNGEHEKnPJj0htrCKrhe1tnHDtt9yCIxl2PQvwJvmfaX2/KQXGU622YqEKt23btV4QcBm1dOh6psNDqohbnbn3G+yCb+N8bKoZKQKYC0B7ZIcnI5qbIk/YsqgaYQEd0d2hDujVx3bYzbyr/d2Po=
-# 
-#  on: 
-#     branch: peterz_not_really_manylinux
+deploy:
+  provider: pypi
+  local-dir: wheelhouse
+  user: peterz-openai
+  password:
+    secure: utWkyA8KlNzeq6N8NjpAzeVTYIIVsEYA0m+oR7QW5kZFfG6+T62BHLVY48sI2pBzcjZ6E9Mz21/hu1PKFJRjn8cfxo/Pvuc1jY3TxX/UU/TnArknjDfCTqWl1g4dRFHzjZos5lp3daIfqXuF8OVW4tAXlGydhBGqSdfqlRhA1V75oIQCzagHM5y5YXVszW8cpttxSCDOEFCzke7DYZm54fTeJI+0yeG15LPzUD4W1aXKjx9U4tIkOZ+8ovingLvO58r/aywPaWTw3du7p0jhyqkgdXRzBGOHMjbmSiTzK3Xp5Zc1ysMccjfwpINJB9/OpyqXUHgDUy3X5Q0iY6wNEiaBIYQWigDEyl++MQgmho4uOOBkmLlBwknDcQjCjDOpSgtGen5hF+oQTfLc/ksJQ7FG0Qij/K22tgqZC/F1g+tcFq3FuYpZo5ZJz2n61LXgvgz8Wkdu5wh0Y8AWGyaMZGh1WJV2U8J3FOOmRDcCo3j2fy534grHbIE0OQ9ykR34+TfIiwD3849yu0qDvdJbSA4XsNGEHEKnPJj0htrCKrhe1tnHDtt9yCIxl2PQvwJvmfaX2/KQXGU622YqEKt23btV4QcBm1dOh6psNDqohbnbn3G+yCb+N8bKoZKQKYC0B7ZIcnI5qbIk/YsqgaYQEd0d2hDujVx3bYzbyr/d2Po=
+
+ on: 
+    branch: peterz_not_really_manylinux
