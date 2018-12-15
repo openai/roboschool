@@ -63,6 +63,7 @@ hh = setup_py_dir + "/roboschool"
 need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl dylib'.split()
 need_files_re = [re.compile(r'.+\.'+p) for p in need_files_ext]
 need_files_re.append(re.compile(r'.+\.so(.\d+)+'))
+need_files_re.append(re.compile(r'.+/\.libs/.+'))
 
 for root, dirs, files in os.walk(hh):
     for fn in files:
