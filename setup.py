@@ -55,10 +55,9 @@ def recompile():
     if sys.version_info[0]==2:
         USE_PYTHON3 = "USE_PYTHON3=0"
     
-    wd = os.path.join(setup_py_dir, 'roboschool', 'cpp-household')
-    subprocess.check_call(['./roboschool_compile_and_graft.sh'], cwd=wd)
+    subprocess.check_call(['bash', 'roboschool_compile_and_graft.sh'])
     
-recompile()
+# recompile()
 need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
 need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl dylib'.split()
