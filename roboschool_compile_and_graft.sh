@@ -7,21 +7,8 @@ function osx_graft_lib {
     local deps=$(otool -L $libfile | awk 'FNR>2 {print $1}')
     local patterns=${@:3}
     
-#    patterns=${@:3}
     graft_dir=$2
-    # extra_path=$(dirname $libfile)
     mkdir -p $graft_dir
-
-#    echo "processing $libfile"
-#     echo "Dependency list:"
-#     for dep in $deps; do
-#         echo "$dep"
-#     done
-# 
-#     echo "Pattern list:"
-#     for deppattern in $patterns; do
-#         echo "$deppattern"
-#     done;
 
     for dep in $deps; do
         echo $dep
@@ -38,7 +25,6 @@ function osx_graft_lib {
                     cp $dep $new_deppath
                     chmod 777 $new_deppath
                     osx_graft_lib $new_deppath $graft_dir $patterns
-                    echo "Finished recursive call"
                 else
                     echo "grafted library $new_deppath already exists"
                 fi
@@ -59,5 +45,9 @@ if [ $(uname) == 'Darwin' ]; then
     osx_graft_lib cpp_household.so .libs ^/.+/libboost_python.*\.dylib
     osx_graft_lib cpp_household.so .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
     osx_graft_lib cpp_household.so .libs ^/.+/libassimp.*\.dylib
-    cp -r /usr/local/Cellar/qt/5.10.1/plugins .libs/qt_plugins
+    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
+
+    for lib in $(find .qt_plugins -name "*.dylib"); do 
+         osx_graft_lib $lib .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
+    done
 fi
