@@ -2,10 +2,10 @@
 set -e
 
 function osx_graft_lib {
-    libfile=$1
-    libdir=$(dirname $libfile)
-    cwd=$(pwd)
-    deps=$(otool -L $libfile | awk 'FNR>2 {print $1}')
+    local libfile=$1
+    local libdir=$(dirname $libfile)
+    local deps=$(otool -L $libfile | awk 'FNR>2 {print $1}')
+    local patterns=${@:3}
     
 #    patterns=${@:3}
     graft_dir=$2
@@ -25,7 +25,6 @@ function osx_graft_lib {
 
     for dep in $deps; do
         echo $dep
-        patterns=${@:3}
         for deppattern in $patterns; do
             if [[ "$dep" =~ $deppattern ]]; then
                 new_depname=${dep##*/}
@@ -51,15 +50,13 @@ function osx_graft_lib {
 cd $(dirname "$0")
 
 cd roboschool/cpp-household
-make clean
+# make clean
 make -j4
 cd ..
 
 if [ $(uname) == 'Darwin' ]; then
     osx_graft_lib cpp_household.so .libs ^/.+/Python
     osx_graft_lib cpp_household.so .libs ^/.+/libboost_python.*\.dylib
-    osx_graft_lib cpp_household.so .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
-    # HACK - bash had problems with returning from recursion properly
     osx_graft_lib cpp_household.so .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
     osx_graft_lib cpp_household.so .libs ^/.+/libassimp.*\.dylib
 fi
