@@ -3,7 +3,7 @@ from gym.envs.registration import register
 
 import os
 import os.path as osp
-os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), 'cpp-household/qt5_local_install/plugins')
+os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), '.libs/qt_plugins')
 
 register(
     id='RoboschoolInvertedPendulum-v1',
