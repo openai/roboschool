@@ -59,4 +59,5 @@ if [ $(uname) == 'Darwin' ]; then
     osx_graft_lib cpp_household.so .libs ^/.+/libboost_python.*\.dylib
     osx_graft_lib cpp_household.so .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
     osx_graft_lib cpp_household.so .libs ^/.+/libassimp.*\.dylib
+    cp -r /usr/local/Cellar/qt/5.10.1/plugins .libs/qt_plugins
 fi
