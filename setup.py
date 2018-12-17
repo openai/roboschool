@@ -76,7 +76,7 @@ for n in need_files: print("-- %s" % n)
 
 setup(
     name = 'roboschool',
-    version = '1.0.21',
+    version = '1.0.22',
     description = 'OpenAI Household Simulator: mobile manipulation using Bullet',
     maintainer = 'Oleg Klimov',
     maintainer_email = 'omgtech@gmail.com',

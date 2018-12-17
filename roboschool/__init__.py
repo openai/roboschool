@@ -56,7 +56,7 @@ def _check_call_output(cmd, errormsg=None, **kwargs):
     if p.returncode != 0:
         print(stderr or '')
         print(errormsg or '')
-        raise ValueError
+        raise BaseException
 
     return stdout.decode().split('\n')
 
