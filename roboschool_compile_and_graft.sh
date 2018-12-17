@@ -45,7 +45,7 @@ function graft_libs {
 cd $(dirname "$0")
 
 cd roboschool/cpp-household
-# make clean
+make clean
 make -j4
 cd ..
 
@@ -53,6 +53,7 @@ cd ..
 graft_libs cpp_household.so .libs ^/.+/libboost_python.+
 graft_libs cpp_household.so .libs ^/.+/Qt.+
 graft_libs cpp_household.so .libs ^/.+/libassimp.+
+graft_libs cpp_household.so .libs ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/libPhysicsClientC_API.+
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
@@ -62,10 +63,6 @@ if [ $(uname) == 'Darwin' ]; then
          graft_libs $lib .libs ^/.+/Qt.+
     done
    
-    for lib in $(otool -L cpp_household.so | grep "@rpath" | awk '{print $1}'); do 
-        install_name_tool -change $lib "@loader_path/cpp-household/bullet_local_install/lib/${lib##@rpath/}" cpp_household.so
-    done
-
 fi 
 # if [ $(uname) == 'Linux' ]; then
 #    cp -r 
