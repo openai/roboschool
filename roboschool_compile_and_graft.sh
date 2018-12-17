@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 function graft_libs {
     local libfile=$1
