@@ -8,6 +8,8 @@ roboschool/cpp-household/Makefile.dep
 roboschool/cpp-household/*_local_install
 roboschool/robot-test-tool
 roboschool/robot-test-tool_d
+roboschool/.libs
+roboschool/.qt_plugins
 *.pyc
 *.dylib
 *.so

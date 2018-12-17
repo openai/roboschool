@@ -41,13 +41,13 @@ make -j4
 cd ..
 
 if [ $(uname) == 'Darwin' ]; then
-    osx_graft_lib cpp_household.so .libs ^/.+/Python
+    # osx_graft_lib cpp_household.so .libs ^/.+/Python
     osx_graft_lib cpp_household.so .libs ^/.+/libboost_python.*\.dylib
-    osx_graft_lib cpp_household.so .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
+    osx_graft_lib cpp_household.so .libs ^/.+/Qt.+
     osx_graft_lib cpp_household.so .libs ^/.+/libassimp.*\.dylib
     cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
 
     for lib in $(find .qt_plugins -name "*.dylib"); do 
-         osx_graft_lib $lib .libs ^/.+/QtCore ^/.+/QtGui ^/.+/QtWidgets ^/.+/QtOpenGL
+         osx_graft_lib $lib .libs ^/.+/Qt.+
     done
 fi
