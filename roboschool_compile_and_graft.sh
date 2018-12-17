@@ -1,19 +1,19 @@
 #!/bin/bash
-set -e
+set -ex
 
 function graft_libs {
     local libfile=$1
     local libdir=$(dirname $libfile)
     if [ $(uname) == 'Darwin' ]; then
         local relink="osx_relink"
-        local library_lister="otool -L"
+        local deps=$(otool -L $libfile | awk 'FNR>2 {print $1}')
     fi
     if [ $(uname) == 'Linux' ]; then
         local relink="linux_relink"
         local library_lister="ldd"
+        local deps=$(ldd $libfile | awk 'FNR>2 {print $3}')
     fi
 
-    local deps=$($library_lister $libfile | awk 'FNR>2 {print $1}')
     local patterns=${@:3}
     
     graft_dir=$2
@@ -47,15 +47,18 @@ function osx_relink {
 }
 
 function linux_relink {
-    patchelf --change-rpath $(dirname $2) $3
+    local depname=${2#*/}
+    local depname=${depname%/*}
+    patchelf --set-rpath $depname $3
 }
 
 cd $(dirname "$0")
 
 cd roboschool/cpp-household
-make clean
+# make clean
 make -j4
 cd ..
+
 
 graft_libs cpp_household.so .libs ^/.+/libboost_python.+
 graft_libs cpp_household.so .libs ^/.+/Qt.+
@@ -64,14 +67,14 @@ graft_libs cpp_household.so .libs ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/lib
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
-    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
+    cp -r /usr/local/Cellar/qt/5.12.0/plugins .qt_pluginsa
     lib_pattern="*.dylib"
 fi 
 if [ $(uname) == 'Linux' ]; then
     cp -r /usr/lib/x86_64-linux-gnu/qt5/plugins .qt_plugins
-    lib_pattern="*.so.*"
+    lib_pattern="*.so*"
 fi
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
-     graft_libs $lib .libs ^/.+/Qt.+
+     graft_libs $lib .libs ^/.+Qt.+
 done
 
