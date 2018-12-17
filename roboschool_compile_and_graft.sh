@@ -55,11 +55,17 @@ graft_libs cpp_household.so .libs ^/.+/Qt.+
 graft_libs cpp_household.so .libs ^/.+/libassimp.+
 
 if [ $(uname) == 'Darwin' ]; then
-    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
+    # HACK - this should auto-detect plugins dir
+    cp -r /usr/local/Cellar/qt/5.12.0/plugins .qt_plugins
 
     for lib in $(find .qt_plugins -name "*.dylib"); do 
          graft_libs $lib .libs ^/.+/Qt.+
     done
+   
+    for lib in $(otool -L cpp_household.so | grep "@rpath" | awk '{print $1}'); do 
+        install_name_tool -change $lib "@loader_path/cpp-household/bullet_local_install/lib/${lib##@rpath/}" cpp_household.so
+    done
+
 fi 
 # if [ $(uname) == 'Linux' ]; then
 #    cp -r 
