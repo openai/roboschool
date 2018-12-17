@@ -5,11 +5,11 @@ function graft_libs {
     local libfile=$1
     local libdir=$(dirname $libfile)
     if [ $(uname) == 'Darwin' ]; then
-        local grafter="install_name_tool -change" 
+        local relink="osx_relink"
         local library_lister="otool -L"
     fi
     if [ $(uname) == 'Linux' ]; then
-        local grafter="patchelf --replace-needed" 
+        local relink="linux_relink"
         local library_lister="ldd"
     fi
 
@@ -28,7 +28,7 @@ function graft_libs {
                 rel_path=$(realpath --relative-to="$libdir" $new_deppath) 
                 new_dep="@loader_path/$rel_path"
                 echo "$libfile depends on $dep, relinking to $new_deppath ($new_dep)"
-                $grafter $dep $new_dep $libfile
+                $relink $dep $new_dep $libfile
                 if [ ! -f $new_deppath ]; then
                     echo "$new_deppath not found, copying and calling self" 
                     cp $dep $new_deppath
@@ -42,6 +42,14 @@ function graft_libs {
     done
 }
 
+function osx_relink {
+    install_name_tool -change $1 $2 $3
+}
+
+function linux_relink {
+    patchelf --change-rpath $(dirname $2) $3
+}
+
 cd $(dirname "$0")
 
 cd roboschool/cpp-household
@@ -49,7 +57,6 @@ make clean
 make -j4
 cd ..
 
-# graft_libs cpp_household.so .libs ^/.+/Python
 graft_libs cpp_household.so .libs ^/.+/libboost_python.+
 graft_libs cpp_household.so .libs ^/.+/Qt.+
 graft_libs cpp_household.so .libs ^/.+/libassimp.+
@@ -57,14 +64,14 @@ graft_libs cpp_household.so .libs ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/lib
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
-    cp -r /usr/local/Cellar/qt/5.12.0/plugins .qt_plugins
-
-    for lib in $(find .qt_plugins -name "*.dylib"); do 
-         graft_libs $lib .libs ^/.+/Qt.+
-    done
-   
+    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_pluginsa
+    lib_pattern="*.dylib"
 fi 
-# if [ $(uname) == 'Linux' ]; then
-#    cp -r 
-
+if [ $(uname) == 'Linux' ]; then
+    cp -r /usr/lib/x86_64-linux-gnu/qt5/plugins .qt_plugins
+    lib_pattern="*.so.*"
+fi
+for lib in $(find .qt_plugins -name "$lib_pattern"); do 
+     graft_libs $lib .libs ^/.+/Qt.+
+done
 
