@@ -88,7 +88,7 @@ for lib in $(find .qt_plugins -name "$lib_pattern"); do
                 ^/.+/libpng.+ \
                 ^/.+/libicu.+ \
                 ^/.+/libdouble-conversion.+ \
-                ^/.+/libminizip.+
+                ^/.+/libminizip.+ \
                 ^/.+/libxcb.+ \
                 ^/.+/libxkb.+
 done
