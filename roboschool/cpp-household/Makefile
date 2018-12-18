@@ -40,8 +40,8 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers
+  LIBS  =-framework OpenGL `$(PKG) --cflags python3`
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --libs python3`
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
