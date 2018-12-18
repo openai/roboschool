@@ -56,7 +56,7 @@ if [ $(uname) == 'Darwin' ]; then
     for lib in $(find $TMPDIR/bullet_local_install/lib -name "*.dylib"); do
         install_name_tool -id $lib $lib
         for dep in $(otool -L $lib | grep "@rpath" | awk '{print $1}'); do 
-            install_name_tool -change $dep "@loader_path/${dep##@rpath/}" $lib
+            install_name_tool -change $dep "$TMPDIR/bullet_local_install/lib/${dep##@rpath/}" $lib
         done
     done
 fi
