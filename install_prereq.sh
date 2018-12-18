@@ -60,6 +60,12 @@ if [ $(uname) == 'Darwin' ]; then
         done
     done
 fi
+if [ $(uname) == 'Linux' ]; then
+    
+    for lib in $(find $TMPDIR/bullet_local_install/lib -name "*.so.2.87"); do
+        patchelf -set-rpath='$ORIGIN' $lib
+    done
+fi
 
 cd $ROBOSCHOOL_PATH
 ./roboschool_compile_and_graft.sh
