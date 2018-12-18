@@ -63,7 +63,7 @@ fi
 if [ $(uname) == 'Linux' ]; then
     
     for lib in $(find $TMPDIR/bullet_local_install/lib -name "*.so.2.87"); do
-        patchelf -set-rpath=$TMPDIR/bullet_local_install/lib $lib
+        patchelf --set-rpath=$TMPDIR/bullet_local_install/lib $lib
     done
 fi
 
