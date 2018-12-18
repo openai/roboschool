@@ -28,9 +28,9 @@ ifeq ($(UNAME),Linux)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags
-  # LIBS += -Lboost_local_install/lib -Lbullet_local_install/lib
-  # INC += -Iboost_local_install/include -Ibullet_local_install/include -Ibullet_local_install/include/bullet
+  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags,-rpath,"$$ORIGIN/boost_local_install/lib"
+  LIBS += -Lboost_local_install/lib
+  INC += -Iboost_local_install/include
 endif
 
 ifeq ($(UNAME),Darwin)
