@@ -28,8 +28,7 @@ ifeq ($(UNAME),Linux)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  TMPDIR=$(shell echo $TMPDIR)
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags,-rpath,$(TMPDIR)/bullet_local_install/lib
+  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags,-rpath,'$(TMPDIR)/bullet_local_install/lib',-rpath,'/usr/local/lib'
 endif
 
 ifeq ($(UNAME),Darwin)
@@ -41,8 +40,8 @@ ifeq ($(UNAME),Darwin)
     MOC =moc
   endif
   PKG   =pkg-config
-  LIBS  =-framework OpenGL `$(PKG) --libs python3`
-  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers `$(PKG) --cflags python3`
+  LIBS  =-framework OpenGL
+  INC   =-I/System/Library/Frameworks/OpenGL.framework/Headers
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
