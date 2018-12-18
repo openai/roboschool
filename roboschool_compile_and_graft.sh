@@ -84,6 +84,12 @@ if [ $(uname) == 'Linux' ]; then
     lib_pattern="*.so*"
 fi
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
-     graft_libs $lib .libs ^/.+Qt.+
+     graft_libs $lib .libs ^/.+Qt.+ \
+                ^/.+/libpng.+ \
+                ^/.+/libicu.+ \
+                ^/.+/libdouble-conversion.+ \
+                ^/.+/libminizip.+
+                ^/.+/libxcb.+ \
+                ^/.+/libxkb.+
 done
 
