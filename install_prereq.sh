@@ -32,7 +32,7 @@ if [ $(uname) == 'Linux' ]; then
     cd boost_1_58_0
 
      # ./bootstrap.sh --with-python=$(which python) --with-libraries=python 
-     ./bootstrap.sh --with-python=$(which python) --with-libraries=python  --prefix=$CPP_HOUSEHOLD/boost_local_install
+     ./bootstrap.sh --with-python=$(which python) --with-libraries=python
      ./b2 install > $TMPDIR/boost_make.log || (tail -100 $TMPDIR/boost_make.log; exit 1)
 fi
 
