@@ -67,7 +67,7 @@ graft_libs cpp_household.so .libs ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/lib
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
-    cp -r /usr/local/Cellar/qt/5.12.0/plugins .qt_pluginsa
+    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
     lib_pattern="*.dylib"
 fi 
 if [ $(uname) == 'Linux' ]; then
