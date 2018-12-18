@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ex
-apt-get update && apt-get install -y libgl1-mesa-dev qtbase5-dev libqt5opengl5-dev libassimp-dev patchelf
+apt-get update && apt-get install -y libgl1-mesa-dev qtbase5-dev libqt5opengl5-dev libassimp-dev patchelf > /dev/null
 
 cd $(dirname "$0")
 . ./exports.sh

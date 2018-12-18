@@ -22,7 +22,7 @@ function graft_libs {
     mkdir -p $graft_dir
 
     for dep in $deps; do
-        echo $dep
+        # echo $dep
         for deppattern in $patterns; do
             if [[ "$dep" =~ $deppattern ]]; then
                 new_depname=${dep##*/}
