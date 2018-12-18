@@ -6,11 +6,13 @@ function graft_libs {
     local libdir=$(dirname $libfile)
     if [ $(uname) == 'Darwin' ]; then
         local relink="osx_relink"
+        local origin="@loader_path"
         local deps=$(otool -L $libfile | awk 'FNR>2 {print $1}')
     fi
     if [ $(uname) == 'Linux' ]; then
         local relink="linux_relink"
         local library_lister="ldd"
+        local origin="\$ORIGIN"
         local deps=$(ldd $libfile | awk 'FNR>2 {print $3}')
     fi
 
@@ -26,7 +28,7 @@ function graft_libs {
                 new_depname=${dep##*/}
                 new_deppath="$graft_dir/$new_depname"
                 rel_path=$(realpath --relative-to="$libdir" $new_deppath) 
-                new_dep="@loader_path/$rel_path"
+                new_dep="$origin/$rel_path"
                 echo "$libfile depends on $dep, relinking to $new_deppath ($new_dep)"
                 $relink $dep $new_dep $libfile
                 if [ ! -f $new_deppath ]; then
@@ -47,9 +49,9 @@ function osx_relink {
 }
 
 function linux_relink {
-    local depname=${2#*/}
-    local depname=${depname%/*}
-    patchelf --set-rpath $depname $3
+    # local depname=${2#*/}
+    local dep_dir=${2%/*}
+    patchelf --set-rpath $dep_dir $3
 }
 
 cd $(dirname "$0")
@@ -67,7 +69,7 @@ graft_libs cpp_household.so .libs ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/lib
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
-    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
+    cp -r /usr/local/Cellar/qt/5.12.0/plugins .qt_pluginsa
     lib_pattern="*.dylib"
 fi 
 if [ $(uname) == 'Linux' ]; then
