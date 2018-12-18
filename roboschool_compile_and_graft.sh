@@ -62,10 +62,7 @@ make -j4
 cd ..
 
 
-graft_libs cpp_household.so .libs ^/.+/libboost_python.+
-graft_libs cpp_household.so .libs ^/.+Qt.+
-graft_libs cpp_household.so .libs ^/.+/libassimp.+
-graft_libs cpp_household.so .libs ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/libPhysicsClientC_API.+
+graft_libs cpp_household.so .libs ^/.+/libboost_python.+ ^/.+Qt.+ ^/.+/libassimp.+ ^/.+/libLinearMath.+ ^/.+/libBullet.+ ^/.+/libPhysicsClientC_API.+
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
