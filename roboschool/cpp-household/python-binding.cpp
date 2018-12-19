@@ -585,22 +585,28 @@ void sanity_checks()
 
 	QImage image(8, 8, QImage::Format_RGB32);
 	image.fill(0xFF0000);
-    QByteArray ba;
-    {
-		QBuffer buffer(&ba);
-		buffer.open(QIODevice::WriteOnly);
-		image.save(&buffer, "JPG");
-	}
+    QBuffer writeBuffer; 
+    writeBuffer.open(QIODevice::WriteOnly);
+    image.save(&writeBuffer, "JPG");
+    QByteArray data = writeBuffer.data();
+    QBuffer readBuffer(&data);
+    readBuffer.open(QIODevice::ReadOnly);
+    // QByteArray ba;
+    // {
+	// 	QBuffer buffer(&ba);
+	// 	buffer.open(QIODevice::WriteOnly);
+	// 	image.save(&buffer, "JPG");
+	// }
 	// QImage test;
 	
-	QBuffer buffer(&ba);
-	buffer.open(QIODevice::ReadOnly);
+	// QBuffer buffer(&ba);
+	// buffer.open(QIODevice::ReadOnly);
     
 	// test.load(&buffer, "JPG");
-    QImageReader imageReader(&buffer, "JPG");
+    QImageReader imageReader(&readBuffer, "JPG");
     QImage test;
     if (!imageReader.read(&test)) {
-        fprintf(stderr, "Error reading the image: %s", imageReader.errorString().toStdString().c_str());
+        fprintf(stderr, "Error reading the image:\n%s\n", imageReader.errorString().toStdString().c_str());
         exit(1);
     }
     
