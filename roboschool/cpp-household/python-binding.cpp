@@ -600,7 +600,7 @@ void sanity_checks()
     QImageReader imageReader(&buffer, "JPG");
     QImage test;
     if (!imageReader.read(&test)) {
-        fprintf(stderr, "Error reading the image: %s", imageReader.errorString());
+        fprintf(stderr, "Error reading the image: %s", imageReader.errorString().toStdString().c_str());
         exit(1);
     }
     
