@@ -585,35 +585,29 @@ void sanity_checks()
 
 	QImage image(8, 8, QImage::Format_RGB32);
 	image.fill(0xFF0000);
-    QBuffer writeBuffer; 
-    writeBuffer.open(QIODevice::WriteOnly);
-    image.save(&writeBuffer, "JPG");
-    QByteArray data = writeBuffer.data();
-    QBuffer readBuffer(&data);
-    readBuffer.open(QIODevice::ReadOnly);
-    // QByteArray ba;
-    // {
-	// 	QBuffer buffer(&ba);
-	// 	buffer.open(QIODevice::WriteOnly);
-	// 	image.save(&buffer, "JPG");
-	// }
-	// QImage test;
+    QByteArray ba;
+    {
+		QBuffer buffer(&ba);
+		buffer.open(QIODevice::WriteOnly);
+		image.save(&buffer, "JPG");
+        buffer.close();
+	}
+	QImage test;
 	
-	// QBuffer buffer(&ba);
-	// buffer.open(QIODevice::ReadOnly);
+	QBuffer buffer(&ba);
+	buffer.open(QIODevice::ReadOnly);
     
 	// test.load(&buffer, "JPG");
-    QImageReader imageReader(&readBuffer, "JPG");
-    QImage test;
+    QImageReader imageReader(&buffer, "JPG");
     if (!imageReader.read(&test)) {
         fprintf(stderr, "Error reading the image:\n%s\n", imageReader.errorString().toStdString().c_str());
-        // exit(1);
+        exit(1);
     }
     
 	
 	if (test.width() != image.width()) {
 		fprintf(stderr, "Sanity check failed: your Qt installation is broken (test width %d != image width %d) You can try to fix it by export QT_PLUGIN_PATH=<path_to_qt_plugins>\n", test.width(), image.width());
-		// exit(1);
+		exit(1);
 	}
 }
 
