@@ -15,34 +15,20 @@ matrix:
   - os: linux
     env:
     - MB_PYTHON_VERSION=3.5
+
   - os: linux
     env:
     - MB_PYTHON_VERSION=3.6
-
 
   - os: osx
     osx_image: xcode9.3
     env:
     - MB_PYTHON_VERSION=3.5
-    - DEPLOY_SDIST=true
+
+    # block deployment of source package - compiling from that would be an extra pain, better use github repo + tags
+    # - DEPLOY_SDIST=true
 
   - os: osx
     osx_image: xcode9.3
     env:
     - MB_PYTHON_VERSION=3.6
-  - ./deploy.sh
-
-deploy:
-  provider: s3
-  access_key_id: AKIAJPKDWA2OOU6QQEDA
-  skip_cleanup: true
-  secret_access_key:
-    secure: CAfWUGqcaLBj2+GbadkpqGANJx4ipUMqrwl+cmJxsKT7WJUf6Xhwv0hLpHREysja7wS2RM3A26rzACrX7MwPUS8e1Lt1PslhrMH+CwyaO53oT0JBt75wTeZNsxhG5C/9gjFIPzsMgLikxScUF1jbMG+rP8B08JbDrO7cT3LRRBqgpd0ifGgaUU7xKFR3HKSXuWrkSvsaId3wgVgTEnXJKvpOpAIqd3g9tzexA/eOBUhIORq3mXYvC2UVkYMRBtxHR8mEyLoxnbH8BGBwM0ZA5UigwUFRi6EpV3latrhf2JXOQlfzKbYIhKT/XppTIsnlI3HjhsuH9v2bRL3OeVKwKDw5hZLB7SA6vRza5lG8bdqMmLQFRXhZ2PcDylEN/Vk6qRyQSUt7n1XH+lde8etQz59qfY4+aQx0nZEMfPY8f4lJ8izmeQ1/y4MduamsHRPFYhrYSLTrb2J/dRJQ8s1MMKDkWNSQslwqiG/lugoTc4SWu0NGPl+Yog6gBrYI7NnOgmS6dboG7SK9G9Nc81y47HBs7YQEEfKhUEetVl7adkQ8jpvefJfFGMaj3TLzGUd/ERhzpM+ls4GePXRDzZZ/NCaP6ZpzFlzXIQSiWfW+8nI5sXHvpAl5N26DgAbws/wMAbXWsyeUYt/7+kZFD8IZK4ATX1/3xwwd6RoB/RgUdrk=
-  bucket: games-wheels
-  local-dir: wheelhouse
-  upload-dir: roboschool
-  acl: public_read
-  on:
-    repo: openai/roboschool
-    branch: peterz_not_really_manylinux
-

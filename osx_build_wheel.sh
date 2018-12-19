@@ -5,8 +5,9 @@ git clone https://github.com/matthew-brett/multibuild && cd multibuild && git ch
 . multibuild/travis_steps.sh
 before_install
 
-brew install qt assimp
+brew install qt assimp boost-python3
 . ./exports.sh
-./install_prereq.sh
+./install_bullet.sh
+./roboschool_compile_and_graft.sh
 pip wheel --no-deps -w wheelhouse .
 
