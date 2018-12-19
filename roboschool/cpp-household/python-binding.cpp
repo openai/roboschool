@@ -6,6 +6,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #include <QtGui/QWindow>
+#include <QtGui/QImageReader>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QBuffer>
 
@@ -584,18 +585,26 @@ void sanity_checks()
 
 	QImage image(8, 8, QImage::Format_RGB32);
 	image.fill(0xFF0000);
-        QByteArray ba;
-        {
+    QByteArray ba;
+    {
 		QBuffer buffer(&ba);
 		buffer.open(QIODevice::WriteOnly);
 		image.save(&buffer, "JPG");
 	}
-	QImage test;
-	{
-		QBuffer buffer(&ba);
-		buffer.open(QIODevice::ReadOnly);
-		test.load(&buffer, "JPG");
-	}
+	// QImage test;
+	
+	QBuffer buffer(&ba);
+	buffer.open(QIODevice::ReadOnly);
+    
+	// test.load(&buffer, "JPG");
+    QImageReader imageReader(&buffer, "JPG");
+    QImage test;
+    if (!imageReader.read(&test)) {
+        fprintf(stderr, "Error reading the image: %s", imageReader.errorString());
+        exit(1);
+    }
+    
+	
 	if (test.width() != image.width()) {
 		fprintf(stderr, "Sanity check failed: your Qt installation is broken (test width %d != image width %d) You can try to fix it by export QT_PLUGIN_PATH=<path_to_qt_plugins>\n", test.width(), image.width());
 		exit(1);
