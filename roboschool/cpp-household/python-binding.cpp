@@ -607,13 +607,13 @@ void sanity_checks()
     QImage test;
     if (!imageReader.read(&test)) {
         fprintf(stderr, "Error reading the image:\n%s\n", imageReader.errorString().toStdString().c_str());
-        exit(1);
+        // exit(1);
     }
     
 	
 	if (test.width() != image.width()) {
 		fprintf(stderr, "Sanity check failed: your Qt installation is broken (test width %d != image width %d) You can try to fix it by export QT_PLUGIN_PATH=<path_to_qt_plugins>\n", test.width(), image.width());
-		exit(1);
+		// exit(1);
 	}
 }
 
