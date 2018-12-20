@@ -78,13 +78,18 @@ graft_libs cpp_household.so .libs \
 
 if [ $(uname) == 'Darwin' ]; then
     # HACK - this should auto-detect plugins dir
-    cp -r /usr/local/Cellar/qt/5.10.1/plugins .qt_plugins
+    cp -r /usr/local/Cellar/qt/5.10.1/plugins
+    qt_plugin_dir=/usr/local/Cellar/qt/5.10.1
     lib_pattern="*.dylib"
 fi 
 if [ $(uname) == 'Linux' ]; then
-    cp -r /usr/lib/x86_64-linux-gnu/qt5/plugins .qt_plugins
+    plugin_dir=/usr/lib/x86_64-linux-gnu/qt5/plugins
+
+    ldd $plugin_dir/imageformats/libqjpeg.so*
+
     lib_pattern="*.so*"
 fi
+cp -r $plugin_dir .qt_plugins
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
      graft_libs $lib .libs ^/.+Qt.+ \
                 ^/.+/libpng.+ \
