@@ -60,7 +60,8 @@ def _check_call_output(cmd, errormsg=None, **kwargs):
 
     return stdout.decode().split('\n')
 
-os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), '.qt_plugins')
+os.environ['QT_PLUGIN_PATH'] = os.environ.get('QT_PLUGIN_PATH','') + \
+                               ':' + osp.join(osp.dirname(osp.abspath(__file__)), '.qt_plugins')
 _link_pythonlib()
 
 register(
