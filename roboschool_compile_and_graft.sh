@@ -90,6 +90,8 @@ if [ $(uname) == 'Linux' ]; then
     lib_pattern="*.so*"
 fi
 cp -r $plugin_dir .qt_plugins
+ldd .qt_plugins/imageformats/libqjpeg.so
+
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
      graft_libs $lib .libs ^/.+Qt.+ \
                 ^/.+/libpng.+ \
