@@ -7,6 +7,7 @@
 #include <QtWidgets/QDesktopWidget>
 #include <QtGui/QWindow>
 #include <QtGui/QImageReader>
+#include <QtGui/QImageWriter>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QBuffer>
 
@@ -589,8 +590,8 @@ void sanity_checks()
 
     QBuffer writeBuffer(&ba);
 	writeBuffer.open(QIODevice::WriteOnly);
-    QImageWriter imageWriter(&writeBuffer, "JPG")
-    if (!imageWriter.write(&image)) {
+    QImageWriter imageWriter(&writeBuffer, "JPG");
+    if (!imageWriter.write(image)) {
         fprintf(stderr, "Error writing the test image to the buffer:\n%s\n", imageWriter.errorString().toStdString().c_str());
         exit(1);
     }
