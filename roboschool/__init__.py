@@ -3,31 +3,27 @@ from gym.envs.registration import register
 
 import os
 import os.path as osp
+import subprocess
 
 
 def _link_pythonlib(lib='cpp_household.so'):
     import sys
-    import os
 
     if sys.platform != 'darwin':
         return
 
-    libpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), lib)
+    libpath = osp.join(os.path.abspath(os.path.dirname(__file__)), lib)
     old_python_path = _read_python_path(lib)
-    if old_python_path is None or os.path.exists(old_python_path):
+    if old_python_path is None or osp.exists(old_python_path):
         return
 
     print('Python dylib {} referred from {} is not found, attempting a relink...'.format(old_python_path, lib))
-    python_pkg_config_output = _check_call_output('pkg-config --libs python3'.split(' '))[0]
-    python_lib_paths = [s[2:] for s in python_pkg_config_output.split(' ') if s.startswith('-L')]
-    python_lib_names = [s[2:] for s in python_pkg_config_output.split(' ') if s.startswith('-lpython')]
-
-    assert len(python_lib_names) == 1, 'Cannot infer python dylib name from pkg-config output {}'.format(python_pkg_config_output)
-    python_lib_name = 'lib' + python_lib_names[0] + '.dylib'
-
+    
+    python_lib_name, python_lib_paths = _find_python_libs()
+   
     for path in python_lib_paths:
-        fullpath = os.path.join(path, python_lib_name)
-        if os.path.exists(fullpath):
+        fullpath = osp.join(path, python_lib_name)
+        if osp.exists(fullpath):
             _check_call_output(['install_name_tool', '-change', old_python_path, fullpath, libpath])
             print('Relinked to {} successfully'.format(fullpath))
             return
@@ -47,20 +43,51 @@ def _read_python_path(lib='cpp_household.so'):
             return deppath
     return None
 
+def _find_python_libs():
+    try:
+        python_pkg_config_output = _check_call_output('pkg-config --libs python3'.split(' '))[0]
+    except subprocess.CalledProcessError:
+        os.environ['PKG_CONFIG_PATH'] = os.environ.get('PKG_CONFIG_PATH','') + ':' + _find_python_pc()
+        python_pkg_config_output = _check_call_output('pkg-config --libs python3'.split(' '))[0]
+
+    python_lib_paths = [s[2:] for s in python_pkg_config_output.split(' ') if s.startswith('-L')]
+    python_lib_names = [s[2:] for s in python_pkg_config_output.split(' ') if s.startswith('-lpython')]
+
+    assert len(python_lib_names) == 1, 'Cannot infer python dylib name from pkg-config output {}'.format(python_pkg_config_output)
+    python_lib_name = 'lib' + python_lib_names[0] + '.dylib'
+
+    return python_lib_name, python_lib_paths
+
+def _find_python_pc():
+    import glob
+    import sys
+    import re
+    checkpattern = re.compile(r'.+{}\.?{}.+'.format(sys.version_info.major,sys.version_info.minor))
+
+    print('Searching for python3.pc file, this may take a moment')
+    for filename in glob.iglob('/**/python3.pc', recursive=True):
+        if checkpattern.match(filename):
+            print('Found and using {}'.format(filename))
+            return osp.dirname(filename)
+        else:
+            print('{} does not match pattern {}'.format(filename, checkpattern))
+
+    raise FileNotFoundError
+
 
 def _check_call_output(cmd, errormsg=None, **kwargs):
-    import subprocess
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, **kwargs)
     stdout, stderr = p.communicate()
 
     if p.returncode != 0:
         print(stderr or '')
         print(errormsg or '')
-        raise BaseException
+        raise subprocess.CalledProcessError(p.returncode, cmd)
 
     return stdout.decode().split('\n')
 
-os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), '.qt_plugins')
+os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), '.qt_plugins') + ':' + \
+                               os.environ.get('QT_PLUGIN_PATH','') 
 _link_pythonlib()
 
 register(
