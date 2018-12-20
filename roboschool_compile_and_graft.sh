@@ -13,7 +13,7 @@ function graft_libs {
         local relink="linux_relink"
         local library_lister="ldd"
         local origin="\$ORIGIN"
-        local deps=$(ldd $libfile | awk 'FNR>2 {print $3}')
+        local deps=$(ldd $libfile | awk '{print $3}')
     fi
 
     local patterns=${@:3}
@@ -84,13 +84,11 @@ if [ $(uname) == 'Darwin' ]; then
 fi 
 if [ $(uname) == 'Linux' ]; then
     plugin_dir=/usr/lib/x86_64-linux-gnu/qt5/plugins
-
     ldd $plugin_dir/imageformats/libqjpeg.so*
 
     lib_pattern="*.so*"
 fi
 cp -r $plugin_dir .qt_plugins
-ldd .qt_plugins/imageformats/libqjpeg.so
 
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
      graft_libs $lib .libs ^/.+Qt.+ \
