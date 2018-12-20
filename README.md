@@ -94,7 +94,7 @@ First, make sure you are installing from a github repo (not a source package on 
 git clone https://github.com/openai/roboschool && cd roboschool
 ```
 
-The system-level dependencies of roboschool are qt5 (with opengl), boost_python3 (or boost_python if you are compiling with python2), and assimp. Also, 
+The system-level dependencies of roboschool are qt5 (with opengl), boost-python3 (or boost-python if you are compiling with python2), and assimp. Also, 
 some version of graphics libraries is required. 
 Qt5 and assimp are rather straightforward to install:
 
@@ -110,9 +110,9 @@ Qt5 and assimp are rather straightforward to install:
     brew install qt assimp
     ```
 
-Next, we'll need boost_python3. On osx `brew install boost_python3` is usually sufficient, however, on linux it is not always available as a system-level package. 
+Next, we'll need boost-python3. On osx `brew install boost-python3` is usually sufficient, however, on linux it is not always available as a system-level package. 
 Do we despair? Of course not! We install it from source! There is a script `install_boost.sh` that should do most of the heavy lifting - note that it will need sudo
-to install boost_python3 after compilation is done. 
+to install boost-python3 after compilation is done. 
 
 Next, need a custom version of bullet physics engine. In both osx and linux its installation is a little involved, fortunately, there is a 
 helper script `install_bullet.sh` that should do it for you. 
