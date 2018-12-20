@@ -68,7 +68,6 @@ The list of Roboschool environments is as follows:
 To obtain this list: `import roboschool, gym; print("\n".join(['- ' + spec.id for spec in gym.envs.registry.all() if spec.id.startswith('Roboschool')]))`.
 
 
-
 Installation
 ============
 
