@@ -22,22 +22,6 @@ from setuptools.command.install import install as DistutilsInstall
 from setuptools.command.egg_info import egg_info as EggInfo
 
 setup_py_dir = os.path.dirname(os.path.realpath(__file__))
-# blib = setup_py_dir + "/roboschool/cpp-household/bullet_local_install/lib"
-# if not os.path.exists(blib):
-#     print("Please follow instructions in README to build local (not global for your system) Bullet installation.")
-#     sys.exit(1)
-
-# from sys import platform
-# if platform=="darwin":
-#     bulletlibs  = "libBullet2FileLoader libBulletCollision libBullet3Collision libBulletDynamics libBullet3Common libBulletInverseDynamics".split()
-#     bulletlibs += "libBullet3Dynamics libBulletSoftBody libBullet3Geometry libLinearMath libBullet3OpenCL_clew libPhysicsClientC_API".split()
-#     for x in bulletlibs:
-#         os.system("install_name_tool -id @loader_path/cpp-household/bullet_local_install/lib/%s.2.87.dylib %s/%s.2.87.dylib" % (x,blib,x))
-#         for y in bulletlibs:
-#             os.system("install_name_tool -change @rpath/%s.2.87.dylib @loader_path/%s.2.87.dylib %s/%s.2.87.dylib" % (x,x,blib,y))
-
-# with open(os.path.join(os.path.dirname(__file__), 'atari_py/package_data.txt')) as f:
-#    package_data = [line.rstrip() for line in f.readlines()]
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -49,15 +33,6 @@ class Build(build_ext):
    def run(self):
        pass
 
-def recompile():
-    import subprocess
-    USE_PYTHON3 = ""
-    if sys.version_info[0]==2:
-        USE_PYTHON3 = "USE_PYTHON3=0"
-    
-    subprocess.check_call(['bash', 'roboschool_compile_and_graft.sh'])
-    
-# recompile()
 need_files = ['cpp_household.so']
 hh = setup_py_dir + "/roboschool"
 need_files_ext = 'png jpg urdf obj mtl dae off stl STL xml glsl dylib'.split()
