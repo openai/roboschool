@@ -51,8 +51,8 @@ endif
 MOC = '$$ORIGIN/cpp-household/qt5_local_install/bin/moc'
 
 $(info Link against python $(PYTHON))
-INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp bullet`
-LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp bullet`
+INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp bullet python3`
+LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp bullet python3`
 LIBS    += -lstdc++
 INC     += -I/usr/local/include/bullet
 LIBS    += $(RPATH) -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
@@ -72,7 +72,7 @@ MINUS_O = -o
 CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 -march=native $(INC)
 # disable -march=native - breaks compilation on centos 5 image for manylinux wheel build
 # CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 $(INC)
-CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -DDEBUG $(INC)
+CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O0 -DDEBUG $(INC)
 
 SHARED  = -shared
 DEPENDS = -MMD -MF $@.dep
