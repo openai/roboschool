@@ -3,6 +3,7 @@ from gym.envs.registration import register
 
 import os
 import os.path as osp
+import subprocess
 
 
 def _link_pythonlib(lib='cpp_household.so'):
@@ -60,27 +61,28 @@ def _find_python_libs():
 def _find_python_pc():
     import glob
     import sys
-    checkpattern = sys.version_info.major + '.' + sys.version_info.minor
+    import re
+    checkpattern = re.compile(r'.+{}\.?{}.+'.format(sys.version_info.major,sys.version_info.minor))
 
     print('Searching for python3.pc file, this may take a moment')
-    for filename in glob.iglob('/**/python3.pc'):
-        if checkpattern in filename:
+    for filename in glob.iglob('/**/python3.pc', recursive=True):
+        if checkpattern.match(filename):
             print('Found and using {}'.format(filename))
             return osp.dirname(filename)
         else:
             print('{} does not match pattern {}'.format(filename, checkpattern))
 
+    raise FileNotFoundError
 
 
 def _check_call_output(cmd, errormsg=None, **kwargs):
-    import subprocess
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, **kwargs)
     stdout, stderr = p.communicate()
 
     if p.returncode != 0:
         print(stderr or '')
         print(errormsg or '')
-        raise subprocess.CalledProcessError
+        raise subprocess.CalledProcessError(p.returncode, cmd)
 
     return stdout.decode().split('\n')
 
