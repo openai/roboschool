@@ -48,8 +48,6 @@ ifeq ($(UNAME),Darwin)
   RPATH =
 endif
 
-MOC = '$$ORIGIN/cpp-household/qt5_local_install/bin/moc'
-
 $(info Link against python $(PYTHON))
 INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp bullet`
 LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp bullet`
@@ -70,15 +68,12 @@ AR_OUT=
 LINK_OUT= -o
 MINUS_O = -o
 CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 -march=native $(INC)
-# disable -march=native - breaks compilation on centos 5 image for manylinux wheel build
-# CFLAGS   = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -O3 $(INC)
 CFLAGSD  = -std=c++11 -Wall -Wno-unused-variable -Wno-unused-function -Wno-deprecated-register -fPIC -DBT_USE_DOUBLE_PRECISION -g -DDEBUG $(INC)
 
 SHARED  = -shared
 DEPENDS = -MMD -MF $@.dep
 
-EVERY_BIN=../cpp_household.so ../cpp_household_d.so
-# EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
+EVERY_BIN=../robot-test-tool ../robot-test-tool_d ../cpp_household.so ../cpp_household_d.so
 
 SIM = \
  physics-bullet.cpp \
