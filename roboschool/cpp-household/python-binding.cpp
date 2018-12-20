@@ -589,6 +589,12 @@ void sanity_checks()
 
     QBuffer writeBuffer(&ba);
 	writeBuffer.open(QIODevice::WriteOnly);
+    QImageWriter imageWriter(&writeBuffer, "JPG")
+    if (!imageWriter.write(&image)) {
+        fprintf(stderr, "Error writing the test image to the buffer:\n%s\n", imageWriter.errorString().toStdString().c_str());
+        exit(1);
+    }
+
 	image.save(&writeBuffer, "JPG");
     writeBuffer.close();
 
@@ -600,7 +606,7 @@ void sanity_checks()
 	// test.load(&buffer, "JPG");
     QImageReader imageReader(&readBuffer, "JPG");
     if (!imageReader.read(&test)) {
-        fprintf(stderr, "Error reading the image:\n%s\n", imageReader.errorString().toStdString().c_str());
+        fprintf(stderr, "Error reading the test image from the buffer:\n%s\n", imageReader.errorString().toStdString().c_str());
         exit(1);
     }
     
