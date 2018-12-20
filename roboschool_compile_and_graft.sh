@@ -51,7 +51,8 @@ function osx_relink {
 function linux_relink {
     # local depname=${2#*/}
     local dep_dir=${2%/*}
-    patchelf --set-rpath $dep_dir $3
+    local old_rpath=$(patchelf --print-rpath $3)
+    patchelf --set-rpath $dep_dir:$old_rpath $3
 }
 
 cd $(dirname "$0")
@@ -70,6 +71,7 @@ graft_libs cpp_household.so .libs \
     ^/.+/libBullet.+ \
     ^/.+/libPhysicsClientC_API.+ \
     ^/.+/libpng.+ \
+    ^/.+/libjpeg.+ \
     ^/.+/libicu.+ \
     ^/.+/libdouble-conversion.+ \
     ^/.+/libminizip.+
@@ -86,6 +88,7 @@ fi
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
      graft_libs $lib .libs ^/.+Qt.+ \
                 ^/.+/libpng.+ \
+                ^/.+/libjpeg.+ \
                 ^/.+/libicu.+ \
                 ^/.+/libdouble-conversion.+ \
                 ^/.+/libminizip.+ \
