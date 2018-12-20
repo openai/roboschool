@@ -13,7 +13,7 @@ function graft_libs {
         local relink="linux_relink"
         local library_lister="ldd"
         local origin="\$ORIGIN"
-        local deps=$(ldd $libfile | awk 'FNR>2 {print $3}')
+        local deps=$(ldd $libfile | awk '{print $3}')
     fi
 
     local patterns=${@:3}
@@ -69,6 +69,7 @@ graft_libs cpp_household.so .libs \
     ^/.+/libLinearMath.+ \
     ^/.+/libBullet.+ \
     ^/.+/libPhysicsClientC_API.+ \
+    ^/.+/libjpeg.+ \
     ^/.+/libpng.+ \
     ^/.+/libicu.+ \
     ^/.+/libdouble-conversion.+ \
@@ -85,6 +86,7 @@ if [ $(uname) == 'Linux' ]; then
 fi
 for lib in $(find .qt_plugins -name "$lib_pattern"); do 
      graft_libs $lib .libs ^/.+Qt.+ \
+                ^/.+/libjpeg.+ \
                 ^/.+/libpng.+ \
                 ^/.+/libicu.+ \
                 ^/.+/libdouble-conversion.+ \
