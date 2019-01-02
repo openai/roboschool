@@ -1,8 +1,6 @@
 /usr/include/bullet
 /usr/local/include/
 /usr/local/include/bullet
-bullet_local_install/include
-bullet_local_install/include/bullet
 ~/.linuxbrew/include/bullet
 /usr/include/x86_64-linux-gnu/qt5
 /usr/include/x86_64-linux-gnu/qt5/QtWidgets

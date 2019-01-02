@@ -94,20 +94,20 @@ First, make sure you are installing from a github repo (not a source package on 
 git clone https://github.com/openai/roboschool && cd roboschool
 ```
 
-The system-level dependencies of roboschool are qt5 (with opengl), boost-python3 (or boost-python if you are compiling with python2), and assimp. Also, 
-some version of graphics libraries is required. 
-Qt5 and assimp are rather straightforward to install:
+The system-level dependencies of roboschool are qt5 (with opengl), boost-python3 (or boost-python if you are compiling with python2), assimp and cmake. 
+Linux-based distros will need patchelf utility to tweak the runtime paths. Also, some version of graphics libraries is required. 
+Qt5, assimp, cmake and patchelf are rather straightforward to install:
 
 - Ubuntu / Debian: 
 
     ```bash
-    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev cmake patchelf
     ```
 
 - OSX:
     
     ```bash
-    brew install qt assimp
+    brew install qt assimp cmake
     ```
 
 Next, we'll need boost-python3. On osx `brew install boost-python3` is usually sufficient, however, on linux it is not always available as a system-level package. 
@@ -122,7 +122,7 @@ To summarize, all the prerequisites can be installed as follows:
 - Ubuntu / Debian: 
 
     ```bash
-    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
     sudo ./install_boost.sh
     ./install_bullet.sh
     . exports.sh
@@ -132,7 +132,7 @@ To summarize, all the prerequisites can be installed as follows:
     
     ```bash
     . exports.sh
-    brew install qt assimp boost-python3
+    brew install qt assimp boost-python3 cmake
     ./install_bullet.sh
     . exports.sh
     ```
