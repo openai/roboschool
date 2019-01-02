@@ -18,9 +18,9 @@ def _link_pythonlib(lib='cpp_household.so'):
         return
 
     print('Python dylib {} referred from {} is not found, attempting a relink...'.format(old_python_path, lib))
-    
+
     python_lib_name, python_lib_paths = _find_python_libs()
-   
+
     for path in python_lib_paths:
         fullpath = osp.join(path, python_lib_name)
         if osp.exists(fullpath):
@@ -87,7 +87,7 @@ def _check_call_output(cmd, errormsg=None, **kwargs):
     return stdout.decode().split('\n')
 
 os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), '.qt_plugins') + ':' + \
-                               os.environ.get('QT_PLUGIN_PATH','') 
+                               os.environ.get('QT_PLUGIN_PATH','')
 _link_pythonlib()
 
 register(

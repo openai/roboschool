@@ -2,6 +2,7 @@
 
 export ROBOSCHOOL_PATH=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
 export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
+export TMPDIR=$(mktemp -d)
 
 if [ $(uname) == 'Linux' ]; then
     PYTHON_BIN=$(readlink -f $(which python))
