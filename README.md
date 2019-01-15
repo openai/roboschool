@@ -125,16 +125,16 @@ To summarize, all the prerequisites can be installed as follows:
     sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
     sudo ./install_boost.sh
     ./install_bullet.sh
-    . exports.sh
+    source exports.sh
     ```
 
 - OSX:
     
     ```bash
-    . exports.sh
+    source exports.sh
     brew install qt assimp boost-python3 cmake
     ./install_bullet.sh
-    . exports.sh
+    source exports.sh
     ```
 To check if that installation is successful, run `pkg-config --cflags Qt5OpenGL assimp bullet` - you should see something resembling compiler options and not 
 an error message. Now we are ready to compile the bullet project itself. 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ $(uname) == 'Linux' ]; then
     BOOST_SRCDIR=$TMPDIR/boost
     mkdir -p $BOOST_SRCDIR && cd $BOOST_SRCDIR

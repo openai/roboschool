@@ -1,15 +1,13 @@
-#!/bin/bash
-
 export ROBOSCHOOL_PATH=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
 export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 export BULLET_PATH=$HOME/.forked_bullet
 
-if [ $(uname) == 'Linux' ]; then
+if [[ $(uname) == 'Linux' ]]; then
     PYTHON_BIN=$(readlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
 fi
-if [ $(uname) == 'Darwin' ]; then
+if [[ $(uname) == 'Darwin' ]]; then
     brew install coreutils
     PYTHON_BIN=$(greadlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}

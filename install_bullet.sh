@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BULLET_SRCDIR=$(mktemp -d)/bullet3
 BULLET_PATH=$HOME/.forked_bullet
 
