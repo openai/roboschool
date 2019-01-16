@@ -7,7 +7,6 @@ if [ $(uname) == 'Linux' ]; then
     tar -xf boost_1_58_0.tar.bz2
     cd boost_1_58_0
 
-     # ./bootstrap.sh --with-python=$(which python) --with-libraries=python 
      ./bootstrap.sh --with-python=$(which python) --with-libraries=python
      ./b2 install > $TMPDIR/boost_make.log || (tail -100 $TMPDIR/boost_make.log; exit 1)
 fi
