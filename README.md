@@ -101,7 +101,7 @@ Qt5, assimp, cmake and patchelf are rather straightforward to install:
 - Ubuntu / Debian: 
 
     ```bash
-    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev cmake patchelf
+    sudo apt-get install qtbase5-dev libqt5opengl5-dev libassimp-dev cmake patchelf
     ```
 
 - OSX:
@@ -123,8 +123,7 @@ To summarize, all the prerequisites can be installed as follows:
 
     ```bash
     sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
-    # if you use anaconda python, you may instead want to do `conda install boost`
-    sudo ./install_boost.sh
+    ./install_boost.sh
     ./install_bullet.sh
     source exports.sh
     ```
