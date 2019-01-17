@@ -152,7 +152,7 @@ Compile and install
 The compiler options are configured in the [Makefile](roboschool/cpp-household/Makefile). Feel free to tinker with them or leave those as is. To
 compile the project code, and then install it as a python package, use the following:
 ```bash
-cd roboschool/cpp-household && make -j4 && cd ../.. && pip install -e .
+cd roboschool/cpp-household && make clean && make -j4 && cd ../.. && pip install -e .
 ```
 
 A simple check if resulting installation is valid:
