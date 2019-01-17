@@ -8,7 +8,8 @@ if [ $(uname) == 'Linux' ]; then
         sudo mv $whl ${whl%linux_x86_64.whl}manylinux1_x86_64.whl
     done 
     cd ..
-    pip install --user twine
+    pip install --user bleach==3.0.2
+    pip install --user twine==1.12.1
 fi
 # ** END HACK
 
