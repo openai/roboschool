@@ -94,24 +94,24 @@ First, make sure you are installing from a github repo (not a source package on 
 git clone https://github.com/openai/roboschool && cd roboschool
 ```
 
-The system-level dependencies of roboschool are qt5 (with opengl), boost-python3 (or boost-python if you are compiling with python2), and assimp. Also, 
-some version of graphics libraries is required. 
-Qt5 and assimp are rather straightforward to install:
+The system-level dependencies of roboschool are qt5 (with opengl), boost-python3 (or boost-python if you are compiling with python2), assimp and cmake. 
+Linux-based distros will need patchelf utility to tweak the runtime paths. Also, some version of graphics libraries is required. 
+Qt5, assimp, cmake and patchelf are rather straightforward to install:
 
 - Ubuntu / Debian: 
 
     ```bash
-    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev cmake patchelf
     ```
 
 - OSX:
     
     ```bash
-    brew install qt assimp
+    brew install qt assimp cmake
     ```
 
-Next, we'll need boost-python3. On osx `brew install boost-python3` is usually sufficient, however, on linux it is not always available as a system-level package. 
-Do we despair? Of course not! We install it from source! There is a script `install_boost.sh` that should do most of the heavy lifting - note that it will need sudo
+Next, we'll need boost-python3. On osx `brew install boost-python3` is usually sufficient, however, on linux it is not always available as a system-level package (sometimes it is available, but compiled against wrong version of python). If you are using anaconda/miniconda, boost-python3 can be installed via `conda install boost`. Otherwise, do we despair? Of course not! We install it from source!
+There is a script `install_boost.sh` that should do most of the heavy lifting - note that it will need sudo
 to install boost-python3 after compilation is done. 
 
 Next, need a custom version of bullet physics engine. In both osx and linux its installation is a little involved, fortunately, there is a 
@@ -122,22 +122,30 @@ To summarize, all the prerequisites can be installed as follows:
 - Ubuntu / Debian: 
 
     ```bash
-    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
+    # if you use anaconda python, you may instead want to do `conda install boost`
     sudo ./install_boost.sh
     ./install_bullet.sh
-    . exports.sh
+    source exports.sh
+    ```
+- Ubuntu / Debian with anaconda:
+
+    ```bash
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
+    conda install boost
+    ./install_bullet.sh
+    source exports.sh
     ```
 
 - OSX:
     
     ```bash
-    . exports.sh
-    brew install qt assimp boost-python3
+    brew install qt assimp boost-python3 cmake
     ./install_bullet.sh
-    . exports.sh
+    source exports.sh
     ```
 To check if that installation is successful, run `pkg-config --cflags Qt5OpenGL assimp bullet` - you should see something resembling compiler options and not 
-an error message. Now we are ready to compile the bullet project itself. 
+an error message. Now we are ready to compile the roboschool project itself.
 
 Compile and install
 -------------------
@@ -177,11 +185,11 @@ We have provided a number of pre-trained agents in the `agent_zoo` directory.
 To see a humanoid run towards a random varying target:
 
 ```bash
-python $ROBOSCHOOL_PATH/agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
+python agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
 ```
 
 To see three agents in a race:
 
 ```bash
-python $ROBOSCHOOL_PATH/agent_zoo/demo_race2.py
+python agent_zoo/demo_race2.py
 ```

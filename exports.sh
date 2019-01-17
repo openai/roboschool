@@ -1,24 +1,22 @@
-#!/bin/bash
-
 export ROBOSCHOOL_PATH=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
 export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
+export BULLET_PATH=$HOME/.forked_bullet
 
-if [ $(uname) == 'Linux' ]; then
+if [[ $(uname) == 'Linux' ]]; then
     PYTHON_BIN=$(readlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
-    # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CPP_HOUSEHOLD/qt5_local_install/lib
 fi
-if [ $(uname) == 'Darwin' ]; then
+if [[ $(uname) == 'Darwin' ]]; then
     brew install coreutils
     PYTHON_BIN=$(greadlink -f $(which python))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
     PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
-    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/qt/lib/pkgconfig:/Library/Frameworks/Python.framework/Versions/${PYTHON_VER}/lib/pkgconfig/:$TMPDIR/bullet_local_install/lib/pkg-config
+    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/qt/lib/pkgconfig:/Library/Frameworks/Python.framework/Versions/${PYTHON_VER}/lib/pkgconfig/
 fi
 
 
-export PKG_CONFIG_PATH=${PYTHON_ROOT}/lib/pkgconfig:$TMPDIR/bullet_local_install/lib/pkgconfig/:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=${PYTHON_ROOT}/lib/pkgconfig:$BULLET_PATH/lib/pkgconfig/:$PKG_CONFIG_PATH
 export CPATH=$CPATH:${PYTHON_ROOT}/include/python${PYTHON_VER}m
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CPP_HOUSEHOLD/bullet_local_install/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$BULLET_PATH/lib
 
