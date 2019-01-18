@@ -28,7 +28,7 @@ ifeq ($(UNAME),Linux)
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags,-rpath,'$(BULLET_PATH)/lib'
+  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags,-rpath,'$(BULLET_PATH)/lib',-rpath,'$(HOME)/.boost/lib'
 endif
 
 ifeq ($(UNAME),Darwin)
