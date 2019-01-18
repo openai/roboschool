@@ -83,7 +83,16 @@ SIM = \
  render-simple.cpp \
  render-simple-primitives.cpp
 
-ifneq ("$(wildcard /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0)", "")
+ENABLE_HARDWARE_RENDER=1
+ifdef ROBOSCHOOL_DISABLE_HARDWARE_RENDER
+ENABLE_HARDWARE_RENDER=0
+endif
+
+ifeq ("$(wildcard /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0)", "")
+ENABLE_HARDWARE_RENDER=0
+endif
+
+ifneq ($(ENABLE_HARDWARE_RENDER), 0)
 $(info Hardware render (turn on shadows))
 SIM     += render-ssao.cpp
 CFLAGS  += -DUSE_SSAO

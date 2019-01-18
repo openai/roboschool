@@ -176,6 +176,20 @@ If the command `pkg-config --cflags Qt5OpenGL assimp bullet` shows an error, you
 
 Sometime distros of linux may complain about generated code being not platform-independent, and ask you to recompile something with `-fPIC` option (this was seen on older versions of CentOS). In that case, try removing `-march=native` compilation option in the Makefile. 
 
+On the systems with nvidia drivers present, roboschool sometimes is not be able to find hardware-accelerated libraries. If you see errors
+like
+```
+.build-release/render-ssao.o: In function `SimpleRender::ContextViewport::_depthlinear_paint(int)':
+/home/peter/dev/roboschool/roboschool/cpp-household/render-ssao.cpp:75: undefined reference to `glBindMultiTextureEXT'
+/home/peter/dev/roboschool/roboschool/cpp-household/render-ssao.cpp:78: undefined reference to `glBindMultiTextureEXT'
+collect2: error: ld returned 1 exit status
+Makefile:130: recipe for target '../robot-test-tool' failed
+```
+you can try disabling hardware rendering by setting `ROBOSCHOOL_DISABLE_HARDWARE_RENDER` env variable:
+```bash
+export ROBOSCHOOL_DISABLE_HARDWARE_RENDER=1
+```
+
 Agent Zoo
 =========
 
