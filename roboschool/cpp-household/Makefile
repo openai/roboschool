@@ -5,7 +5,7 @@ OBJDIRD=.build-debug
 ifeq ($(UNAME),Linux)
   PKG  =pkg-config
   MOC  =moc -qt=5
-  LIBS =-L/usr/lib64 -lm -lGL
+  LIBS =-L/usr/lib64 -lm -lGL -L$(HOME)/.boost/lib
   INC  =-I/usr/include
   BOOST_MT=
   ifneq ($(USE_PYTHON3),0)
