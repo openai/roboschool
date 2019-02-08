@@ -1,6 +1,13 @@
 from gym.envs.registration import register
 #from gym.scoreboard.registration import add_task, add_group
 
+import os
+import os.path as osp
+import subprocess
+
+os.environ['QT_PLUGIN_PATH'] = osp.join(osp.dirname(osp.abspath(__file__)), '.qt_plugins') + ':' + \
+                               os.environ.get('QT_PLUGIN_PATH','')
+
 register(
     id='RoboschoolInvertedPendulum-v1',
     entry_point='roboschool:RoboschoolInvertedPendulum',

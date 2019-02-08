@@ -5,9 +5,11 @@ roboschool/cpp-household/.build-debug*
 roboschool/cpp-household/.build-release*
 roboschool/cpp-household/roboschool.creator.user
 roboschool/cpp-household/Makefile.dep
-roboschool/cpp-household/bullet_local_install
+roboschool/cpp-household/*_local_install
 roboschool/robot-test-tool
 roboschool/robot-test-tool_d
+roboschool/.libs
+roboschool/.qt_plugins
 *.pyc
 *.dylib
 *.so

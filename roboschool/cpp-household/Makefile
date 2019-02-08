@@ -5,7 +5,7 @@ OBJDIRD=.build-debug
 ifeq ($(UNAME),Linux)
   PKG  =pkg-config
   MOC  =moc -qt=5
-  LIBS =-L/usr/lib64 -lm -lGL -lGLU
+  LIBS =-L/usr/lib64 -lm -lGL -L$(HOME)/.boost/lib
   INC  =-I/usr/include
   BOOST_MT=
   ifneq ($(USE_PYTHON3),0)
@@ -21,13 +21,14 @@ ifeq ($(UNAME),Linux)
       BOOST_PYTHON3_POSTFIX = -py$(shell /usr/bin/python3 -c "import sys; print('%i%i' % sys.version_info[:2])")
     else
       $(info Linux, python3, Ubuntu branch)
-      BOOST_PYTHON3_POSTFIX = -py$(shell python3 -c "import sys; print('%i%i' % sys.version_info[:2])")
+      # BOOST_PYTHON3_POSTFIX = -py$(shell python3 -c "import sys; print('%i%i' % sys.version_info[:2])")
+      BOOST_PYTHON3_POSTFIX = 3
     endif
   else
     $(info Linux, python 2 branch)
     PYTHON = $(shell python -c "import sys; print('%i.%i' % sys.version_info[:2])")
   endif
-  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/cpp-household/bullet_local_install/lib'
+  RPATH=-Wl,-z,origin -Wl,--disable-new-dtags,-rpath,'$(BULLET_PATH)/lib',-rpath,'$(HOME)/.boost/lib'
 endif
 
 ifeq ($(UNAME),Darwin)
@@ -44,14 +45,14 @@ ifeq ($(UNAME),Darwin)
   BOOST_PYTHON3_POSTFIX = 3
   BOOST_MT=-mt
   PYTHON = $(shell python3 -c "import sys; print('%i.%i' % sys.version_info[:2])")
-  RPATH =
+  RPATH = -Wl,-undefined,dynamic_lookup
 endif
 
-$(info Link against python $(PYTHON))
-INC     += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp python-$(PYTHON)`
-LIBS    += -lstdc++ `$(PKG) --libs Qt5OpenGL Qt5Widgets assimp python-$(PYTHON)`
-INC     += -Ibullet_local_install/include -Ibullet_local_install/include/bullet -I/usr/local/include/bullet
-LIBS    += $(RPATH) -Lbullet_local_install/lib -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lPhysicsClientC_API
+INC += `$(PKG) --cflags Qt5Widgets Qt5OpenGL assimp bullet`
+LIBS += `$(PKG) --libs Qt5Widgets Qt5OpenGL assimp bullet`
+LIBS    += -lstdc++
+INC     += -I/usr/local/include/bullet
+LIBS    += $(RPATH) -lLinearMath -lBullet3Common -lBulletCollision -lBulletDynamics -lBulletInverseDynamics -lBulletSoftBody -lPhysicsClientC_API
 
 ifeq ($(PYTHON),2.7)
     BOOST_PYTHON = -lboost_python
@@ -82,7 +83,16 @@ SIM = \
  render-simple.cpp \
  render-simple-primitives.cpp
 
-ifneq ("$(wildcard /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0)", "")
+ENABLE_HARDWARE_RENDER=1
+ifdef ROBOSCHOOL_DISABLE_HARDWARE_RENDER
+ENABLE_HARDWARE_RENDER=0
+endif
+
+ifeq ("$(wildcard /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0)", "")
+ENABLE_HARDWARE_RENDER=0
+endif
+
+ifneq ($(ENABLE_HARDWARE_RENDER), 0)
 $(info Hardware render (turn on shadows))
 SIM     += render-ssao.cpp
 CFLAGS  += -DUSE_SSAO
@@ -113,8 +123,8 @@ $(OBJDIRR)/test-tool-qt4.o: .generated/test-tool-qt4.moc
 .generated/test-tool-qt4.moc: test-tool-qt4.cpp
 	$(MOC) -o $@ $<
 
-#../robot-test-tool: $(SIM_R) $(TWND_R)
-#../robot-test-tool_d: $(SIM_D) $(TWND_D)
+../robot-test-tool: $(SIM_R) $(TWND_R)
+../robot-test-tool_d: $(SIM_D) $(TWND_D)
 
 ../robot-test-tool: $(SIM_R) $(TWND_R)
 	$(LINK) $(LINK_OUT)$@ $^ $(LIBS)

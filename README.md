@@ -68,84 +68,127 @@ The list of Roboschool environments is as follows:
 To obtain this list: `import roboschool, gym; print("\n".join(['- ' + spec.id for spec in gym.envs.registry.all() if spec.id.startswith('Roboschool')]))`.
 
 
+Basic prerequisites
+===================
+Roboschool is compatible and tested with python3 (3.5 and 3.6), osx and linux. You may be able to compile it with python2.7 (see Installation from source),
+but that may require non-trivial amount of work. 
 
 Installation
 ============
 
-First, define a `ROBOSCHOOL_PATH` variable in the current shell. It will be used in this README but not anywhere in the Roboschool code.
-
+If you are running Ubuntu or Debian Linux, or OS X, the easiest path to install roboschool is via pip (:
 ```bash
-ROBOSCHOOL_PATH=/path/to/roboschool
+pip install roboschool
+```
+Note: in a headless machine (e.g. docker container) you may need to install graphics libraries; this can be achieved via `apt-get install libgl1-mesa-dev`
+
+If you are running some other Linux/Unix distro, or want the latest and the greatest code, or want to tweak the compiler optimization options, read on...
+
+Installation from source
+========================
+
+Prerequisites
+-------------
+First, make sure you are installing from a github repo (not a source package on pypi). That is, clone this repo and cd into cloned folder:
+```bash
+git clone https://github.com/openai/roboschool && cd roboschool
 ```
 
-If you have both Python2 and Python3 on your system, use `python3` and `pip3` commands.
+The system-level dependencies of roboschool are qt5 (with opengl), boost-python3 (or boost-python if you are compiling with python2), assimp and cmake. 
+Linux-based distros will need patchelf utility to tweak the runtime paths. Also, some version of graphics libraries is required. 
+Qt5, assimp, cmake and patchelf are rather straightforward to install:
 
-The dependencies are gym, Qt5, assimp, tinyxml, and bullet (from a branch). For the non-bullet deps, there are several options, depending on what platform and package manager you are using.
-
-- Ubuntu:
-
-    ```bash
-    apt install cmake ffmpeg pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
-    ```
-
-    Users report in issue #15 that `sudo pip3 install pyopengl` can make OpenGL errors go away, because it arranges OpenGL libraries in
-    an Ubuntu system in the right way.
-
-
-
-- Linuxbrew
+- Ubuntu / Debian: 
 
     ```bash
-    brew install boost-python --without-python --with-python3 --build-from-source
-    export C_INCLUDE_PATH=/home/user/.linuxbrew/include:/home/user/.linuxbrew/include/python3.6m
-    export CPLUS_INCLUDE_PATH=/home/user/.linuxbrew/include:/home/user/.linuxbrew/include/python3.6m
-    export LIBRARY_PATH=/home/user/.linuxbrew/lib
-    export PKG_CONFIG_PATH=/home/user/.linuxbrew/lib/pkgconfig:/usr/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
+    sudo apt-get install qtbase5-dev libqt5opengl5-dev libassimp-dev cmake patchelf
     ```
 
-    (still use Qt from Ubuntu, because it's known to work)
+- OSX:
+    
+    ```bash
+    brew install qt assimp cmake
+    ```
 
-- Mac, homebrew python:
+Next, we'll need boost-python3. On osx `brew install boost-python3` is usually sufficient, however, on linux it is not always available as a system-level package (sometimes it is available, but compiled against wrong version of python). If you are using anaconda/miniconda, boost-python3 can be installed via `conda install boost`. Otherwise, do we despair? Of course not! We install it from source!
+There is a script `install_boost.sh` that should do most of the heavy lifting - note that it will need sudo
+to install boost-python3 after compilation is done. 
+
+Next, need a custom version of bullet physics engine. In both osx and linux its installation is a little involved, fortunately, there is a 
+helper script `install_bullet.sh` that should do it for you. 
+Finally, we also need to set up some environment variables (so that pkg-config knows where has the software been installed) - this can be done via sourcing `exports.sh` script
+
+To summarize, all the prerequisites can be installed as follows:
+- Ubuntu / Debian: 
 
     ```bash
-    # Will not work on Mavericks: unsupported by homebrew, some libraries won't compile, upgrade first
-    brew install python3
-    brew install cmake tinyxml assimp ffmpeg qt
-    brew reinstall boost-python --without-python --with-python3 --build-from-source
-    export PATH=/usr/local/bin:/usr/local/opt/qt5/bin:$PATH
-    export PKG_CONFIG_PATH=/usr/local/opt/qt5/lib/pkgconfig
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
+    ./install_boost.sh
+    ./install_bullet.sh
+    source exports.sh
     ```
-
-- Mac, Anaconda with Python 3
+- Ubuntu / Debian with anaconda:
 
     ```bash
-    brew install cmake tinyxml assimp ffmpeg
-    brew reinstall boost-python --without-python --with-python3 --build-from-source
-    conda install qt
-    export PKG_CONFIG_PATH=$(dirname $(dirname $(which python)))/lib/pkgconfig
+    sudo apt-get install qtbase5 libqt5opengl5-dev libassimp-dev patchelf cmake
+    conda install boost
+    ./install_bullet.sh
+    source exports.sh
     ```
 
+- OSX:
+    
+    ```bash
+    brew install qt assimp boost-python3 cmake
+    ./install_bullet.sh
+    source exports.sh
+    ```
+To check if that installation is successful, run `pkg-config --cflags Qt5OpenGL assimp bullet` - you should see something resembling compiler options and not 
+an error message. Now we are ready to compile the roboschool project itself.
 
-Compile and install bullet as follows. Note that `make install` will merely copy files into the roboschool directory.
-
+Compile and install
+-------------------
+The compiler options are configured in the [Makefile](roboschool/cpp-household/Makefile). Feel free to tinker with them or leave those as is. To
+compile the project code, and then install it as a python package, use the following:
 ```bash
-git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
-mkdir bullet3/build
-cd    bullet3/build
-cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF ..
-make -j4
-make install
-cd ../..
+cd roboschool/cpp-household && make clean && make -j4 && cd ../.. && pip install -e .
 ```
 
-Finally, install project itself:
+A simple check if resulting installation is valid:
+```python
+import roboschool
+import gym
 
+env = gym.make('RoboschoolAnt-v1')
+while True:
+    env.step(env.action_space.sample())
+    env.render()
+```
+You can also check the installation running a pretrained agent from the agent zoo, for instance:
 ```bash
-pip3 install -e $ROBOSCHOOL_PATH
+python agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
 ```
 
-Now, check to see if it worked by running a pretrained agent from the agent zoo.
+Troubleshooting
+---------------
+A lot of the issues during installation from source are due to missing / incorrect PKG_CONFIG_PATH variable.
+If the command `pkg-config --cflags Qt5OpenGL assimp bullet` shows an error, you can try manually finding missing `*.pc` files (for instance, for if the `pkg-config` complains about assimp, run `find / -name "assimp.pc"` - this is a bit bruteforce, but it works :)) and then adding folder with that files to PKG_CONFIG_PATH. 
 
+Sometime distros of linux may complain about generated code being not platform-independent, and ask you to recompile something with `-fPIC` option (this was seen on older versions of CentOS). In that case, try removing `-march=native` compilation option in the Makefile. 
+
+On the systems with nvidia drivers present, roboschool sometimes is not be able to find hardware-accelerated libraries. If you see errors
+like
+```
+.build-release/render-ssao.o: In function `SimpleRender::ContextViewport::_depthlinear_paint(int)':
+/home/peter/dev/roboschool/roboschool/cpp-household/render-ssao.cpp:75: undefined reference to `glBindMultiTextureEXT'
+/home/peter/dev/roboschool/roboschool/cpp-household/render-ssao.cpp:78: undefined reference to `glBindMultiTextureEXT'
+collect2: error: ld returned 1 exit status
+Makefile:130: recipe for target '../robot-test-tool' failed
+```
+you can try disabling hardware rendering by setting `ROBOSCHOOL_DISABLE_HARDWARE_RENDER` env variable:
+```bash
+export ROBOSCHOOL_DISABLE_HARDWARE_RENDER=1
+```
 
 Agent Zoo
 =========
@@ -155,11 +198,11 @@ We have provided a number of pre-trained agents in the `agent_zoo` directory.
 To see a humanoid run towards a random varying target:
 
 ```bash
-python $ROBOSCHOOL_PATH/agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
+python agent_zoo/RoboschoolHumanoidFlagrun_v0_2017may.py
 ```
 
 To see three agents in a race:
 
 ```bash
-python $ROBOSCHOOL_PATH/agent_zoo/demo_race2.py
+python agent_zoo/demo_race2.py
 ```
