@@ -159,11 +159,10 @@ shared_ptr<App> app_create_as_needed(const shared_ptr<Household::World>& wref)
         SimpleRender::opengl_init_existing_app(wref);
         return app;
     }
-    else 
-    {
-        SimpleRender::opengl_init_before_app(wref);
-        app.reset(new App);
-    }
+
+    SimpleRender::opengl_init_before_app(wref);
+    app.reset(new App);
+
     the_app = app;
     SimpleRender::opengl_init(wref);
     wref->app_ref = app;
