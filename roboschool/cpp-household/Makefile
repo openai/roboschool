@@ -6,7 +6,8 @@ ifeq ($(UNAME),Linux)
   PKG  =pkg-config
   MOC  =moc -qt=5
   LIBS =-L/usr/lib64 -lm -lGL -L$(HOME)/.boost/lib
-  INC  =-I/usr/include
+  INC  =-I/usr/include 
+  INC += `$(PKG) --cflags python3`
   BOOST_MT=
   ifneq ($(USE_PYTHON3),0)
     HAVE_PYTHON3=$(shell which python3)
