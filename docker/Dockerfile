@@ -36,15 +36,23 @@ RUN pip3 install stable-baselines
 WORKDIR /gym
 ENV ROBOSCHOOL_PATH="/gym/roboschool"
 # installing bullet (the physics engine of roboschool) and its dependencies
-RUN apt-get install -y --no-install-recommends git gcc g++ && \
-	git clone https://github.com/openai/roboschool && \
-	git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision && \
-	mkdir bullet3/build && \
-	cd    bullet3/build && \
-	cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. && \
-	make -j4 && \
-	make install
 
+RUN apt-get install -y curl patchelf
+COPY . /gym/roboschool
+WORKDIR /gym/roboschool
+RUN ./install_boost.sh && ./install_bullet.sh
+WORKDIR /gym/roboschool/roboschool/cpp-household
+RUN bash -c "source ../../exports.sh && make -j4"
+
+# RUN apt-get install -y --no-install-recommends git gcc g++ && \
+# 	git clone https://github.com/openai/roboschool && \
+# 	git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision && \
+# 	mkdir bullet3/build && \
+# 	cd    bullet3/build && \
+# 	cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 -DCMAKE_INSTALL_PREFIX:PATH=$ROBOSCHOOL_PATH/roboschool/cpp-household/bullet_local_install -DBUILD_CPU_DEMOS=OFF -DBUILD_BULLET2_DEMOS=OFF -DBUILD_EXTRAS=OFF  -DBUILD_UNIT_TESTS=OFF -DBUILD_CLSOCKET=OFF -DBUILD_ENET=OFF -DBUILD_OPENGL3_DEMOS=OFF .. && \
+# 	make -j4 && \
+# 	make install
+# 
 WORKDIR /gym/roboschool
 RUN	pip3 install -e ./
 
@@ -64,5 +72,5 @@ EXPOSE 8888
 # VNC Server
 EXPOSE 5900
 
-COPY run.sh /
+COPY docker/run.sh /
 CMD ["/run.sh", "--allow-root"]
