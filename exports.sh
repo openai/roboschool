@@ -3,9 +3,8 @@ export CPP_HOUSEHOLD=$ROBOSCHOOL_PATH/roboschool/cpp-household
 export BULLET_PATH=$HOME/.forked_bullet
 
 if [[ $(uname) == 'Linux' ]]; then
-    PYTHON_BIN=$(readlink -f $(which python))
+    PYTHON_BIN=$(readlink -f $(which python3))
     PYTHON_ROOT=${PYTHON_BIN%/bin/python*}
-    PYTHON_VER=${PYTHON_BIN#$PYTHON_ROOT/bin/python}
 fi
 if [[ $(uname) == 'Darwin' ]]; then
     brew install coreutils
