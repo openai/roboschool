@@ -21,19 +21,19 @@ class RoboschoolMujocoXmlEnv(gym.Env):
         self.scene = None
 
         high = np.ones([action_dim])
-        self.action_space = gym.spaces.Box(-high, high)
+        self.action_space = gym.spaces.Box(-high, high, dtype=np.float32)
         high = np.inf*np.ones([obs_dim])
-        self.observation_space = gym.spaces.Box(-high, high)
-        self._seed()
+        self.observation_space = gym.spaces.Box(-high, high, dtype=np.float32)
+        self.seed()
 
         self.model_xml = model_xml
         self.robot_name = robot_name
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = gym.utils.seeding.np_random(seed)
         return [seed]
 
-    def _reset(self):
+    def reset(self):
         if self.scene is None:
             self.scene = self.create_single_player_scene()
         if not self.scene.multiplayer:
@@ -74,7 +74,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
         self.camera = self.scene.cpp_world.new_camera_free_float(self.VIDEO_W, self.VIDEO_H, "video_camera")
         return s
 
-    def _render(self, mode, close):
+    def render(self, mode, close):
         if close:
             return
         if mode=="human":
