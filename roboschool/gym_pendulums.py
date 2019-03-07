@@ -39,7 +39,7 @@ class RoboschoolInvertedDoublePendulum(RoboschoolMujocoXmlEnv):
             np.cos(gamma), np.sin(gamma), gamma_dot,
             ])
 
-    def _step(self, a):
+    def step(self, a):
         self.apply_action(a)
         self.scene.global_step()
         state = self.calc_state()  # sets self.pos_x self.pos_y
@@ -91,7 +91,7 @@ class RoboschoolInvertedPendulum(RoboschoolMujocoXmlEnv):
             np.cos(self.theta), np.sin(self.theta), theta_dot
             ])
 
-    def _step(self, a):
+    def step(self, a):
         self.apply_action(a)
         self.scene.global_step()
         state = self.calc_state()  # sets self.pos_x self.pos_y

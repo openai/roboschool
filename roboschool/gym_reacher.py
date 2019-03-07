@@ -48,7 +48,7 @@ class RoboschoolReacher(RoboschoolMujocoXmlEnv):
     def calc_potential(self):
         return -100 * np.linalg.norm(self.to_target_vec)
 
-    def _step(self, a):
+    def step(self, a):
         assert(not self.scene.multiplayer)
         self.apply_action(a)
         self.scene.global_step()
