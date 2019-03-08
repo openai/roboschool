@@ -115,14 +115,14 @@ class SharedMemoryClientEnv:
         game_server_guid -- is an id that server and client use to identify themselves to belong to the same session.
         player_n -- integer, up to scene.players_count.
 
-        You see here env._reset() gets overwritten, that means if you call env.reset(), it will not create
+        You see here env.reset gets overwritten, that means if you call env.reset(), it will not create
         single player scene on your side (as it usually do), but rather it will communicate to server, reset environment
         there. Same with step() and render().
         """
         self.shmem_client_init(game_server_guid, player_n)
-        env._step   = self.shmem_client_step  # replace real function with fake, that communicates with environment on server
-        env._reset  = self.shmem_client_reset
-        env._render = self.shmem_client_rgb_array
+        env.step   = self.shmem_client_step  # replace real function with fake, that communicates with environment on server
+        env.reset  = self.shmem_client_reset
+        env.render = self.shmem_client_rgb_array
         self.shmem_client_send_env_id()
 
 class SharedMemoryPlayerAgent:
