@@ -217,9 +217,7 @@ class RoboschoolPong(gym.Env, SharedMemoryClientEnv):
 
         return state, sum(self.rewards), False, {}
 
-    def render(self, mode, close):
-        if close:
-            return
+    def render(self, mode):
         if mode=="human":
             return self.scene.cpp_world.test_window()
         elif mode=="rgb_array":
