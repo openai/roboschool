@@ -47,6 +47,10 @@ class RoboschoolHalfCheetah(RoboschoolForwardWalkerMujocoXML):
 
 class RoboschoolAnt(RoboschoolForwardWalkerMujocoXML):
     foot_list = ['front_left_foot', 'front_right_foot', 'left_back_foot', 'right_back_foot']
+    '''
+    Quadruped walker similar to MuJoCo Ant. 
+    The task is to make the creature walk as fast as possible
+    '''
     def __init__(self):
         RoboschoolForwardWalkerMujocoXML.__init__(self, "ant.xml", "torso", action_dim=8, obs_dim=28, power=2.5)
     def alive_bonus(self, z, pitch):
