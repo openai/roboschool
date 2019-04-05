@@ -23,7 +23,7 @@ class RoboschoolUrdfEnv(gym.Env):
         self.action_space = gym.spaces.Box(-high, high)
         high = np.inf*np.ones([obs_dim])
         self.observation_space = gym.spaces.Box(-high, high)
-        self._seed()
+        self.seed()
 
         self.model_urdf = model_urdf
         self.fixed_base = fixed_base
