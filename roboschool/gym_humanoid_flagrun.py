@@ -4,6 +4,10 @@ import numpy as np
 import os
 
 class RoboschoolHumanoidFlagrun(RoboschoolHumanoid):
+    '''
+    Make a 3D humanoid robot run towards a target.
+    The coordinates of the target is given by the last 3 values in the observation
+    '''
     def create_single_player_scene(self):
         s = RoboschoolHumanoid.create_single_player_scene(self)
         s.zero_at_running_strip_start_line = False
@@ -66,6 +70,10 @@ if __name__=="__main__":
     print(chosen)
 
 class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
+    '''
+    Make a 3D humanoid robot run towards a target while being pelted by flying cubes.
+    The coordinates of the target is given by the last 3 values in the observation.
+    '''
     def __init__(self):
         RoboschoolHumanoidFlagrun.__init__(self)
         self.underlearned = RepeatUnderlearnedTasks(self.TASKS)

@@ -5,6 +5,11 @@ import numpy as np
 import os, sys
 
 class RoboschoolInvertedDoublePendulum(RoboschoolMujocoXmlEnv):
+    '''
+    Two-link continuous control version of classic cartpole problem.
+    Keep two-link pendulum upright by moving the 1-D cart.
+    Similar to MuJoCo InvertedDoublePendulum task.
+    '''
     def __init__(self):
         RoboschoolMujocoXmlEnv.__init__(self, 'inverted_double_pendulum.xml', 'cart', action_dim=1, obs_dim=9)
 
@@ -62,9 +67,14 @@ class RoboschoolInvertedDoublePendulum(RoboschoolMujocoXmlEnv):
         self.camera.move_and_look_at(0,1.2,1.2, 0,0,0.5)
 
 class RoboschoolInvertedPendulum(RoboschoolMujocoXmlEnv):
-    swingup = False
-
-    def __init__(self):
+    '''
+    Continuous control version of classic cartpole problem.
+    Keep a pole upright by moving the 1-D cart.
+    Similar to MuJoCo InvertedPendulum task. Has an optional version
+    where the pole starts pointing downward and needs to be swung up and kept that way.
+    '''
+    def __init__(self, swingup=False):
+        self.swingup = swingup
         RoboschoolMujocoXmlEnv.__init__(self, 'inverted_pendulum.xml', 'cart', action_dim=1, obs_dim=5)
 
     def create_single_player_scene(self):

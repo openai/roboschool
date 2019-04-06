@@ -5,6 +5,10 @@ import numpy as np
 import os, sys
 
 class RoboschoolReacher(RoboschoolMujocoXmlEnv):
+    '''
+    Get the end of two-link robotic arm to a given spot.
+    Similar to MuJoCo reacher. 
+    '''
     def __init__(self):
         RoboschoolMujocoXmlEnv.__init__(self, 'reacher.xml', 'body0', action_dim=2, obs_dim=9)
 
