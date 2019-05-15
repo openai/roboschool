@@ -90,12 +90,10 @@ class SharedMemoryClientEnv:
         else:
             raise ValueError("multiplayer server returned invalid string '%s' on reset, probably was shut down" % check)
 
-    def shmem_client_rgb_array(self, mode, close):
+    def shmem_client_rgb_array(self, mode):
         """
         This can render video image for render("rgb_array"), also works using shared memory.
         """
-        if close:
-            return
         if mode=="rgb_array":
             os.write(self.sh_pipe_actready, b'G\n')
             check = self.sh_pipe_obsready.readline()[:-1]

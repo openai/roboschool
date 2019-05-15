@@ -84,9 +84,7 @@ class RoboschoolUrdfEnv(gym.Env):
         self.camera = self.scene.cpp_world.new_camera_free_float(self.VIDEO_W, self.VIDEO_H, "video_camera")
         return s
 
-    def render(self, mode='human', close=False):
-        if close:
-            return
+    def render(self, mode='human'):
         if mode=="human":
             self.scene.human_render_detected = True
             return self.scene.cpp_world.test_window()

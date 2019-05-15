@@ -55,7 +55,7 @@ class RoboschoolForwardWalker(SharedMemoryClientEnv):
         self.body_rpy = body_pose.rpy()
         z = self.body_xyz[2]
         r, p, yaw = self.body_rpy
-        if self.initial_z==None:
+        if self.initial_z is None:
             self.initial_z = z
         self.walk_target_theta = np.arctan2( self.walk_target_y - self.body_xyz[1], self.walk_target_x - self.body_xyz[0] )
         self.walk_target_dist  = np.linalg.norm( [self.walk_target_y - self.body_xyz[1], self.walk_target_x - self.body_xyz[0]] )
