@@ -96,7 +96,7 @@ class RoboschoolHumanoidFlagrunHarder(RoboschoolHumanoidFlagrun):
         self.flag_reposition(first=True)
 
     def episode_over(self, frames):
-        self.underlearned.task_completed(self.task, frames==self.spec.timestep_limit)
+        self.underlearned.task_completed(self.task, frames==self.spec.max_episode_steps)
 
     def alive_bonus(self, z, pitch):
         if self.frame%30==0 and self.frame>100 and self.on_ground_frame_counter==0:
