@@ -5,6 +5,10 @@ from roboschool.scene_stadium import SinglePlayerStadiumScene
 import numpy as np
 
 class RoboschoolAtlasForwardWalk(RoboschoolForwardWalker, RoboschoolUrdfEnv):
+    '''
+    3-D humanoid robot similar to Boston Dynamics ATLAS robot.
+    The task is to make the robot run as fast as possible
+    '''
     random_yaw = False
     foot_list = ["r_foot", "l_foot"]
 

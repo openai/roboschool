@@ -12,6 +12,10 @@ class RoboschoolForwardWalkerMujocoXML(RoboschoolForwardWalker, RoboschoolMujoco
         RoboschoolForwardWalker.__init__(self, power)
 
 class RoboschoolHopper(RoboschoolForwardWalkerMujocoXML):
+    '''
+    2-D one-leg hopping robot similar to MuJoCo Hopper.
+    The task is to make the hopper hop as fast as possible.
+    '''
     foot_list = ["foot"]
     def __init__(self):
         RoboschoolForwardWalkerMujocoXML.__init__(self, "hopper.xml", "torso", action_dim=3, obs_dim=15, power=0.75)
@@ -19,6 +23,10 @@ class RoboschoolHopper(RoboschoolForwardWalkerMujocoXML):
         return +1 if z > 0.8 and abs(pitch) < 1.0 else -1
 
 class RoboschoolWalker2d(RoboschoolForwardWalkerMujocoXML):
+    '''
+    2-D two-legged walking robot similar to MuJoCo Walker2D.
+    The task is to make robot run as fast as possible
+    '''
     foot_list = ["foot", "foot_left"]
     def __init__(self):
         RoboschoolForwardWalkerMujocoXML.__init__(self, "walker2d.xml", "torso", action_dim=6, obs_dim=22, power=0.40)
@@ -30,6 +38,11 @@ class RoboschoolWalker2d(RoboschoolForwardWalkerMujocoXML):
             self.jdict[n].power_coef = 30.0
 
 class RoboschoolHalfCheetah(RoboschoolForwardWalkerMujocoXML):
+    '''
+    2-D two-legged robot similar to MuJoCo Half-Cheetah
+    Robot resembles half of a cheetah or a dog (hence the name),
+    the task is to make the robot run as fast as possible
+    '''
     foot_list = ["ffoot", "fshin", "fthigh",  "bfoot", "bshin", "bthigh"]  # track these contacts with ground
     def __init__(self):
         RoboschoolForwardWalkerMujocoXML.__init__(self, "half_cheetah.xml", "torso", action_dim=6, obs_dim=26, power=0.90)
@@ -46,6 +59,10 @@ class RoboschoolHalfCheetah(RoboschoolForwardWalkerMujocoXML):
         self.jdict["ffoot"].power_coef  = 30.0
 
 class RoboschoolAnt(RoboschoolForwardWalkerMujocoXML):
+    '''
+    3-D Quadruped walker similar to MuJoCo Ant. 
+    The task is to make the creature walk as fast as possible
+    '''
     foot_list = ['front_left_foot', 'front_right_foot', 'left_back_foot', 'right_back_foot']
     def __init__(self):
         RoboschoolForwardWalkerMujocoXML.__init__(self, "ant.xml", "torso", action_dim=8, obs_dim=28, power=2.5)
@@ -56,6 +73,10 @@ class RoboschoolAnt(RoboschoolForwardWalkerMujocoXML):
 ## 3d Humanoid ##
 
 class RoboschoolHumanoid(RoboschoolForwardWalkerMujocoXML):
+    '''
+    3-D Humanoid robot similar to MuJoCo Humanoid.
+    The task is to make robot run as fast as possible and not fall (episode terminates when robot falls)
+    '''
     foot_list = ["right_foot", "left_foot"]
     TASK_WALK, TASK_STAND_UP, TASK_ROLL_OVER, TASKS = range(4)
 

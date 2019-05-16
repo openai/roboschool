@@ -125,7 +125,7 @@ class RoboschoolForwardWalker(SharedMemoryClientEnv):
             ]
 
         self.frame  += 1
-        if (done and not self.done) or self.frame==self.spec.timestep_limit:
+        if (done and not self.done) or self.frame==self.spec.max_episode_steps:
             self.episode_over(self.frame)
         self.done   += done   # 2 == 1+True
         self.reward += sum(self.rewards)
