@@ -4,14 +4,6 @@
 NEWS
 ====
 
-**2018 July 9**
-
-Hi everyone! We wanted to let you know why we haven't pushed changes into this repo for a while: we're working on roboschool2, a
-new codebase with different priorities, which we hope will further accelerate robotics research. We continue to recommend the
-use of roboschool1 Hopper, Ant, Humanoid and Flagrun for evaluation and testing of algorithms. If you have fixes to make
-installation easier we'll be happy to merge it. We'll have more to share about roboschool2 in a while.
-
-
 **2017 July 17, Version 1.1**
 
 * All envs version bumped to “-v1", due to stronger stuck joint punishment, that improves odds of getting a good policy.
