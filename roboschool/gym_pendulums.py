@@ -125,3 +125,6 @@ class RoboschoolInvertedPendulum(RoboschoolMujocoXmlEnv):
 class RoboschoolInvertedPendulumSwingup(RoboschoolInvertedPendulum):
     swingup = True
 
+    def __init__(self, swingup=True):
+        RoboschoolInvertedPendulum.__init__(self, swingup)
+
