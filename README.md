@@ -44,18 +44,18 @@ Environments List
 
 The list of Roboschool environments is as follows:
 
-- RoboschoolInvertedPendulum-v0
-- RoboschoolInvertedPendulumSwingup-v0
-- RoboschoolInvertedDoublePendulum-v0
-- RoboschoolReacher-v0
-- RoboschoolHopper-v0
-- RoboschoolWalker2d-v0
-- RoboschoolHalfCheetah-v0
-- RoboschoolAnt-v0
-- RoboschoolHumanoid-v0
-- RoboschoolHumanoidFlagrun-v0
-- RoboschoolHumanoidFlagrunHarder-v0
-- RoboschoolPong-v0
+- RoboschoolInvertedPendulum-v1
+- RoboschoolInvertedPendulumSwingup-v1
+- RoboschoolInvertedDoublePendulum-v1
+- RoboschoolReacher-v1
+- RoboschoolHopper-v1
+- RoboschoolWalker2d-v1
+- RoboschoolHalfCheetah-v1
+- RoboschoolAnt-v1
+- RoboschoolHumanoid-v1
+- RoboschoolHumanoidFlagrun-v1
+- RoboschoolHumanoidFlagrunHarder-v1
+- RoboschoolPong-v1
 
 To obtain this list: `import roboschool, gym; print("\n".join(['- ' + spec.id for spec in gym.envs.registry.all() if spec.id.startswith('Roboschool')]))`.
 
