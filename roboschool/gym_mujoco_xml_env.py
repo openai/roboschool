@@ -1,6 +1,8 @@
 import gym, gym.spaces, gym.utils, gym.utils.seeding
 import numpy as np
 import os
+import warnings
+
 
 class RoboschoolMujocoXmlEnv(gym.Env):
     """
@@ -18,6 +20,7 @@ class RoboschoolMujocoXmlEnv(gym.Env):
     VIDEO_H = 400
 
     def __init__(self, model_xml, robot_name, action_dim, obs_dim):
+        warnings.warn("roboschool has been deprecated in favor of PyBullet, see https://github.com/openai/roboschool#news")
         self.scene = None
 
         high = np.ones([action_dim])
