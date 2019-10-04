@@ -72,6 +72,7 @@ graft_libs cpp_household.so .libs \
     ^/.+/libjpeg.+ \
     ^/.+/libpng.+ \
     ^/.+/libicu.+ \
+    ^/.+/libpcre.+ \
     ^/.+/libdouble-conversion.+ \
     ^/.+/libminizip.+
 
@@ -89,6 +90,7 @@ for lib in $(find .qt_plugins -name "$lib_pattern"); do
                 ^/.+/libjpeg.+ \
                 ^/.+/libpng.+ \
                 ^/.+/libicu.+ \
+                ^/.+/libpcre.+ \
                 ^/.+/libdouble-conversion.+ \
                 ^/.+/libminizip.+ \
                 ^/.+/libxcb.+ \
