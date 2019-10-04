@@ -1,8 +1,12 @@
-**Status:** Maintenance (expect bug fixes and minor updates)
+**Status:** Archive (code is provided as-is, no updates expected)
 
 
 NEWS
 ====
+
+**2019 September 27**
+
+* We are deprecating Roboschool and now recommend using [PyBullet](https://github.com/openai/gym/blob/master/docs/environments.md#pybullet-robotics-environments) instead.
 
 **2017 July 17, Version 1.1**
 
