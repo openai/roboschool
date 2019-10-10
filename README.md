@@ -1,5 +1,6 @@
 **Status:** Archive (code is provided as-is, no updates expected)
 
+# DEPRECATED: Please use [PyBullet](https://github.com/openai/gym/blob/master/docs/environments.md#pybullet-robotics-environments) instead
 
 NEWS
 ====
