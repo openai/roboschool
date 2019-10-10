@@ -108,6 +108,11 @@ register(
     max_episode_steps=1000,
     tags={ "pg_complexity": 20*1000000 },
     )
+register(
+    id='RoboschoolPegInsertion-v1',
+    entry_point='roboschool:RoboschoolPegInsertion',
+    max_episode_steps=1000
+)
 
 from roboschool.gym_pendulums import RoboschoolInvertedPendulum
 from roboschool.gym_pendulums import RoboschoolInvertedPendulumSwingup
@@ -122,3 +127,4 @@ from roboschool.gym_humanoid_flagrun import RoboschoolHumanoidFlagrun
 from roboschool.gym_humanoid_flagrun import RoboschoolHumanoidFlagrunHarder
 from roboschool.gym_atlas import RoboschoolAtlasForwardWalk
 from roboschool.gym_pong import RoboschoolPong
+from roboschool.gym_peg_insertion import RoboschoolPegInsertion
