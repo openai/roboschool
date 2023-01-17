@@ -1,13 +1,13 @@
 **Status:** Archive (code is provided as-is, no updates expected)
 
-# DEPRECATED: Please use [PyBullet](https://github.com/openai/gym/blob/master/docs/environments.md#pybullet-robotics-environments) instead
+# DEPRECATED: Please use [PyBullet](https://github.com/bulletphysics/bullet3) instead
 
 NEWS
 ====
 
 **2019 September 27**
 
-* We are deprecating Roboschool and now recommend using [PyBullet](https://github.com/openai/gym/blob/master/docs/environments.md#pybullet-robotics-environments) instead.
+* We are deprecating Roboschool and now recommend using [PyBullet](https://github.com/bulletphysics/bullet3) instead.
 
 **2017 July 17, Version 1.1**
 
